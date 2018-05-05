@@ -1,0 +1,18 @@
+{
+  "name": "riot-steps",
+  "version": "1.0.0",
+  "description": "Steps slider riot js component",
+  "main": "index.js",
+  "scripts": {
+    "compile": "riot -w tags/ tags/tags.js"
+  },
+  "keywords": [
+    "card",
+    "slider"
+  ],
+  "author": "Amit Gupta",
+  "license": "MIT",
+  "dependencies": {
+    "riot": "^3.9.4"
+  }
+}

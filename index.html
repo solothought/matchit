@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Card Game generator for all the ages">
+    <meta name="author" content="Amit Gupta">
+
+    <title>Match it - card game generator</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="static/css/3rdparty/bootstrap.min.css" rel="stylesheet">
+    <link href="static/css/3rdparty/jquery-ui.min.css" rel="stylesheet">
+
+    <!-- Theme CSS -->
+    <link href="css/freelancer.css" rel="stylesheet">
+    <link href="static/css/style.css" rel="stylesheet">
+    <link href="static/css/slider.css" rel="stylesheet">
+    <style>
+    
+    </style>
+</head>
+
+<body id="page-top" class="index">
+
+    <!-- Navigation -->
+    <nav id="mainNav" class="navbar navbar-default navbar-fixed-top navbar-custom">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <!-- <img src="img/stubmatic_logo.png" width="50px" /> --><a class="navbar-brand" href="#page-top">Match it</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="hidden">
+                        <a href="#page-top"></a>
+                    </li>
+                    <li class="page-scroll">
+                        <a href="#examples">Examples</a>
+                    </li>
+                    <li class="page-scroll">
+                        <a href="#features">Features</a>
+                    </li>
+                    <li class="page-scroll">
+                        <a href="#showcase">Showcase</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
+
+    <!-- Header -->
+    <header style="background-color: #2c3e50">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                        <h1>Make your own card game</h1>
+                        <p>With some easy steps anyone can generate object matching card game</p>
+                        <a href="#one" class="button scrolly">Design</a>
+                        <a href="#one" class="button scrolly">Download</a>
+                    <!-- <div class="intro-text">
+                        <span class="name rubberBand animated">Stubmatic</span>
+                        <span class="skills">Mock the behaviour of HTTP(s) / REST / SOAP services</span>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Examples Grid Section -->
+    <section id="one">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2>Design</h2>
+                    <div class="empty"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                        <select id="cardsize" class="form-control">
+                            <option disabled="true">Select Size</option>
+                            <option value="normal" selected>Normal Playing Card</option>
+                            <option value="pocker" >Pocker Playing Card</option>
+                            <option value="domino" >Domino Card</option>
+                            <option value="square" >Square Card</option>
+                        </select>
+                        <div class="empty"></div>
+                        <select id="symbolscount" class="form-control">
+                            <option selected="false" disabled="true">Number of symbols on a card</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                            <option>6</option>
+                            <option>7</option>
+                            <option>8</option>
+                            <option>9</option>
+                            <option>10</option>
+                        </select>
+                        <div class="empty"></div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="rotate">
+                            <label class="form-check-label" for="rotate">
+                                Rotate randomly
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="resize">
+                            <label class="form-check-label" for="resize">
+                                Resize randmly
+                            </label>
+                        </div>
+                </div>
+
+                <div  class="col-md-8">
+                        <div id="slider-horizontal-val"></div>
+                        <div id="slider-horizontal"></div>
+                        <div class="row" id="demo-card-container">
+                            <div class="col-md-10">
+                                <div id="demo-card"></div>
+                            </div>
+                            <div class="col-md-1">
+                                <div id="slider-vertical"></div>
+                            </div>
+                            <div class="col-md-1">
+                                <div id="slider-vertical-val"></div>
+                            </div>
+                        </div>
+                </div>
+                
+            </div>
+        </div>
+
+    </section>
+
+    <!-- Features Section -->
+    <section class="success" id="features" style="background-color: #1963ad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2>Instructions</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="empty"></div>
+                    <p>This game can be played in multiple ways among two to multiple players depends on the deck size. Plyers have to find matching symbols in 2 cards. </p>
+                    <p>In easy version, two exactly same symbols have to be matched. In difficult version, two symbols which belongs to the same group has to be matched. Eg. suppose there are 5 groups of animals: dog, cat, lizard, insects, and birds. Two cards may match same image or different images belong to the same group.</p>
+                    <p>You can increase the complexity with similar looikng, same color, or same groups. Eg group of medical equipments and construction euipments.</p>
+                    <p>Upload one image in each group for simple version or upload multiple images in each group to make it diffcult.</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <button>Simple Version</button>
+                    <button>Complex Version</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Showcase Section -->
+    <section id="showcase">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2>Symbols</h2>
+                </div>
+            </div>
+            Group {number}
+            <div class="row">
+                <div class="col-md-2 upload-image-button text-center">
+                    Upload<br>Image
+                </div>
+                <div class="col-md-10">
+                    { image gallery }
+                </div>
+            </div>
+            <gallery></gallery>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="text-center">
+        <div class="footer-above">
+            <div class="container">
+                <div class="row">
+                    <div class="footer-col col-md-4">
+                        
+                    </div>
+                    <div class="footer-col col-md-4">
+
+                    </div>
+                    <div class="footer-col col-md-4">
+                        <h3>Contact me</h3>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-below">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        Your contribution will be appreciated
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="static/js/3rdparty/jquery-3.2.1.min.js"></script>
+    <script src="static/js/3rdparty/jquery-ui.min.js"></script>
+    <script src="static/js/3rdparty/jquery.easing.1.4.1.min.js"></script>
+    <script src="static/js/3rdparty/riot.min.js"></script>
+    <script src="static/js/3rdparty/bootstrap.bundle.min.js"></script>
+
+    <!-- <script src="js/freelancer.js"></script> -->
+    <script src="static/js/app.js"></script>
+    <script src="tags/tags.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function(){
+            setupSlider(cards.normal);
+            updateSlider(cards.normal);
+
+            $( "#cardsize" ).change( function(){
+                updateSlider(cards[$( "#cardsize" ).val()]);
+                updateDemoCard(cards[$( "#cardsize" ).val()]);
+            });
+
+            $( "#symbolscount" ).change( function(){
+                checkSymbolCount();
+            });
+        });
+        riot.mount("gallery");
+    </script>
+
+       
+</body>
+
+</html>
