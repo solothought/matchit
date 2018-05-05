@@ -159,8 +159,8 @@
             </div>
             <div class="row">
                 <div class="col-lg-12 text-center">
-                    <button>Simple Version</button>
-                    <button>Complex Version</button>
+                    <button id="simpleLevel">Simple Version</button>
+                    <button id="difficultLevel">Difficult Version</button>
                 </div>
             </div>
         </div>
@@ -184,6 +184,8 @@
                 </div>
             </div>
             <gallery></gallery>
+
+            <galleries></galleries>
         </div>
     </section>
 
@@ -230,6 +232,7 @@
         $(document).ready(function(){
             setupSlider(cards.normal);
             updateSlider(cards.normal);
+            $( "#symbolscount" ).val("6")
 
             $( "#cardsize" ).change( function(){
                 updateSlider(cards[$( "#cardsize" ).val()]);
@@ -239,8 +242,22 @@
             $( "#symbolscount" ).change( function(){
                 checkSymbolCount();
             });
+
+            $("#simpleLevel").click(function(){
+                var symbolsCount = $( "#symbolscount" ).val();
+                riot.mount("galleries", { count : 1, symbols : symbolsCount})
+            })
+
+            $("#difficultLevel").click(function(){
+                var symbolsCount = $( "#symbolscount" ).val();
+                if(symbolsCount){
+                    riot.mount("galleries", { count : symbolsCount, symbols : symbolsCount})
+                }else{
+                    alert("Select number of symboles on a card");
+                }
+            })
         });
-        riot.mount("gallery");
+        /* riot.mount("gallery"); */
     </script>
 
        
