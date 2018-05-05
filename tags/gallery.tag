@@ -3,13 +3,13 @@
         <input type="file" class="filebutton" accept="image/*"  onchange= { readImageFiles }  multiple/>
     </label>
     <div class="input-bar clearfix">
-        <div class="left-paddle"></div>
+        <div class="left-paddle" onclick={ slideleft }></div>
         <div class="photolist-wrapper">
-            <div class="photolist">
+            <div name="photolist" class="photolist">
                 <img src={ src } label ={ name } title={ name } width="80px" each={ galleryData }>
             </div>
         </div>
-        <div class="right-paddle"></div>
+        <div class="right-paddle" onclick ={ slideright }></div>
     </div>
     <script>
         readImageFiles(e) {
@@ -38,5 +38,30 @@
                 reader.readAsDataURL(f);
             }
         }
+
+        this.sliding = false;
+        this.sliderMove = "80px";
+        slideleft(e) {
+            var photolist = $(e.target.nextElementSibling.children[0]);
+            if (this.sliding === false) {
+                this.sliding = true;
+                photolist.css({ left: "-"+this.sliderMove })
+                    .prepend(photolist.children('img:last-child'))
+                    .animate({ left: 0 }, 200, 'linear', () => {
+                        this.sliding = false;
+                    });
+            }
+        };
+        slideright(e) {
+            var photolist = $(e.target.previousElementSibling.children[0]);
+            if (this.sliding === false) {
+                this.sliding = true;
+                photolist.animate({ left: "-"+this.sliderMove }, 200, 'linear', () => {
+                    photolist.css({ left: 0 })
+                        .append(photolist.children('img:first-child'));
+                    this.sliding = false;
+                });
+            }
+        };
     </script>
 </gallery>
