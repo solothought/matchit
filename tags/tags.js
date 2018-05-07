@@ -75,11 +75,16 @@ riot.tag2('gallery', '<label class="btn-bs-file btn btn-outline-info">Browse Ima
             }
         }.bind(this);
 });
-riot.tag2('review', '<div class="input-bar clearfix row"> <div class="left-paddle col-md-1" onclick="{slideleft}"></div> <div class="photolist-wrapper col-md-10"> <div each="{card in cards}" class="cardframe"> <img each="{symbol in card}" riot-src="{readSymbol(symbol)}" class="symbol" width="75px" height="75px"> </div> </div> <div class="right-paddle col-md-1" onclick="{slideright}"></div> </div>', 'review .cardframe,[data-is="review"] .cardframe{ display: block; background-color: white; float: left; margin: 5px; border-radius: 5px; padding: 5px; } review .symbol,[data-is="review"] .symbol{ }', '', function(opts) {
+riot.tag2('review', '<div class="input-bar clearfix row"> <div class="left-paddle col-md-1" onclick="{slideleft}"></div> <div class="photolist-wrapper col-md-10"> <div each="{card in cards}" class="cardframe"> <div each="{symbol in card}" class="symbol trans"> <img riot-src="{readSymbol(symbol)}" width="75px" height="75px"> </div> </div> </div> <div class="right-paddle col-md-1" onclick="{slideright}"></div> </div>', 'review .cardframe,[data-is="review"] .cardframe{ display: block; background-color: white; float: left; margin: 5px; border-radius: 5px; padding: 5px; position: relative; } review .symbol,[data-is="review"] .symbol{ position: absolute; cursor: move; } review .resizeHandle,[data-is="review"] .resizeHandle{ width: 10px; height: 10px; background-color: #ffffff; border: 1px solid #000000; bottom: -5px; right:-5px; }', '', function(opts) {
         var groupIndex = [];
         this.on("mount",() => {
             $(".cardframe").width(this.frame.width);
             $(".cardframe").height(this.frame.height);
+
+            $('.trans img').resizable({
+
+            });
+            $('.symbol').draggable();
         })
         this.frame = {
             width : $( "#demo-card" ).width(),

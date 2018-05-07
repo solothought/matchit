@@ -7,9 +7,19 @@
             margin: 5px;
             border-radius: 5px;
             padding: 5px;
+            position: relative;
         }
         .symbol{
-
+            position: absolute;
+            cursor: move;
+        }
+        .resizeHandle {
+            width: 10px;
+            height: 10px;
+            background-color: #ffffff;
+            border: 1px solid #000000;
+            bottom: -5px;
+            right:-5px;
         }
     </style>
 
@@ -17,7 +27,10 @@
         <div class="left-paddle col-md-1" onclick={ slideleft }></div>
         <div class="photolist-wrapper col-md-10">
             <div each={card in cards} class="cardframe">
-                <img each={ symbol in card} src={ readSymbol(symbol) } class="symbol" width="75px" height="75px"  >
+                <div each={ symbol in card} class="symbol trans">
+                    <img  src={ readSymbol(symbol) }  width="75px" height="75px"  >
+                    <!-- <div class="ui-resizable-handle resizeHandle"></div> -->
+                </div>
             </div>
         </div>
         <div class="right-paddle col-md-1" onclick ={ slideright }></div>
@@ -27,6 +40,12 @@
         this.on("mount",() => {
             $(".cardframe").width(this.frame.width);
             $(".cardframe").height(this.frame.height);
+
+
+            $('.trans img').resizable({
+                /* containment:  */
+            });
+            $('.symbol').draggable();
         })
         this.frame = {
             width : $( "#demo-card" ).width(),
