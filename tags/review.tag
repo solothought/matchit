@@ -3,6 +3,10 @@
         .cardframe{
             display: block;
             background-color: white;
+            float: left;
+            margin: 5px;
+            border-radius: 5px;
+            padding: 5px;
         }
         .symbol{
 
@@ -12,7 +16,7 @@
     <div class="input-bar clearfix row">
         <div class="left-paddle col-md-1" onclick={ slideleft }></div>
         <div class="photolist-wrapper col-md-10">
-            <div each={card in cards} class="cardframe" width={ this.frame.width } height={ this.frame.height }>
+            <div each={card in cards} class="cardframe">
                 <img each={ symbol in card} src={ readSymbol(symbol) } class="symbol" width="75px" height="75px"  >
             </div>
         </div>
@@ -20,6 +24,10 @@
     </div>
     <script>
         var groupIndex = [];
+        this.on("mount",() => {
+            $(".cardframe").width(this.frame.width);
+            $(".cardframe").height(this.frame.height);
+        })
         this.frame = {
             width : $( "#demo-card" ).width(),
             height : $( "#demo-card" ).height()
@@ -27,7 +35,7 @@
 
         var totalSymbols = totalCombinations($( "#symbolscount" ).val());
         this.cards = createBlocks($( "#symbolscount" ).val());
-        console.log(this.opts);
+        console.log(this.cards);
 
         readSymbol(n){
             if( Object.keys(this.opts.symbols).length === 1){
