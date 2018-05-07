@@ -56,7 +56,7 @@ function setupSlider(size){
     }
 } */
 
-var minSize = {
+var minSymbolSize = {
     w : 75,
     h : 75
 }
@@ -65,7 +65,7 @@ function checkSymbolCount(){
     var w = $( "#slider-horizontal" ).slider("value");
     var h = 450 - $("#slider-vertical" ).slider("value");
 
-    var maxCount = Math.floor( h / minSize.h ) * Math.floor(w / minSize.w);
+    var maxCount = Math.floor( h / minSymbolSize.h ) * Math.floor(w / minSymbolSize.w);
 
     if( $('#symbolscount').val() > maxCount ){
         alert("Number of symbols for given size should not be greater than " + maxCount);

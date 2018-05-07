@@ -166,7 +166,7 @@
         </div>
     </section>
 
-    <!-- Showcase Section -->
+    <!-- Symbols Section -->
     <section id="showcase">
         <div class="container">
             <div class="row">
@@ -174,39 +174,25 @@
                     <h2>Symbols</h2>
                 </div>
             </div>
-            Group {number}
-            <div class="row">
-                <div class="col-md-2 upload-image-button text-center">
-                    Upload<br>Image
-                </div>
-                <div class="col-md-10">
-                    { image gallery }
-                </div>
-            </div>
-            <gallery></gallery>
 
             <galleries></galleries>
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="text-center">
-        <div class="footer-above">
-            <div class="container">
-                <div class="row">
-                    <div class="footer-col col-md-4">
-                        
-                    </div>
-                    <div class="footer-col col-md-4">
-
-                    </div>
-                    <div class="footer-col col-md-4">
-                        <h3>Contact me</h3>
-                        
-                    </div>
+    <!-- Review Section -->
+    <section id="showcase" style="background-color: #2C3E50;color: white">
+        <div class="container" >
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2>Review</h2>
                 </div>
             </div>
+            <review></review>
         </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="text-center">
         <div class="footer-below">
             <div class="container">
                 <div class="row">
@@ -226,13 +212,16 @@
 
     <!-- <script src="js/freelancer.js"></script> -->
     <script src="static/js/app.js"></script>
+    <script src="static/js/findit.js"></script>
     <script src="tags/tags.js"></script>
 
     <script type="text/javascript">
         $(document).ready(function(){
+            //set default
             setupSlider(cards.normal);
             updateSlider(cards.normal);
             $( "#symbolscount" ).val("6")
+
 
             $( "#cardsize" ).change( function(){
                 updateSlider(cards[$( "#cardsize" ).val()]);
@@ -249,7 +238,7 @@
             })
 
             $("#difficultLevel").click(function(){
-                var symbolsCount = $( "#symbolscount" ).val();
+                var symbolsCount = totalCombinations($( "#symbolscount" ).val());
                 if(symbolsCount){
                     riot.mount("galleries", { count : symbolsCount, symbols : symbolsCount})
                 }else{
@@ -257,7 +246,6 @@
                 }
             })
         });
-        /* riot.mount("gallery"); */
     </script>
 
        

@@ -20,7 +20,7 @@
 .right-paddle {
     float: left;
     width: 35px;
-    height: 90px;
+    /* height: 90px; */
     cursor: pointer;
 }
 
@@ -36,14 +36,14 @@
     position: relative;
     float: left;
     width: 890px;
-    height: 90px;
+    /* height: 90px; */
     margin: 0 auto;
     overflow: hidden;
 }
 .photolist-wrapper .photolist {
     position: relative;
     width: 3000px;
-    height: 90px;
+    /* height: 90px; */
 }
 .photolist-wrapper .photolist  img {
     padding: 2px;

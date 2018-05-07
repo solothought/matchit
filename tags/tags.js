@@ -1,7 +1,12 @@
-riot.tag2('galleries', '<gallery each="{this.repeat}"></gallery>', '', '', function(opts) {
+riot.tag2('galleries', '<gallery each="{n,i in this.repeat}" id="gallery_{i}"></gallery> <div class="row"> <div class="col-lg-12 text-center"> <button id="generate" onclick="{generate}">Generate</button> </div> </div>', '', '', function(opts) {
         this.repeat = new Array(Number.parseInt(this.opts.count));
+
+        this.symbols = {};
+        this.generate = function(){
+            riot.mount("review", {symbols: this.symbols});
+        }.bind(this)
 });
-riot.tag2('gallery', '<label class="btn-bs-file btn btn-outline-info">Browse Image files <input type="file" class="filebutton" accept="image/*" onchange="{readImageFiles}" multiple> </label> <div class="input-bar clearfix"> <div class="left-paddle" onclick="{slideleft}"></div> <div class="photolist-wrapper"> <div name="photolist" class="photolist"> <img riot-src="{src}" label="{name}" title="{name}" width="80px" each="{galleryData}"> </div> </div> <div class="right-paddle" onclick="{slideright}"></div> </div>', '', '', function(opts) {
+riot.tag2('gallery', '<label class="btn-bs-file btn btn-outline-info">Browse Image files <input type="file" class="filebutton" accept="image/*" onchange="{readImageFiles}" multiple> </label> <div class="input-bar clearfix row"> <div class="left-paddle col-md-1" onclick="{slideleft}"></div> <div class="photolist-wrapper col-md-10"> <div name="photolist" class="photolist"> <img riot-src="{src}" label="{name}" title="{name}" width="80px" each="{this.parent.symbols[this.opts.id]}"> </div> </div> <div class="right-paddle col-md-1" onclick="{slideright}"></div> </div>', '', '', function(opts) {
         this.readImageFiles = function(e) {
             var input = e.srcElement;
             if (input.files && input.files[0]) {
@@ -10,9 +15,10 @@ riot.tag2('gallery', '<label class="btn-bs-file btn btn-outline-info">Browse Ima
                 }
             }
         }.bind(this)
-        this.galleryData = [];
+        this.parent.symbols[this.opts.id] = [];
+
         this.readImageFile = function(f) {
-            data = this.galleryData;
+            data = this.parent.symbols[this.opts.id];
             if(f.type.startsWith("image")){
                 var reader = new FileReader();
                 reader.onload = function (e) {
@@ -24,6 +30,7 @@ riot.tag2('gallery', '<label class="btn-bs-file btn btn-outline-info">Browse Ima
                 }
                 reader.onloadend = e => {
                     this.update();
+                    ;
                 }
                 reader.readAsDataURL(f);
             }
@@ -31,6 +38,53 @@ riot.tag2('gallery', '<label class="btn-bs-file btn btn-outline-info">Browse Ima
 
         this.sliding = false;
         this.sliderMove = "80px";
+        this.slideleft = function(e) {
+            var photolist = $(e.target.nextElementSibling.children[0]);
+            if (this.sliding === false) {
+                this.sliding = true;
+                photolist.css({ left: "-"+this.sliderMove })
+                    .prepend(photolist.children('img:last-child'))
+                    .animate({ left: 0 }, 200, 'linear', () => {
+                        this.sliding = false;
+                    });
+            }
+        }.bind(this);
+        this.slideright = function(e) {
+            var photolist = $(e.target.previousElementSibling.children[0]);
+            if (this.sliding === false) {
+                this.sliding = true;
+                photolist.animate({ left: "-"+this.sliderMove }, 200, 'linear', () => {
+                    photolist.css({ left: 0 })
+                        .append(photolist.children('img:first-child'));
+                    this.sliding = false;
+                });
+            }
+        }.bind(this);
+});
+riot.tag2('review', '<div class="input-bar clearfix row"> <div class="left-paddle col-md-1" onclick="{slideleft}"></div> <div class="photolist-wrapper col-md-10"> <div each="{card in cards}" class="cardframe" width="{this.frame.width}" height="{this.frame.height}"> <img each="{symbol in card}" riot-src="{readSymbol(symbol)}" class="symbol" width="75px" height="75px"> </div> </div> <div class="right-paddle col-md-1" onclick="{slideright}"></div> </div>', 'review .cardframe,[data-is="review"] .cardframe{ display: block; background-color: white; } review .symbol,[data-is="review"] .symbol{ }', '', function(opts) {
+        var groupIndex = [];
+        this.frame = {
+            width : $( "#demo-card" ).width(),
+            height : $( "#demo-card" ).height()
+        }
+
+        var totalSymbols = totalCombinations($( "#symbolscount" ).val());
+        this.cards = createBlocks($( "#symbolscount" ).val());
+        console.log(this.opts);
+
+        this.readSymbol = function(n){
+            if( Object.keys(this.opts.symbols).length === 1){
+                return this.opts.symbols["gallery_0"][ n % this.opts.symbols["gallery_0"].length].src;
+            }else{
+                if(!groupIndex[n]) groupIndex[n] = 0;
+                var index = groupIndex[n] % this.opts.symbols["gallery_"+n].length;
+                groupIndex[n] = index +1;
+                return this.opts.symbols["gallery_"+n][ index ].src;
+            }
+        }.bind(this)
+
+        this.sliding = false;
+        this.sliderMove = this.frame.width + "px";
         this.slideleft = function(e) {
             var photolist = $(e.target.nextElementSibling.children[0]);
             if (this.sliding === false) {
