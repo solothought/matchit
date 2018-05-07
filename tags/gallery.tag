@@ -26,16 +26,16 @@
             data = this.parent.symbols[this.opts.id];
             if(f.type.startsWith("image")){
                 var reader = new FileReader();
-                reader.onload = function (e) {
+                reader.onload = e => {
                     var imgData = {
                         name : f.name,
                         src: e.target.result
                     };
                     data.push(imgData);
+                    this.parent.trigger("uploadimages");
                 }
                 reader.onloadend = e => {
                     this.update();
-                    ;
                 }
                 reader.readAsDataURL(f);
             }

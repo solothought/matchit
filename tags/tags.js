@@ -1,10 +1,24 @@
-riot.tag2('galleries', '<gallery each="{n,i in this.repeat}" id="gallery_{i}"></gallery> <div class="row"> <div class="col-lg-12 text-center"> <button id="generate" onclick="{generate}">Generate</button> </div> </div>', '', '', function(opts) {
-        this.repeat = new Array(Number.parseInt(this.opts.count));
-
+riot.tag2('galleries', '<p if="{this.opts.count == 1}">Upload {totalSymbols} images</p> <gallery each="{n,i in this.repeat}" id="gallery_{i}"></gallery> <div class="row"> <div class="col-lg-12 text-center"> <button id="generate" onclick="{generate}" disabled="{!readyToGenerate}">Generate</button> </div> </div>', '', '', function(opts) {
+        this.readyToGenerate = false;
+        this.repeat = new Array(this.opts.count);
+        this.totalSymbols = totalCombinations($( "#symbolscount" ).val());
         this.symbols = {};
         this.generate = function(){
             riot.mount("review", {symbols: this.symbols});
         }.bind(this)
+        this.on("uploadimages",() => {
+            if(Object.keys(this.symbols).length === this.opts.count){
+                if(this.opts.count === 1){
+                    if(this.symbols["gallery_0"].length === this.totalSymbols){
+                        this.readyToGenerate = true;
+                        this.update();
+                    }
+                }else{
+                    this.readyToGenerate = true;
+                    this.update();
+                }
+            }
+        });
 });
 riot.tag2('gallery', '<label class="btn-bs-file btn btn-outline-info">Browse Image files <input type="file" class="filebutton" accept="image/*" onchange="{readImageFiles}" multiple> </label> <div class="input-bar clearfix row"> <div class="left-paddle col-md-1" onclick="{slideleft}"></div> <div class="photolist-wrapper col-md-10"> <div name="photolist" class="photolist"> <img riot-src="{src}" label="{name}" title="{name}" width="80px" each="{this.parent.symbols[this.opts.id]}"> </div> </div> <div class="right-paddle col-md-1" onclick="{slideright}"></div> </div>', '', '', function(opts) {
         this.readImageFiles = function(e) {
@@ -21,16 +35,16 @@ riot.tag2('gallery', '<label class="btn-bs-file btn btn-outline-info">Browse Ima
             data = this.parent.symbols[this.opts.id];
             if(f.type.startsWith("image")){
                 var reader = new FileReader();
-                reader.onload = function (e) {
+                reader.onload = e => {
                     var imgData = {
                         name : f.name,
                         src: e.target.result
                     };
                     data.push(imgData);
+                    this.parent.trigger("uploadimages");
                 }
                 reader.onloadend = e => {
                     this.update();
-                    ;
                 }
                 reader.readAsDataURL(f);
             }
@@ -70,7 +84,7 @@ riot.tag2('review', '<div class="input-bar clearfix row"> <div class="left-paddl
 
         var totalSymbols = totalCombinations($( "#symbolscount" ).val());
         this.cards = createBlocks($( "#symbolscount" ).val());
-        console.log(this.opts);
+        console.log(this.cards);
 
         this.readSymbol = function(n){
             if( Object.keys(this.opts.symbols).length === 1){
