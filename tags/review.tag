@@ -18,8 +18,19 @@
             height: 10px;
             background-color: #ffffff;
             border: 1px solid #000000;
-            bottom: -5px;
-            right:-5px;
+            bottom: 1px;
+            right:1px;
+        }
+        .ui-rotatable-handle{
+            /* background: url("https://cdn.jsdelivr.net/jquery.ui.rotatable/1.0.1/rotate.png");
+            background-repeat: no-repeat; */
+            width: 10px;
+            height: 10px;
+            background-color: green;
+            bottom: 1px;
+            right:1px;
+            border-radius: 5px;
+            cursor: crosshair;
         }
     </style>
 
@@ -29,7 +40,7 @@
             <div each={card in cards} class="cardframe">
                 <div each={ symbol in card} class="symbol trans">
                     <img  src={ readSymbol(symbol) }  width="75px" height="75px"  >
-                    <!-- <div class="ui-resizable-handle resizeHandle"></div> -->
+                    <div class="ui-resizable-handle resizeHandle"></div>
                 </div>
             </div>
         </div>
@@ -45,7 +56,7 @@
             $('.trans img').resizable({
                 /* containment:  */
             });
-            $('.symbol').draggable();
+            $('.symbol').draggable().rotatable();
         })
         this.frame = {
             width : $( "#demo-card" ).width(),

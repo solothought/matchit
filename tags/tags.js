@@ -75,7 +75,7 @@ riot.tag2('gallery', '<label class="btn-bs-file btn btn-outline-info">Browse Ima
             }
         }.bind(this);
 });
-riot.tag2('review', '<div class="input-bar clearfix row"> <div class="left-paddle col-md-1" onclick="{slideleft}"></div> <div class="photolist-wrapper col-md-10"> <div each="{card in cards}" class="cardframe"> <div each="{symbol in card}" class="symbol trans"> <img riot-src="{readSymbol(symbol)}" width="75px" height="75px"> </div> </div> </div> <div class="right-paddle col-md-1" onclick="{slideright}"></div> </div>', 'review .cardframe,[data-is="review"] .cardframe{ display: block; background-color: white; float: left; margin: 5px; border-radius: 5px; padding: 5px; position: relative; } review .symbol,[data-is="review"] .symbol{ position: absolute; cursor: move; } review .resizeHandle,[data-is="review"] .resizeHandle{ width: 10px; height: 10px; background-color: #ffffff; border: 1px solid #000000; bottom: -5px; right:-5px; }', '', function(opts) {
+riot.tag2('review', '<div class="input-bar clearfix row"> <div class="left-paddle col-md-1" onclick="{slideleft}"></div> <div class="photolist-wrapper col-md-10"> <div each="{card in cards}" class="cardframe"> <div each="{symbol in card}" class="symbol trans"> <img riot-src="{readSymbol(symbol)}" width="75px" height="75px"> <div class="ui-resizable-handle resizeHandle"></div> </div> </div> </div> <div class="right-paddle col-md-1" onclick="{slideright}"></div> </div>', 'review .cardframe,[data-is="review"] .cardframe{ display: block; background-color: white; float: left; margin: 5px; border-radius: 5px; padding: 5px; position: relative; } review .symbol,[data-is="review"] .symbol{ position: absolute; cursor: move; } review .resizeHandle,[data-is="review"] .resizeHandle{ width: 10px; height: 10px; background-color: #ffffff; border: 1px solid #000000; bottom: 1px; right:1px; } review .ui-rotatable-handle,[data-is="review"] .ui-rotatable-handle{ width: 10px; height: 10px; background-color: green; bottom: 1px; right:1px; border-radius: 5px; cursor: crosshair; }', '', function(opts) {
         var groupIndex = [];
         this.on("mount",() => {
             $(".cardframe").width(this.frame.width);
@@ -84,7 +84,7 @@ riot.tag2('review', '<div class="input-bar clearfix row"> <div class="left-paddl
             $('.trans img').resizable({
 
             });
-            $('.symbol').draggable();
+            $('.symbol').draggable().rotatable();
         })
         this.frame = {
             width : $( "#demo-card" ).width(),
