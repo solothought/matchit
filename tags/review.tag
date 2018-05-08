@@ -20,6 +20,7 @@
             border: 1px solid #000000;
             bottom: 1px;
             right:1px;
+            display: none;
         }
         .ui-rotatable-handle{
             width: 10px;
@@ -29,6 +30,7 @@
             right:1px;
             border-radius: 5px;
             cursor: crosshair;
+            display: none;
         }
         .card-frame-navigators{
             display: block;
@@ -70,6 +72,13 @@
                 setRandomPos($(this).children());
             })
             
+            $(".cardframe").mouseover( function(e) {
+                $(this).find(".resizeHandle, .ui-rotatable-handle").show();
+            });
+
+            $(".cardframe").mouseout( function(e) {
+                $(this).find(".resizeHandle, .ui-rotatable-handle").hide();
+            });
         })
         this.frame = {
             width : $( "#demo-card" ).width(),
