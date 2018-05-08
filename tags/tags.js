@@ -9,7 +9,7 @@ riot.tag2('galleries', '<p if="{this.opts.count == 1}">Upload {totalSymbols} ima
         this.on("uploadimages",() => {
             if(Object.keys(this.symbols).length === this.opts.count){
                 if(this.opts.count === 1){
-                    if(this.symbols["gallery_0"].length === this.totalSymbols){
+                    if(this.symbols["gallery_0"].length >= this.totalSymbols){
                         this.readyToGenerate = true;
                         this.update();
                     }
@@ -20,7 +20,7 @@ riot.tag2('galleries', '<p if="{this.opts.count == 1}">Upload {totalSymbols} ima
             }
         });
 });
-riot.tag2('gallery', '<label class="btn-bs-file btn btn-outline-info">Browse Image files <input type="file" class="filebutton" accept="image/*" onchange="{readImageFiles}" multiple> </label> <div class="input-bar clearfix row"> <div class="left-paddle col-md-1" onclick="{slideleft}"></div> <div class="photolist-wrapper col-md-10"> <div name="photolist" class="photolist"> <img riot-src="{src}" label="{name}" title="{name}" width="80px" each="{this.parent.symbols[this.opts.id]}"> </div> </div> <div class="right-paddle col-md-1" onclick="{slideright}"></div> </div>', '', '', function(opts) {
+riot.tag2('gallery', '<label class="btn-bs-file btn btn-outline-info">Browse Image files <input type="file" class="filebutton" accept="image/*" onchange="{readImageFiles}" multiple> </label> <div class="input-bar clearfix"> <div class="photolist-wrapper"> <div name="photolist" class="photolist"> <div each="{this.parent.symbols[this.opts.id]}" class="imgbox clearfix"> <div class="delete" onclick="{deleteThumbnail}"></div> <img riot-src="{src}" label="{name}" title="{name}" width="80px"> </div> </div> </div> </div>', 'gallery .delete,[data-is="gallery"] .delete{ background: url("static/img/delete.svg") no-repeat; width:15px; height: 15px; float: left; position: absolute; cursor: pointer; } gallery .imgbox,[data-is="gallery"] .imgbox{ float: left; position: relative; }', '', function(opts) {
         this.readImageFiles = function(e) {
             var input = e.srcElement;
             if (input.files && input.files[0]) {
@@ -45,37 +45,25 @@ riot.tag2('gallery', '<label class="btn-bs-file btn btn-outline-info">Browse Ima
                 }
                 reader.onloadend = e => {
                     this.update();
+                    reader = null;
                 }
                 reader.readAsDataURL(f);
             }
         }.bind(this)
 
-        this.sliding = false;
-        this.sliderMove = "80px";
-        this.slideleft = function(e) {
-            var photolist = $(e.target.nextElementSibling.children[0]);
-            if (this.sliding === false) {
-                this.sliding = true;
-                photolist.css({ left: "-"+this.sliderMove })
-                    .prepend(photolist.children('img:last-child'))
-                    .animate({ left: 0 }, 200, 'linear', () => {
-                        this.sliding = false;
-                    });
+        this.deleteThumbnail = function(e){
+            var thumbnail = $(e.target.nextElementSibling);
+            for(var thumbnail_i in this.parent.symbols[this.opts.id]){
+                if(this.parent.symbols[this.opts.id][thumbnail_i].name === $(thumbnail[0]).attr("title")){
+                    this.parent.symbols[this.opts.id].splice(thumbnail_i,1);
+                    break;
+                }
             }
-        }.bind(this);
-        this.slideright = function(e) {
-            var photolist = $(e.target.previousElementSibling.children[0]);
-            if (this.sliding === false) {
-                this.sliding = true;
-                photolist.animate({ left: "-"+this.sliderMove }, 200, 'linear', () => {
-                    photolist.css({ left: 0 })
-                        .append(photolist.children('img:first-child'));
-                    this.sliding = false;
-                });
-            }
-        }.bind(this);
+
+            this.update();
+        }.bind(this)
 });
-riot.tag2('review', '<div class="input-bar clearfix row"> <div class="left-paddle col-md-1" onclick="{slideleft}"></div> <div class="photolist-wrapper col-md-10"> <div each="{card in cards}" class="cardframe"> <div each="{symbol in card}" class="symbol trans"> <img riot-src="{readSymbol(symbol)}" width="75px" height="75px"> <div class="ui-resizable-handle resizeHandle"></div> </div> </div> </div> <div class="right-paddle col-md-1" onclick="{slideright}"></div> </div>', 'review .cardframe,[data-is="review"] .cardframe{ display: block; background-color: white; float: left; margin: 5px; border-radius: 5px; padding: 5px; position: relative; } review .symbol,[data-is="review"] .symbol{ position: absolute; cursor: move; } review .resizeHandle,[data-is="review"] .resizeHandle{ width: 10px; height: 10px; background-color: #ffffff; border: 1px solid #000000; bottom: 1px; right:1px; } review .ui-rotatable-handle,[data-is="review"] .ui-rotatable-handle{ width: 10px; height: 10px; background-color: green; bottom: 1px; right:1px; border-radius: 5px; cursor: crosshair; }', '', function(opts) {
+riot.tag2('review', '<div class="card-frame-navigators"> <div class="left-paddle " onclick="{slideleft}" style="float:left"></div> <div class="right-paddle " onclick="{slideright}" style="float:right"></div> </div> <div class="input-bar clearfix" style="width:100%"> <div class="photolist-wrapper" style="width:100%"> <div each="{card in cards}" class="cardframe"> <div each="{symbol in card}" class="symbol trans"> <img riot-src="{readSymbol(symbol)}" width="75px" height="75px"> <div class="ui-resizable-handle resizeHandle"></div> </div> </div> </div> </div>', 'review .cardframe,[data-is="review"] .cardframe{ display: block; background-color: white; float: left; margin: 3px; border-radius: 5px; padding: 5px; position: relative; } review .symbol,[data-is="review"] .symbol{ position: absolute; cursor: move; } review .resizeHandle,[data-is="review"] .resizeHandle{ width: 10px; height: 10px; background-color: #ffffff; border: 1px solid #000000; bottom: 1px; right:1px; } review .ui-rotatable-handle,[data-is="review"] .ui-rotatable-handle{ width: 10px; height: 10px; background-color: green; bottom: 1px; right:1px; border-radius: 5px; cursor: crosshair; } review .card-frame-navigators,[data-is="review"] .card-frame-navigators{ display: block; width: 100%; height: 35px; } review .card-frame-navigators div,[data-is="review"] .card-frame-navigators div{ height: 100% }', '', function(opts) {
         var groupIndex = [];
         this.on("mount",() => {
             $(".cardframe").width(this.frame.width);

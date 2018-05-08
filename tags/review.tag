@@ -4,7 +4,7 @@
             display: block;
             background-color: white;
             float: left;
-            margin: 5px;
+            margin: 3px;
             border-radius: 5px;
             padding: 5px;
             position: relative;
@@ -22,8 +22,6 @@
             right:1px;
         }
         .ui-rotatable-handle{
-            /* background: url("https://cdn.jsdelivr.net/jquery.ui.rotatable/1.0.1/rotate.png");
-            background-repeat: no-repeat; */
             width: 10px;
             height: 10px;
             background-color: green;
@@ -32,11 +30,22 @@
             border-radius: 5px;
             cursor: crosshair;
         }
+        .card-frame-navigators{
+            display: block;
+            width: 100%;
+            height: 35px;
+        }
+        .card-frame-navigators div{
+            height: 100%
+        }
     </style>
 
-    <div class="input-bar clearfix row">
-        <div class="left-paddle col-md-1" onclick={ slideleft }></div>
-        <div class="photolist-wrapper col-md-10">
+<div class="card-frame-navigators">
+    <div class="left-paddle " onclick={ slideleft } style="float:left"></div>
+    <div class="right-paddle " onclick ={ slideright }  style="float:right"></div>
+</div>
+    <div class="input-bar clearfix" style="width:100%">
+        <div class="photolist-wrapper" style="width:100%">
             <div each={card in cards} class="cardframe">
                 <div each={ symbol in card} class="symbol trans">
                     <img  src={ readSymbol(symbol) }  width="75px" height="75px"  >
@@ -44,7 +53,6 @@
                 </div>
             </div>
         </div>
-        <div class="right-paddle col-md-1" onclick ={ slideright }></div>
     </div>
     <script>
         var groupIndex = [];

@@ -17,7 +17,7 @@
         this.on("uploadimages",() => {
             if(Object.keys(this.symbols).length === this.opts.count){
                 if(this.opts.count === 1){
-                    if(this.symbols["gallery_0"].length === this.totalSymbols){
+                    if(this.symbols["gallery_0"].length >= this.totalSymbols){
                         this.readyToGenerate = true;
                         this.update();
                     }

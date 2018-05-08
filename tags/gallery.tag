@@ -1,15 +1,30 @@
 <gallery>
+    <style>
+        .delete {
+            background: url("static/img/delete.svg") no-repeat;
+            width:15px;
+            height: 15px;
+            float: left;
+            position: absolute;
+            cursor: pointer;
+        }
+        .imgbox {
+            float: left;
+            position: relative;
+        }
+    </style>
     <label class="btn-bs-file btn btn-outline-info">Browse Image files
         <input type="file" class="filebutton" accept="image/*"  onchange= { readImageFiles }  multiple/>
     </label>
-    <div class="input-bar clearfix row">
-        <div class="left-paddle col-md-1" onclick={ slideleft }></div>
-        <div class="photolist-wrapper col-md-10">
+    <div class="input-bar clearfix">
+        <div class="photolist-wrapper">
             <div name="photolist" class="photolist">
-                <img src={ src } label ={ name } title={ name } width="80px" each={ this.parent.symbols[this.opts.id] }>
+                <div each={ this.parent.symbols[this.opts.id] } class="imgbox clearfix">
+                    <div class="delete" onclick={ deleteThumbnail }></div>
+                    <img src={ src } label ={ name } title={ name } width="80px" >
+                </div>
             </div>
         </div>
-        <div class="right-paddle col-md-1" onclick ={ slideright }></div>
     </div>
     <script>
         readImageFiles(e) {
@@ -36,34 +51,22 @@
                 }
                 reader.onloadend = e => {
                     this.update();
+                    reader = null;
                 }
                 reader.readAsDataURL(f);
             }
         }
 
-        this.sliding = false;
-        this.sliderMove = "80px";
-        slideleft(e) {
-            var photolist = $(e.target.nextElementSibling.children[0]);
-            if (this.sliding === false) {
-                this.sliding = true;
-                photolist.css({ left: "-"+this.sliderMove })
-                    .prepend(photolist.children('img:last-child'))
-                    .animate({ left: 0 }, 200, 'linear', () => {
-                        this.sliding = false;
-                    });
+        deleteThumbnail(e){
+            var thumbnail = $(e.target.nextElementSibling);
+            for(var thumbnail_i in this.parent.symbols[this.opts.id]){
+                if(this.parent.symbols[this.opts.id][thumbnail_i].name === $(thumbnail[0]).attr("title")){
+                    this.parent.symbols[this.opts.id].splice(thumbnail_i,1);
+                    break;
+                }
             }
-        };
-        slideright(e) {
-            var photolist = $(e.target.previousElementSibling.children[0]);
-            if (this.sliding === false) {
-                this.sliding = true;
-                photolist.animate({ left: "-"+this.sliderMove }, 200, 'linear', () => {
-                    photolist.css({ left: 0 })
-                        .append(photolist.children('img:first-child'));
-                    this.sliding = false;
-                });
-            }
-        };
+            //$(thumbnail[0]).parent().remove();
+            this.update();
+        }
     </script>
 </gallery>
