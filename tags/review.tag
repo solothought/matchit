@@ -65,6 +65,11 @@
                 /* containment:  */
             });
             $('.symbol').draggable().rotatable();
+
+            $(".cardframe").each( function(i) {
+                setRandomPos($(this).children());
+            })
+            
         })
         this.frame = {
             width : $( "#demo-card" ).width(),
@@ -111,5 +116,7 @@
                 });
             }
         };
+
+        //setRandomPos($(".boxes"),40,40);
     </script>
 </review>

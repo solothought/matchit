@@ -73,6 +73,11 @@ riot.tag2('review', '<div class="card-frame-navigators"> <div class="left-paddle
 
             });
             $('.symbol').draggable().rotatable();
+
+            $(".cardframe").each( function(i) {
+                setRandomPos($(this).children());
+            })
+
         })
         this.frame = {
             width : $( "#demo-card" ).width(),
@@ -118,4 +123,5 @@ riot.tag2('review', '<div class="card-frame-navigators"> <div class="left-paddle
                 });
             }
         }.bind(this);
+
 });

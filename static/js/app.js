@@ -61,7 +61,6 @@ var minSymbolSize = {
     h : 75
 }
 function checkSymbolCount(){
-    console.log("hi");
     var w = $( "#slider-horizontal" ).slider("value");
     var h = 450 - $("#slider-vertical" ).slider("value");
 
@@ -77,3 +76,63 @@ function updateDemoCard(size){
     $( "#demo-card" ).height(size.h);
     $( "#demo-card" ).width(size.w);
 }
+
+
+
+        function setRandomPos(elements){
+            var boxDims = new Array();
+            elements.each(function(){
+                var conflict = true;
+                
+                for (var maxcounter =  0; maxcounter < 15 && conflict; maxcounter++) {
+                    fixLeft = Math.round(Math.random()*($(this).parent().width() - $(this).width() ));
+                    fixTop = Math.round(Math.random()*($(this).parent().height() - $(this).height() ));
+                    $(this).css({
+                        left: fixLeft,
+                        top: fixTop
+                    });
+
+                    //if(outOfParent($(this)) ) continue;
+
+                    var box = {
+                        top: parseInt($(this).position().top),
+                        left: parseInt($(this).position().left),
+                        width: parseInt($(this).width()),
+                        height: parseInt($(this).height())
+                    }
+                    conflict = false;
+                    for (var i=0;i<boxDims.length;i++) {
+                        if (rectOverlap(box,boxDims[i])) {
+                            conflict = true;
+                            break;
+                        } else {
+                            conflict = false;
+                        }                   
+                    }
+                }
+                boxDims.push(box)
+
+            });
+        }
+
+        /* function outOfParent(element){
+            if ( ( element.position().left + element.width() ) > element.parent().width()
+                || ( element.position().top + element.height() ) > element.parent().height() )
+                return true;
+            else    
+                return false;
+        } */
+
+        function valueInRange(value, min, max){
+             return (value >= min) && (value <= max); 
+        }
+
+        function rectOverlap(A, B){
+            var xOverlap = valueInRange(A.left, B.left, B.left + B.width) ||
+                            valueInRange(B.left, A.left, A.left + A.width);
+
+            var yOverlap = valueInRange(A.top, B.top, B.top + B.height) ||
+                            valueInRange(B.top, A.top, A.top + A.height);
+
+            return xOverlap && yOverlap;
+        }
