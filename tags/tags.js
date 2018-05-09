@@ -1,4 +1,4 @@
-riot.tag2('galleries', '<p if="{this.opts.count == 1}">Upload {totalSymbols} images</p> <gallery each="{n,i in this.repeat}" id="gallery_{i}"></gallery> <div class="row"> <div class="col-lg-12 text-center"> <button class="btn btn-theme" id="generate" onclick="{generate}" disabled="{!readyToGenerate}">Generate</button> </div> </div>', '', '', function(opts) {
+riot.tag2('galleries', '<p if="{this.opts.count == 1}">Upload {totalSymbols} images</p> <gallery each="{n,i in this.repeat}" id="gallery_{i}"></gallery> <div class="row"> <div class="col-lg-12 text-center"> <a class="btn btn-theme" id="generate" onclick="{generate}" disabled="{!readyToGenerate}">Generate</a> </div> </div>', '', '', function(opts) {
         this.readyToGenerate = false;
         this.repeat = new Array(this.opts.count);
         this.totalSymbols = totalCombinations($( "#symbolscount" ).val());
