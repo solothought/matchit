@@ -17,6 +17,23 @@ var cards = {
     }
 };
 
+/*
+
+Poker size (63mm x 88mm, 2.5" x 3.5")
+Bridge size (56mm x 88mm, 2.25" x 3.5")
+Large size cards (89mm x 146mm, 3.5" x 5.75")
+Tarot size cards (70mm x 121mm, 2.75" x 4.75")
+Mini size cards (44.45mm x 63.5mm, 1.75" x 2.5")
+Micro size cards (32mm x 45mm, 1.25" x 1.75")
+Domino size cards (44mm x 89mm, 1.75" x 3.5")
+Business size cards (50mm x 89mm, 2" x 3.5")
+Small square size cards (50mm x 50mm, 2" x 2")
+Square size cards (89mm x 89mm, 3.5" x 3.5")
+Circle size cards (89mm x 89mm, 3.5" x 3.5")
+Hex size cards (89mm x 89mm, 3.5" x 3.5")
+Trump size cards (62mm x 100mm, 2.45" x 3.95")
+*/
+
 function updateSlider(size){
     $( "#slider-vertical-val" ).text((size.h)/100 + '"' );
     $( "#slider-horizontal-val" ).text(size.w/100 + '"' );
