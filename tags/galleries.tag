@@ -3,7 +3,7 @@
     <gallery each={n,i in this.repeat } id="gallery_{i}"></gallery>
     <div class="row">
         <div class="col-lg-12 text-center">
-            <button id="generate" onclick={ generate } disabled={ !readyToGenerate }>Generate</button>
+            <button class="btn btn-theme" id="generate" onclick={ generate } disabled={ !readyToGenerate }>Generate</button>
         </div>
     </div>
     <script>

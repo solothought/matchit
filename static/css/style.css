@@ -41,3 +41,8 @@
 .intro{
     height: 100vh;
 }
+.btn-theme{
+    background-color: #18BC9C;
+    color: white;
+    width: 200px;
+}
