@@ -17,7 +17,7 @@
         <input type="file" class="filebutton" accept="image/*"  onchange= { readImageFiles }  multiple/>
     </label>
     <div class="input-bar clearfix">
-        <div class="photolist-wrapper">
+        <div class="photolist-wrapper masorny">
             <div name="photolist" class="photolist">
                 <div each={ this.parent.symbols[this.opts.id] } class="imgbox clearfix">
                     <div class="delete" onclick={ deleteThumbnail }></div>

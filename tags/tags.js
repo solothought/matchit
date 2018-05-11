@@ -20,7 +20,7 @@ riot.tag2('galleries', '<p if="{this.opts.count == 1}">Upload {totalSymbols} ima
             }
         });
 });
-riot.tag2('gallery', '<label class="btn-bs-file btn btn-outline-info">Browse Image files <input type="file" class="filebutton" accept="image/*" onchange="{readImageFiles}" multiple> </label> <div class="input-bar clearfix"> <div class="photolist-wrapper"> <div name="photolist" class="photolist"> <div each="{this.parent.symbols[this.opts.id]}" class="imgbox clearfix"> <div class="delete" onclick="{deleteThumbnail}"></div> <img riot-src="{src}" label="{name}" title="{name}" width="80px"> </div> </div> </div> </div>', 'gallery .delete,[data-is="gallery"] .delete{ background: url("static/img/delete.svg") no-repeat; width:15px; height: 15px; float: left; position: absolute; cursor: pointer; } gallery .imgbox,[data-is="gallery"] .imgbox{ float: left; position: relative; }', '', function(opts) {
+riot.tag2('gallery', '<label class="btn-bs-file btn btn-outline-info">Browse Image files <input type="file" class="filebutton" accept="image/*" onchange="{readImageFiles}" multiple> </label> <div class="input-bar clearfix"> <div class="photolist-wrapper masorny"> <div name="photolist" class="photolist"> <div each="{this.parent.symbols[this.opts.id]}" class="imgbox clearfix"> <div class="delete" onclick="{deleteThumbnail}"></div> <img riot-src="{src}" label="{name}" title="{name}" width="80px"> </div> </div> </div> </div>', 'gallery .delete,[data-is="gallery"] .delete{ background: url("static/img/delete.svg") no-repeat; width:15px; height: 15px; float: left; position: absolute; cursor: pointer; } gallery .imgbox,[data-is="gallery"] .imgbox{ float: left; position: relative; }', '', function(opts) {
         this.readImageFiles = function(e) {
             var input = e.srcElement;
             if (input.files && input.files[0]) {
@@ -131,6 +131,42 @@ riot.tag2('review', '<div class="card-frame-navigators"> <div class="left-paddle
             }
         }.bind(this);
         this.collectDisplayDetail = function(e){
+            $(".cardframe").each(function(fi){
+                var card = {
+                    weight: 0,
+                    symbols: []
+                };
+                $(this).find(".symbol").each( function(si){
+                    var thumbnail = $(this).find("img")[0];
+                    var height = $(thumbnail).height();
+                    var width = $(thumbnail).width();
+                    var weight = 0;
+                    if(height > width){
+                        if( height >= width * 1.5){
+                            weight = 2;
+                        }else{
+                            weight = 1;
+                        }
+                    }else{
+                        if( width >= height * 1.5){
+                            weight = 2;
+                        }else{
+                            weight = 1;
+                        }
+                    }
 
+                    card.symbols.push({
+                        top: $(this).position().top,
+                        left: $(this).position().left,
+                        height: height,
+                        width: width,
+                        transform: $(this).css("transform"),
+                        weight: weight
+                    });
+
+                    card.weight += weight;
+                })
+                console.log(card);
+            })
         }.bind(this)
 });
