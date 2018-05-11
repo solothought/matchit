@@ -1,4 +1,4 @@
-riot.tag2('galleries', '<p if="{this.opts.count == 1}">Upload {totalSymbols} images</p> <gallery each="{n,i in this.repeat}" id="gallery_{i}"></gallery> <div class="row"> <div class="col-lg-12 text-center"> <a class="btn btn-theme" id="generate" onclick="{generate}" disabled="{!readyToGenerate}">Generate</a> </div> </div>', '', '', function(opts) {
+riot.tag2('galleries', '<p if="{this.opts.count == 1}">Upload {totalSymbols} images</p> <gallery each="{n,i in this.repeat}" id="gallery_{i}"></gallery> <div class="row"> <div class="col-lg-12 text-center"> <a class="btn btn-lg btn-theme" id="generate" onclick="{generate}" disabled="{!readyToGenerate}">Generate</a> </div> </div>', '', '', function(opts) {
         this.readyToGenerate = false;
         this.repeat = new Array(this.opts.count);
         this.totalSymbols = totalCombinations($( "#symbolscount" ).val());
@@ -63,7 +63,7 @@ riot.tag2('gallery', '<label class="btn-bs-file btn btn-outline-info">Browse Ima
             this.update();
         }.bind(this)
 });
-riot.tag2('review', '<div class="card-frame-navigators"> <div class="left-paddle " onclick="{slideleft}" style="float:left"></div> <div class="right-paddle " onclick="{slideright}" style="float:right"></div> </div> <div class="input-bar clearfix" style="width:100%"> <div class="photolist-wrapper" style="width:100%"> <div each="{card in cards}" class="cardframe"> <div each="{symbol in card}" class="symbol trans"> <img riot-src="{readSymbol(symbol)}" width="75px" height="75px"> <div class="ui-resizable-handle resizeHandle"></div> </div> </div> </div> </div>', 'review .cardframe,[data-is="review"] .cardframe{ display: block; background-color: white; float: left; margin: 3px; border-radius: 5px; padding: 5px; position: relative; } review .symbol,[data-is="review"] .symbol{ position: absolute; cursor: move; } review .resizeHandle,[data-is="review"] .resizeHandle{ width: 10px; height: 10px; background-color: #ffffff; border: 1px solid #000000; bottom: 1px; right:1px; display: none; } review .ui-rotatable-handle,[data-is="review"] .ui-rotatable-handle{ width: 10px; height: 10px; background-color: green; bottom: 1px; right:1px; border-radius: 5px; cursor: crosshair; display: none; } review .card-frame-navigators,[data-is="review"] .card-frame-navigators{ display: block; width: 100%; height: 35px; } review .card-frame-navigators div,[data-is="review"] .card-frame-navigators div{ height: 100% }', '', function(opts) {
+riot.tag2('review', '<div class="card-frame-navigators"> <div class="left-paddle " onclick="{slideleft}" style="float:left"></div> <div class="right-paddle " onclick="{slideright}" style="float:right"></div> </div> <div class="input-bar clearfix" style="width:100%"> <div class="photolist-wrapper" style="width:100%"> <div each="{card in cards}" class="cardframe"> <div each="{symbol in card}" class="symbol trans"> <img riot-src="{readSymbol(symbol)}" width="75px" height="75px"> <div class="ui-resizable-handle resizeHandle"></div> </div> </div> </div> </div> <div> <button onclick="{collectDisplayDetail}">Collect</button> </div>', 'review .cardframe,[data-is="review"] .cardframe{ display: block; background-color: white; float: left; margin: 3px; border-radius: 5px; padding: 5px; position: relative; } review .symbol,[data-is="review"] .symbol{ position: absolute; cursor: move; } review .resizeHandle,[data-is="review"] .resizeHandle{ width: 10px; height: 10px; background-color: #ffffff; border: 1px solid #000000; bottom: 1px; right:1px; display: none; } review .ui-rotatable-handle,[data-is="review"] .ui-rotatable-handle{ width: 10px; height: 10px; background-color: green; bottom: 1px; right:1px; border-radius: 5px; cursor: crosshair; display: none; } review .card-frame-navigators,[data-is="review"] .card-frame-navigators{ display: block; width: 100%; height: 35px; } review .card-frame-navigators div,[data-is="review"] .card-frame-navigators div{ height: 100% }', '', function(opts) {
         var groupIndex = [];
         this.on("mount",() => {
             $(".cardframe").width(this.frame.width);
@@ -130,5 +130,7 @@ riot.tag2('review', '<div class="card-frame-navigators"> <div class="left-paddle
                 });
             }
         }.bind(this);
+        this.collectDisplayDetail = function(e){
 
+        }.bind(this)
 });
