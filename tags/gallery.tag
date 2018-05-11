@@ -21,7 +21,7 @@
             <div name="photolist" class="photolist">
                 <div each={ this.parent.symbols[this.opts.id] } class="imgbox clearfix">
                     <div class="delete" onclick={ deleteThumbnail }></div>
-                    <img src={ src } label ={ name } title={ name } width="80px" >
+                    <img src={ src } label ={ name } title={ name } class="thumbnail" >
                 </div>
             </div>
         </div>
