@@ -107,7 +107,7 @@
                         </select>
                         <div class="empty"></div>
                         <div>Choose background color</div>
-                        <input type="color" id="html5colorpicker" onchange="clickColor(0, -1, -1, 5)" value="#ffffff" style="width:100%;">
+                        <input type="color" id="colorpicker" onchange="clickColor(0, -1, -1, 5)" value="#ffffff" style="width:100%;">
 
                         <div class="empty"></div>
                         <div class="form-check">
@@ -262,6 +262,10 @@
             $( "#symbolscount" ).val("3")
 
 
+            $( "#colorpicker" ).change( function(){
+
+                $("#demo-card").css("background-color", $(this).val());
+            });
             $( "#cardsize" ).change( function(){
                 updateSlider(cards[$( "#cardsize" ).val()]);
                 updateDemoCard(cards[$( "#cardsize" ).val()]);
