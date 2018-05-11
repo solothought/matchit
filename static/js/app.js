@@ -95,6 +95,7 @@ function updateDemoCard(size){
 }
 
 
+function randInRange(min,max) {return Math.floor(Math.random()*(max-min)) + min}
 
 function setRandomPos(elements){
     var boxDims = new Array();

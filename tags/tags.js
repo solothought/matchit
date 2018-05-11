@@ -63,7 +63,7 @@ riot.tag2('gallery', '<label class="btn-bs-file btn btn-outline-info">Browse Ima
             this.update();
         }.bind(this)
 });
-riot.tag2('review', '<div class="card-frame-navigators"> <div class="left-paddle " onclick="{slideleft}" style="float:left"></div> <div class="right-paddle " onclick="{slideright}" style="float:right"></div> </div> <div class="input-bar clearfix" style="width:100%"> <div class="photolist-wrapper" style="width:100%"> <div each="{card in cards}" class="cardframe" riot-style="background-color: {frame.bgColor}"> <div each="{symbol in card}" class="symbol trans"> <img riot-src="{readSymbol(symbol)}" width="75px" height="75px"> <div class="ui-resizable-handle resizeHandle"></div> </div> </div> </div> </div> <div> <button onclick="{collectDisplayDetail}">Collect</button> </div>', 'review .cardframe,[data-is="review"] .cardframe{ display: block; background-color: white; float: left; margin: 3px; border-radius: 5px; padding: 5px; position: relative; } review .symbol,[data-is="review"] .symbol{ position: absolute; cursor: move; } review .resizeHandle,[data-is="review"] .resizeHandle{ width: 10px; height: 10px; background-color: #ffffff; border: 1px solid #000000; bottom: 1px; right:1px; display: none; } review .ui-rotatable-handle,[data-is="review"] .ui-rotatable-handle{ width: 10px; height: 10px; background-color: green; bottom: 1px; right:1px; border-radius: 5px; cursor: crosshair; display: none; } review .card-frame-navigators,[data-is="review"] .card-frame-navigators{ display: block; width: 100%; height: 35px; } review .card-frame-navigators div,[data-is="review"] .card-frame-navigators div{ height: 100% }', '', function(opts) {
+riot.tag2('review', '<div class="card-frame-navigators"> <div class="left-paddle " onclick="{slideleft}" style="float:left"></div> <div class="right-paddle " onclick="{slideright}" style="float:right"></div> </div> <div class="input-bar clearfix" style="width:100%"> <div class="photolist-wrapper" style="width:100%"> <div each="{card in cards}" class="cardframe" riot-style="background-color: {frame.bgColor}"> <div each="{symbol in card}" class="symbol trans" riot-style="transform: rotate({this.transformRotate()}deg);"> <img riot-src="{readSymbol(symbol)}" width="75px" height="75px"> <div class="ui-resizable-handle resizeHandle"></div> </div> </div> </div> </div> <div> <button onclick="{collectDisplayDetail}">Collect</button> </div>', 'review .cardframe,[data-is="review"] .cardframe{ display: block; background-color: white; float: left; margin: 3px; border-radius: 5px; padding: 5px; position: relative; } review .symbol,[data-is="review"] .symbol{ position: absolute; cursor: move; } review .resizeHandle,[data-is="review"] .resizeHandle{ width: 10px; height: 10px; background-color: #ffffff; border: 1px solid #000000; bottom: 1px; right:1px; display: none; } review .ui-rotatable-handle,[data-is="review"] .ui-rotatable-handle{ width: 10px; height: 10px; background-color: green; bottom: 1px; right:1px; border-radius: 5px; cursor: crosshair; display: none; } review .card-frame-navigators,[data-is="review"] .card-frame-navigators{ display: block; width: 100%; height: 35px; } review .card-frame-navigators div,[data-is="review"] .card-frame-navigators div{ height: 100% }', '', function(opts) {
         var groupIndex = [];
         this.on("mount",() => {
             $(".cardframe").width(this.frame.width);
@@ -86,6 +86,7 @@ riot.tag2('review', '<div class="card-frame-navigators"> <div class="left-paddle
                 $(this).find(".resizeHandle, .ui-rotatable-handle").hide();
             });
         })
+
         this.frame = {
             width : $( "#demo-card" ).width(),
             height : $( "#demo-card" ).height(),
@@ -93,7 +94,14 @@ riot.tag2('review', '<div class="card-frame-navigators"> <div class="left-paddle
             bgColor: $( "#demo-card" ).css("background-color"),
             rotateEnable: $( "#rotate" ).prop("checked"),
             resizeEnable: $( "#resize" ).prop("checked"),
+
         }
+
+        this.transformRotate = function(){
+            if(this.frame.rotateEnable){
+                return randInRange(0,360);
+            }
+        }.bind(this)
 
         this.totalSymbols = totalCombinations($( "#symbolscount" ).val());
         this.cards = createBlocks($( "#symbolscount" ).val());

@@ -49,7 +49,7 @@
     <div class="input-bar clearfix" style="width:100%">
         <div class="photolist-wrapper" style="width:100%">
             <div each={card in cards} class="cardframe" style="background-color: { frame.bgColor }">
-                <div each={ symbol in card} class="symbol trans">
+                <div each={ symbol in card} class="symbol trans" style="transform: rotate({ this.transformRotate() }deg);">
                     <img  src={ readSymbol(symbol) }  width="75px" height="75px"  >
                     <div class="ui-resizable-handle resizeHandle"></div>
                 </div>
@@ -83,6 +83,8 @@
                 $(this).find(".resizeHandle, .ui-rotatable-handle").hide();
             });
         })
+
+
         this.frame = {
             width : $( "#demo-card" ).width(),
             height : $( "#demo-card" ).height(),
@@ -90,7 +92,18 @@
             bgColor: $( "#demo-card" ).css("background-color"),
             rotateEnable: $( "#rotate" ).prop("checked"),
             resizeEnable: $( "#resize" ).prop("checked"),
+            /* symbol: {
+                width:,
+                height:
+            } */
         }
+
+        transformRotate(){
+            if(this.frame.rotateEnable){
+                return randInRange(0,360);
+            }
+        }
+        
 
         this.totalSymbols = totalCombinations($( "#symbolscount" ).val());
         this.cards = createBlocks($( "#symbolscount" ).val());
