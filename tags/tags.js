@@ -88,12 +88,15 @@ riot.tag2('review', '<div class="card-frame-navigators"> <div class="left-paddle
         })
         this.frame = {
             width : $( "#demo-card" ).width(),
-            height : $( "#demo-card" ).height()
+            height : $( "#demo-card" ).height(),
+            symbolsPerCard: $( "#symbolscount" ).val(),
+            bgColor: $( "#demo-card" ).css("background-color"),
+            rotateEnable: $( "#rotate" ).prop("checked"),
+            resizeEnable: $( "#resize" ).prop("checked"),
         }
 
-        var totalSymbols = totalCombinations($( "#symbolscount" ).val());
+        this.totalSymbols = totalCombinations($( "#symbolscount" ).val());
         this.cards = createBlocks($( "#symbolscount" ).val());
-        console.log(this.cards);
 
         this.readSymbol = function(n){
             if( Object.keys(this.opts.symbols).length === 1){
@@ -131,6 +134,10 @@ riot.tag2('review', '<div class="card-frame-navigators"> <div class="left-paddle
             }
         }.bind(this);
         this.collectDisplayDetail = function(e){
+            var deck = {
+                frame : this.frame,
+                cards: []
+            };
             $(".cardframe").each(function(fi){
                 var card = {
                     weight: 0,
@@ -165,8 +172,10 @@ riot.tag2('review', '<div class="card-frame-navigators"> <div class="left-paddle
                     });
 
                     card.weight += weight;
+
+                    deck.cards.push(card);
                 })
-                console.log(card);
             })
+            download(JSON.stringify(deck), deck.frame.symbolsPerCard+"-symbols-positions.json" ,"application/json");
         }.bind(this)
 });

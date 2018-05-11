@@ -56,6 +56,9 @@
             </div>
         </div>
     </div>
+    <div>
+        <button onclick={ collectDisplayDetail } >Collect</button>
+    </div>
     <script>
         var groupIndex = [];
         this.on("mount",() => {
@@ -82,12 +85,15 @@
         })
         this.frame = {
             width : $( "#demo-card" ).width(),
-            height : $( "#demo-card" ).height()
+            height : $( "#demo-card" ).height(),
+            symbolsPerCard: $( "#symbolscount" ).val(),
+            bgColor: $( "#demo-card" ).css("background-color"),
+            rotateEnable: $( "#rotate" ).prop("checked"),
+            resizeEnable: $( "#resize" ).prop("checked"),
         }
 
-        var totalSymbols = totalCombinations($( "#symbolscount" ).val());
+        this.totalSymbols = totalCombinations($( "#symbolscount" ).val());
         this.cards = createBlocks($( "#symbolscount" ).val());
-        console.log(this.cards);
 
         readSymbol(n){
             if( Object.keys(this.opts.symbols).length === 1){
@@ -125,7 +131,50 @@
                 });
             }
         };
+        collectDisplayDetail(e){
+            var deck = {
+                frame : this.frame,
+                cards: []
+            };
+            $(".cardframe").each(function(fi){
+                var card = {
+                    weight: 0,
+                    symbols: []
+                };
+                $(this).find(".symbol").each( function(si){
+                    var thumbnail = $(this).find("img")[0];
+                    var height = $(thumbnail).height();
+                    var width = $(thumbnail).width();
+                    var weight = 0;
+                    if(height > width){
+                        if( height >= width * 1.5){
+                            weight = 2;
+                        }else{
+                            weight = 1;
+                        }
+                    }else{
+                        if( width >= height * 1.5){
+                            weight = 2;
+                        }else{
+                            weight = 1;
+                        }
+                    }
 
-        //setRandomPos($(".boxes"),40,40);
+                    card.symbols.push({
+                        top: $(this).position().top,
+                        left: $(this).position().left,
+                        height: height,
+                        width: width,
+                        transform: $(this).css("transform"),
+                        weight: weight
+                    });
+
+                    card.weight += weight;
+
+                    deck.cards.push(card);
+                })
+            })
+            download(JSON.stringify(deck), deck.frame.symbolsPerCard+"-symbols-positions.json" ,"application/json");
+        }
     </script>
 </review>
