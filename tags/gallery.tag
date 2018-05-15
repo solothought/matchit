@@ -46,6 +46,7 @@
                         name : f.name,
                         src: e.target.result
                     };
+                    this.updateDimentions(e.target.result,imgData);
                     data.push(imgData);
                     this.parent.trigger("uploadimages");
                 }
@@ -55,6 +56,17 @@
                 }
                 reader.readAsDataURL(f);
             }
+        }
+
+        updateDimentions(imgFileSrc, imageDataObject){
+            var img = new Image();
+            img.onload = function() {
+                imageDataObject.size = {
+                    width : this.width,
+                    height : this.height
+                }
+            };
+            img.src = imgFileSrc;
         }
 
         deleteThumbnail(e){

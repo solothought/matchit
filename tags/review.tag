@@ -32,35 +32,21 @@
             cursor: crosshair;
             display: none;
         }
-        .card-frame-navigators{
-            display: block;
-            width: 100%;
-            height: 35px;
-        }
-        .card-frame-navigators div{
-            height: 100%
-        }
     </style>
 
-<div class="card-frame-navigators">
-    <div class="left-paddle " onclick={ slideleft } style="float:left"></div>
-    <div class="right-paddle " onclick ={ slideright }  style="float:right"></div>
-</div>
+    <decktemplate></decktemplate>
     <div class="input-bar clearfix" style="width:100%">
         <div class="photolist-wrapper" style="width:100%">
             <div each={card in cards} class="cardframe" style="background-color: { frame.bgColor }">
-                <div each={ symbol in card} class="symbol trans" style="transform: rotate({ this.transformRotate() }deg);">
-                    <img  src={ readSymbol(symbol) }  width="75px" height="75px"  >
+                <div each={ symbol in card} class="symbol trans" style="transform: rotate({ this.transformRotate() }deg);" >
+                    <img  src={ readSymbol(symbol,true).src }  style={ this.transformSize( readSymbol(symbol).size) } weight={ calculateWeight( readSymbol(symbol).size ) } >
                     <div class="ui-resizable-handle resizeHandle"></div>
                 </div>
             </div>
         </div>
     </div>
-    <div>
-        <button onclick={ collectDisplayDetail } >Collect</button>
-    </div>
     <script>
-        var groupIndex = [];
+        this.templates = [];
         this.on("mount",() => {
             $(".cardframe").width(this.frame.width);
             $(".cardframe").height(this.frame.height);
@@ -92,102 +78,116 @@
             bgColor: $( "#demo-card" ).css("background-color"),
             rotateEnable: $( "#rotate" ).prop("checked"),
             resizeEnable: $( "#resize" ).prop("checked"),
+            maintainratio: $( "#maintainratio" ).prop("checked"),
             /* symbol: {
                 width:,
                 height:
             } */
         }
 
+        this.frame.desiredSymbolSize = Math.floor ( ( (this.frame.width * this.frame.height) / this.frame.symbolsPerCard ) * 0.9 );
+
         transformRotate(){
             if(this.frame.rotateEnable){
                 return randInRange(0,360);
             }
         }
-        
 
+        transformSize(originalSize){
+            var ratio = 1;
+            var w,h;
+            var minW,maxW;
+            if(this.frame.maintainratio /* && originalSize.width < originalSize.height */){//set only width
+                ratio = originalSize.height / originalSize.width;
+                w = Math.floor ( Math.sqrt( this.frame.desiredSymbolSize / ratio ) ) * 0.6;
+                w = w < 75 ? 75 : w;
+            }else{
+                w = Math.floor ( Math.sqrt( this.frame.desiredSymbolSize)) * 0.6;
+                w = w < 75 ? 75 : w;
+                h = w;
+            }
+
+            if(this.frame.resizeEnable){
+                w = randInRange(65,w * 1.5);
+            }
+            if(h){
+                return `width: ${w}px; height: ${h}px`
+            }else{
+                h = w * ratio;
+                return `width: ${w}px; height: ${h}px`
+            }
+        }
+        
+        calculateWeight(size){
+            if(size.height > size.width){
+                if( size.height >= size.width * 1.5){
+                    return 2;
+                }else{
+                    return 1;
+                }
+            }else{
+                if( size.width >= size.height * 1.5){
+                    return 2;
+                }else{
+                    return 1;
+                }
+            }
+        }
         this.totalSymbols = totalCombinations($( "#symbolscount" ).val());
         this.cards = createBlocks($( "#symbolscount" ).val());
 
-        readSymbol(n){
+        var groupIndex = [];
+        /*
+        Read an image from given group number(next everytime). If there is only one group then n is image number from that group.
+        */
+        readSymbol(n,readNext){
             if( Object.keys(this.opts.symbols).length === 1){
-                return this.opts.symbols["gallery_0"][ n % this.opts.symbols["gallery_0"].length].src;
+                return this.opts.symbols["gallery_0"][ n % this.opts.symbols["gallery_0"].length];
             }else{
                 if(!groupIndex[n]) groupIndex[n] = 0;
-                var index = groupIndex[n] % this.opts.symbols["gallery_"+n].length;
-                groupIndex[n] = index +1;
-                return this.opts.symbols["gallery_"+n][ index ].src;
+                var index = 0;
+                if(readNext){
+                    index = groupIndex[n] % this.opts.symbols["gallery_"+n].length;
+                    groupIndex[n] = index +1;
+                }else{
+                    index = groupIndex[n]
+                }
+                return this.opts.symbols["gallery_"+n][ index ];
             }
         }
-        
 
-        this.sliding = false;
-        this.sliderMove = this.frame.width + "px";
-        slideleft(e) {
-            var photolist = $(e.target.nextElementSibling.children[0]);
-            if (this.sliding === false) {
-                this.sliding = true;
-                photolist.css({ left: "-"+this.sliderMove })
-                    .prepend(photolist.children('img:last-child'))
-                    .animate({ left: 0 }, 200, 'linear', () => {
-                        this.sliding = false;
-                    });
-            }
-        };
-        slideright(e) {
-            var photolist = $(e.target.previousElementSibling.children[0]);
-            if (this.sliding === false) {
-                this.sliding = true;
-                photolist.animate({ left: "-"+this.sliderMove }, 200, 'linear', () => {
-                    photolist.css({ left: 0 })
-                        .append(photolist.children('img:first-child'));
-                    this.sliding = false;
-                });
-            }
-        };
-        collectDisplayDetail(e){
-            var deck = {
-                frame : this.frame,
-                cards: []
-            };
-            $(".cardframe").each(function(fi){
-                var card = {
-                    weight: 0,
-                    symbols: []
-                };
-                $(this).find(".symbol").each( function(si){
-                    var thumbnail = $(this).find("img")[0];
-                    var height = $(thumbnail).height();
-                    var width = $(thumbnail).width();
-                    var weight = 0;
-                    if(height > width){
-                        if( height >= width * 1.5){
-                            weight = 2;
-                        }else{
-                            weight = 1;
-                        }
-                    }else{
-                        if( width >= height * 1.5){
-                            weight = 2;
-                        }else{
-                            weight = 1;
-                        }
-                    }
-
-                    card.symbols.push({
-                        top: $(this).position().top,
-                        left: $(this).position().left,
-                        height: height,
-                        width: width,
-                        transform: $(this).css("transform"),
-                        weight: weight
-                    });
-
-                    card.weight += weight;
-
-                    deck.cards.push(card);
+        applyTemplate(templateData){
+            $(".cardframe").each( (card_i, card) => {
+                var totalWeight = this.calculateTotalWeight(card);
+                var weightSets = templateData.cards[totalWeight];
+                var randomIndex = randInRange(0,weightSets.length -1);
+                var symbols = $(card).find(".symbol");
+                weightSets[randomIndex].forEach( (symbol,i) => {
+                    //TODO: check if img weight is matching with current weight
+                    $(symbols[i]).css({
+                        top: symbol.top,
+                        left: symbol.left,
+                        transform: symbol.transform,
+                    })
+                    $(symbols[i]).height(symbol.height);
+                    $(symbols[i]).width(symbol.width);
                 })
-            })
-            download(JSON.stringify(deck), deck.frame.symbolsPerCard+"-symbols-positions.json" ,"application/json");
+            });
         }
+
+        calculateTotalWeight(el){
+            var totalWeight = $(el).attr("totalweight");
+            if( ! totalWeight ){
+                totalWeight = 0;
+                $(el).find(".symbol img").each( (i,img) => {
+                    totalWeight += Number.parseInt($(img).attr("weight"));
+                });
+                $(el).attr("totalweight", totalWeight);
+                return totalWeight;
+            }else{
+                return totalWeight;
+            }
+        }
+
     </script>
 </review>

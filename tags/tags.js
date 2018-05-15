@@ -1,3 +1,74 @@
+riot.tag2('decktemplate', '<div class="row"> <div class="col-2"></div> <div class="col-2"> <select id="templateselect" class="form-control" onchange="{loadtemplate}"> <option disabled="true">Select template</option> <option value="normal" selected>3-250x350-match-it</option> <option value="pocker">Pocker Playing Card</option> <option value="domino">Domino Card</option> <option value="square">Square Card</option> </select> </div> <div class="col-2"> <label class="btn-bs-file btn btn-theme">Browse Template file <input type="file" class="filebutton" accept="application/vnd.nimn,*.nmn,*.nimn" onchange="{readTemplateFile}"> </label> </div> <div class="col-2"> <input id="exportTemplateName" type="text" class="form-control" placeholder="Enter the template name " riot-value="{exportTemplateName}"> </div> <div class="col-2"> <button class="btn btn-lg btn-theme" onclick="{exportTemplate}">Export Template</button> </div> <div class="col-2"></div> </div> <div class="row warnmessage"> <div class="col-12">This template might not be suitable for selected card size.</div> </div>', '', '', function(opts) {
+
+        this.loadtemplate = function(e){
+
+            var templateName = e.target.value + ".nimn";
+            $.ajax({
+                url: "./templates/"+templateName,
+                type: "GET",
+                dataType: "json",
+                contentType: "application/vnd.nimn; charset=utf-8",
+                success: data => {
+                    var templateData = JSON.parse(data);
+
+                    this.parent.applyTemplate(templateData);
+                }
+            });
+        }.bind(this)
+        this.exportTemplateName = `${this.parent.frame.symbolsPerCard}-${this.parent.frame.width}x${this.parent.frame.height}-match-it.nimn`;
+        this.readTemplateFile = function(f){
+
+            var input = f.srcElement;
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = e => {
+                    this.parent.applyTemplate(JSON.parse(e.target.result));
+                }
+                reader.onloadend = e => {
+                    this.update();
+                    reader = null;
+                }
+                reader.readAsText(input.files[0]);
+            }
+        }.bind(this)
+
+        this.exportTemplate = function(e){
+            var deck = {
+                frame : this.parent.frame,
+                cards: {}
+            };
+            $(".cardframe").each(function(fi){
+                var totalWeight =0;
+                var symbols = [];
+                $(this).find(".symbol").each( function(si){
+                    var thumbnail = $(this).find("img")[0];
+                    var height = $(thumbnail).height();
+                    var width = $(thumbnail).width();
+                    var weight = $(thumbnail).attr("weight");
+
+                    symbols.push({
+                        top: $(this).position().top,
+                        left: $(this).position().left,
+                        height: height,
+                        width: width,
+                        transform: $(this).css("transform"),
+                        weight: weight
+                    });
+
+                    totalWeight += weight;
+                });
+                if(!deck.cards[totalWeight]){
+                    deck.cards[totalWeight] = [];
+                }
+                deck.cards[totalWeight].push(symbols);
+            })
+
+            var data = JSON.stringify(deck);
+            var fileName = this.root.querySelector('#exportTemplateName').value;
+
+            download( data, fileName ,"application/vnd.nimn");
+        }.bind(this)
+});
 riot.tag2('galleries', '<p if="{this.opts.count == 1}">Upload {totalSymbols} images</p> <gallery each="{n,i in this.repeat}" id="gallery_{i}"></gallery> <div class="row"> <div class="col-lg-12 text-center"> <a class="btn btn-lg btn-theme" id="generate" onclick="{generate}" disabled="{!readyToGenerate}">Generate</a> </div> </div>', '', '', function(opts) {
         this.readyToGenerate = false;
         this.repeat = new Array(this.opts.count);
@@ -40,6 +111,7 @@ riot.tag2('gallery', '<label class="btn-bs-file btn btn-outline-info">Browse Ima
                         name : f.name,
                         src: e.target.result
                     };
+                    this.updateDimentions(e.target.result,imgData);
                     data.push(imgData);
                     this.parent.trigger("uploadimages");
                 }
@@ -49,6 +121,17 @@ riot.tag2('gallery', '<label class="btn-bs-file btn btn-outline-info">Browse Ima
                 }
                 reader.readAsDataURL(f);
             }
+        }.bind(this)
+
+        this.updateDimentions = function(imgFileSrc, imageDataObject){
+            var img = new Image();
+            img.onload = function() {
+                imageDataObject.size = {
+                    width : this.width,
+                    height : this.height
+                }
+            };
+            img.src = imgFileSrc;
         }.bind(this)
 
         this.deleteThumbnail = function(e){
@@ -63,8 +146,8 @@ riot.tag2('gallery', '<label class="btn-bs-file btn btn-outline-info">Browse Ima
             this.update();
         }.bind(this)
 });
-riot.tag2('review', '<div class="card-frame-navigators"> <div class="left-paddle " onclick="{slideleft}" style="float:left"></div> <div class="right-paddle " onclick="{slideright}" style="float:right"></div> </div> <div class="input-bar clearfix" style="width:100%"> <div class="photolist-wrapper" style="width:100%"> <div each="{card in cards}" class="cardframe" riot-style="background-color: {frame.bgColor}"> <div each="{symbol in card}" class="symbol trans" riot-style="transform: rotate({this.transformRotate()}deg);"> <img riot-src="{readSymbol(symbol)}" width="75px" height="75px"> <div class="ui-resizable-handle resizeHandle"></div> </div> </div> </div> </div> <div> <button onclick="{collectDisplayDetail}">Collect</button> </div>', 'review .cardframe,[data-is="review"] .cardframe{ display: block; background-color: white; float: left; margin: 3px; border-radius: 5px; padding: 5px; position: relative; } review .symbol,[data-is="review"] .symbol{ position: absolute; cursor: move; } review .resizeHandle,[data-is="review"] .resizeHandle{ width: 10px; height: 10px; background-color: #ffffff; border: 1px solid #000000; bottom: 1px; right:1px; display: none; } review .ui-rotatable-handle,[data-is="review"] .ui-rotatable-handle{ width: 10px; height: 10px; background-color: green; bottom: 1px; right:1px; border-radius: 5px; cursor: crosshair; display: none; } review .card-frame-navigators,[data-is="review"] .card-frame-navigators{ display: block; width: 100%; height: 35px; } review .card-frame-navigators div,[data-is="review"] .card-frame-navigators div{ height: 100% }', '', function(opts) {
-        var groupIndex = [];
+riot.tag2('review', '<decktemplate></decktemplate> <div class="input-bar clearfix" style="width:100%"> <div class="photolist-wrapper" style="width:100%"> <div each="{card in cards}" class="cardframe" riot-style="background-color: {frame.bgColor}"> <div each="{symbol in card}" class="symbol trans" riot-style="transform: rotate({this.transformRotate()}deg);"> <img riot-src="{readSymbol(symbol,true).src}" riot-style="{this.transformSize( readSymbol(symbol).size)}" weight="{calculateWeight( readSymbol(symbol).size )}"> <div class="ui-resizable-handle resizeHandle"></div> </div> </div> </div> </div>', 'review .cardframe,[data-is="review"] .cardframe{ display: block; background-color: white; float: left; margin: 3px; border-radius: 5px; padding: 5px; position: relative; } review .symbol,[data-is="review"] .symbol{ position: absolute; cursor: move; } review .resizeHandle,[data-is="review"] .resizeHandle{ width: 10px; height: 10px; background-color: #ffffff; border: 1px solid #000000; bottom: 1px; right:1px; display: none; } review .ui-rotatable-handle,[data-is="review"] .ui-rotatable-handle{ width: 10px; height: 10px; background-color: green; bottom: 1px; right:1px; border-radius: 5px; cursor: crosshair; display: none; }', '', function(opts) {
+        this.templates = [];
         this.on("mount",() => {
             $(".cardframe").width(this.frame.width);
             $(".cardframe").height(this.frame.height);
@@ -94,8 +177,11 @@ riot.tag2('review', '<div class="card-frame-navigators"> <div class="left-paddle
             bgColor: $( "#demo-card" ).css("background-color"),
             rotateEnable: $( "#rotate" ).prop("checked"),
             resizeEnable: $( "#resize" ).prop("checked"),
+            maintainratio: $( "#maintainratio" ).prop("checked"),
 
         }
+
+        this.frame.desiredSymbolSize = Math.floor ( ( (this.frame.width * this.frame.height) / this.frame.symbolsPerCard ) * 0.9 );
 
         this.transformRotate = function(){
             if(this.frame.rotateEnable){
@@ -103,87 +189,98 @@ riot.tag2('review', '<div class="card-frame-navigators"> <div class="left-paddle
             }
         }.bind(this)
 
+        this.transformSize = function(originalSize){
+            var ratio = 1;
+            var w,h;
+            var minW,maxW;
+            if(this.frame.maintainratio  ){
+                ratio = originalSize.height / originalSize.width;
+                w = Math.floor ( Math.sqrt( this.frame.desiredSymbolSize / ratio ) ) * 0.6;
+                w = w < 75 ? 75 : w;
+            }else{
+                w = Math.floor ( Math.sqrt( this.frame.desiredSymbolSize)) * 0.6;
+                w = w < 75 ? 75 : w;
+                h = w;
+            }
+
+            if(this.frame.resizeEnable){
+                w = randInRange(65,w * 1.5);
+            }
+            if(h){
+                return `width: ${w}px; height: ${h}px`
+            }else{
+                h = w * ratio;
+                return `width: ${w}px; height: ${h}px`
+            }
+        }.bind(this)
+
+        this.calculateWeight = function(size){
+            if(size.height > size.width){
+                if( size.height >= size.width * 1.5){
+                    return 2;
+                }else{
+                    return 1;
+                }
+            }else{
+                if( size.width >= size.height * 1.5){
+                    return 2;
+                }else{
+                    return 1;
+                }
+            }
+        }.bind(this)
         this.totalSymbols = totalCombinations($( "#symbolscount" ).val());
         this.cards = createBlocks($( "#symbolscount" ).val());
 
-        this.readSymbol = function(n){
+        var groupIndex = [];
+
+        this.readSymbol = function(n,readNext){
             if( Object.keys(this.opts.symbols).length === 1){
-                return this.opts.symbols["gallery_0"][ n % this.opts.symbols["gallery_0"].length].src;
+                return this.opts.symbols["gallery_0"][ n % this.opts.symbols["gallery_0"].length];
             }else{
                 if(!groupIndex[n]) groupIndex[n] = 0;
-                var index = groupIndex[n] % this.opts.symbols["gallery_"+n].length;
-                groupIndex[n] = index +1;
-                return this.opts.symbols["gallery_"+n][ index ].src;
+                var index = 0;
+                if(readNext){
+                    index = groupIndex[n] % this.opts.symbols["gallery_"+n].length;
+                    groupIndex[n] = index +1;
+                }else{
+                    index = groupIndex[n]
+                }
+                return this.opts.symbols["gallery_"+n][ index ];
             }
         }.bind(this)
 
-        this.sliding = false;
-        this.sliderMove = this.frame.width + "px";
-        this.slideleft = function(e) {
-            var photolist = $(e.target.nextElementSibling.children[0]);
-            if (this.sliding === false) {
-                this.sliding = true;
-                photolist.css({ left: "-"+this.sliderMove })
-                    .prepend(photolist.children('img:last-child'))
-                    .animate({ left: 0 }, 200, 'linear', () => {
-                        this.sliding = false;
-                    });
-            }
-        }.bind(this);
-        this.slideright = function(e) {
-            var photolist = $(e.target.previousElementSibling.children[0]);
-            if (this.sliding === false) {
-                this.sliding = true;
-                photolist.animate({ left: "-"+this.sliderMove }, 200, 'linear', () => {
-                    photolist.css({ left: 0 })
-                        .append(photolist.children('img:first-child'));
-                    this.sliding = false;
-                });
-            }
-        }.bind(this);
-        this.collectDisplayDetail = function(e){
-            var deck = {
-                frame : this.frame,
-                cards: []
-            };
-            $(".cardframe").each(function(fi){
-                var card = {
-                    weight: 0,
-                    symbols: []
-                };
-                $(this).find(".symbol").each( function(si){
-                    var thumbnail = $(this).find("img")[0];
-                    var height = $(thumbnail).height();
-                    var width = $(thumbnail).width();
-                    var weight = 0;
-                    if(height > width){
-                        if( height >= width * 1.5){
-                            weight = 2;
-                        }else{
-                            weight = 1;
-                        }
-                    }else{
-                        if( width >= height * 1.5){
-                            weight = 2;
-                        }else{
-                            weight = 1;
-                        }
-                    }
+        this.applyTemplate = function(templateData){
+            $(".cardframe").each( (card_i, card) => {
+                var totalWeight = this.calculateTotalWeight(card);
+                var weightSets = templateData.cards[totalWeight];
+                var randomIndex = randInRange(0,weightSets.length -1);
+                var symbols = $(card).find(".symbol");
+                weightSets[randomIndex].forEach( (symbol,i) => {
 
-                    card.symbols.push({
-                        top: $(this).position().top,
-                        left: $(this).position().left,
-                        height: height,
-                        width: width,
-                        transform: $(this).css("transform"),
-                        weight: weight
-                    });
-
-                    card.weight += weight;
-
-                    deck.cards.push(card);
+                    $(symbols[i]).css({
+                        top: symbol.top,
+                        left: symbol.left,
+                        transform: symbol.transform,
+                    })
+                    $(symbols[i]).height(symbol.height);
+                    $(symbols[i]).width(symbol.width);
                 })
-            })
-            download(JSON.stringify(deck), deck.frame.symbolsPerCard+"-symbols-positions.json" ,"application/json");
+            });
         }.bind(this)
+
+        this.calculateTotalWeight = function(el){
+            var totalWeight = $(el).attr("totalweight");
+            if( ! totalWeight ){
+                totalWeight = 0;
+                $(el).find(".symbol img").each( (i,img) => {
+                    totalWeight += Number.parseInt($(img).attr("weight"));
+                });
+                $(el).attr("totalweight", totalWeight);
+                return totalWeight;
+            }else{
+                return totalWeight;
+            }
+        }.bind(this)
+
 });
