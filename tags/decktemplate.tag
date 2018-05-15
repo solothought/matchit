@@ -1,7 +1,7 @@
 <decktemplate>
     <div class="row align-items-center">
-        <div class="col-md-2"></div>
-        <div class="col-md-2">
+        <div class="col"></div>
+        <div class="col-2">
             <select id="templateselect" class="form-control" onchange={loadtemplate}>
                 <option disabled="true">Select template</option>
                 <option value="normal" selected>3-250x350-match-it</option>
@@ -10,22 +10,22 @@
                 <option value="square" >Square Card</option>
             </select>
         </div>
-        <div class="col-md-2">
+        <div class="col-2">
             <label class="btn-bs-file btn btn-theme">Browse Template file
                 <input type="file" class="filebutton" accept="application/vnd.nimn,*.nmn,*.nimn"  onchange= { readTemplateFile }/>
             </label>
         </div>
-        <div class="col-md-2">
+        <div class="col-2">
             <input id="exportTemplateName" type="text" class="form-control" placeholder="Enter the template name " value={  exportTemplateName}>
         </div>
-        <div class="col-md-2">
+        <div class="col-2">
             <button class="btn  btn-theme" onclick={ exportTemplate } >Export Template</button>
         </div>
-        <div class="col-md-2"></div>
+        <div class="col"></div>
     </div>
-    <div class="row warnmessage">
+    <!--  <div class="row warnmessage">
         <div class="col-12">This template might not be suitable for selected card size.</div>
-    </div>
+    </div>  -->
     <script>
     
         loadtemplate(e){

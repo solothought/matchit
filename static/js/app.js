@@ -94,7 +94,6 @@ function updateDemoCard(size){
     $( "#demo-card" ).width(size.w);
 }
 
-
 function randInRange(min,max) {return Math.floor(Math.random()*(max-min)) + min}
 
 function setRandomPos(elements){
