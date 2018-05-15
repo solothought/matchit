@@ -1,7 +1,7 @@
 <decktemplate>
-    <div class="row">
-        <div class="col-2"></div>
-        <div class="col-2">
+    <div class="row align-items-center">
+        <div class="col-md-2"></div>
+        <div class="col-md-2">
             <select id="templateselect" class="form-control" onchange={loadtemplate}>
                 <option disabled="true">Select template</option>
                 <option value="normal" selected>3-250x350-match-it</option>
@@ -10,18 +10,18 @@
                 <option value="square" >Square Card</option>
             </select>
         </div>
-        <div class="col-2">
+        <div class="col-md-2">
             <label class="btn-bs-file btn btn-theme">Browse Template file
                 <input type="file" class="filebutton" accept="application/vnd.nimn,*.nmn,*.nimn"  onchange= { readTemplateFile }/>
             </label>
         </div>
-        <div class="col-2">
+        <div class="col-md-2">
             <input id="exportTemplateName" type="text" class="form-control" placeholder="Enter the template name " value={  exportTemplateName}>
         </div>
-        <div class="col-2">
-            <button class="btn btn-lg btn-theme" onclick={ exportTemplate } >Export Template</button>
+        <div class="col-md-2">
+            <button class="btn  btn-theme" onclick={ exportTemplate } >Export Template</button>
         </div>
-        <div class="col-2"></div>
+        <div class="col-md-2"></div>
     </div>
     <div class="row warnmessage">
         <div class="col-12">This template might not be suitable for selected card size.</div>
@@ -72,23 +72,26 @@
             };
             $(".cardframe").each(function(fi){
                 var totalWeight =0;
-                var symbols = [];
+                var symbols = {
+                    "1" : [],
+                    "2" : []
+                };
+
                 $(this).find(".symbol").each( function(si){
                     var thumbnail = $(this).find("img")[0];
                     var height = $(thumbnail).height();
                     var width = $(thumbnail).width();
                     var weight = $(thumbnail).attr("weight");
 
-                    symbols.push({
+                    symbols[weight].push({
                         top: $(this).position().top,
                         left: $(this).position().left,
                         height: height,
                         width: width,
                         transform: $(this).css("transform"),
-                        weight: weight
                     });
 
-                    totalWeight += weight;
+                    totalWeight += Number.parseInt(weight);
                 });
                 if(!deck.cards[totalWeight]){
                     deck.cards[totalWeight] = [];

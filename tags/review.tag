@@ -38,8 +38,9 @@
     <div class="input-bar clearfix" style="width:100%">
         <div class="photolist-wrapper" style="width:100%">
             <div each={card in cards} class="cardframe" style="background-color: { frame.bgColor }">
-                <div each={ symbol in card} class="symbol trans" style="transform: rotate({ this.transformRotate() }deg);" >
-                    <img  src={ readSymbol(symbol,true).src }  style={ this.transformSize( readSymbol(symbol).size) } weight={ calculateWeight( readSymbol(symbol).size ) } >
+                <div each={ symbol in card} class="symbol trans" style="{this.transformSize( readSymbol(symbol).size)} transform: rotate({ this.transformRotate() }deg);" 
+                    weight={ calculateWeight( readSymbol(symbol).size ) }>
+                    <img  src={ readSymbol(symbol,true).src } height="100%" width="100%"  >
                     <div class="ui-resizable-handle resizeHandle"></div>
                 </div>
             </div>
@@ -111,10 +112,10 @@
                 w = randInRange(65,w * 1.5);
             }
             if(h){
-                return `width: ${w}px; height: ${h}px`
+                return `width: ${w}px; height: ${h}px;`
             }else{
                 h = w * ratio;
-                return `width: ${w}px; height: ${h}px`
+                return `width: ${w}px; height: ${h}px;`
             }
         }
         
@@ -162,16 +163,24 @@
                 var weightSets = templateData.cards[totalWeight];
                 var randomIndex = randInRange(0,weightSets.length -1);
                 var symbols = $(card).find(".symbol");
-                weightSets[randomIndex].forEach( (symbol,i) => {
-                    //TODO: check if img weight is matching with current weight
-                    $(symbols[i]).css({
-                        top: symbol.top,
-                        left: symbol.left,
-                        transform: symbol.transform,
+                var weightWiseCounter = {
+                    "1" : 0,
+                    "2" : 0
+                }
+                var cardTemplate = weightSets[randomIndex];
+
+                $(card).find(".symbol").each( (si, symbol) => {
+                    var w = $(symbol).attr("weight");
+                    $(symbol).css({
+                        top: cardTemplate[w][ weightWiseCounter[w] ].top,
+                        left: cardTemplate[w][ weightWiseCounter[w] ].left,
+                        transform: cardTemplate[w][ weightWiseCounter[w] ].transform,
                     })
-                    $(symbols[i]).height(symbol.height);
-                    $(symbols[i]).width(symbol.width);
-                })
+                    $(symbol).height(cardTemplate[w][ weightWiseCounter[w] ].height);
+                    $(symbol).width(cardTemplate[w][ weightWiseCounter[w] ].width);
+                    weightWiseCounter[w] +=1;
+                } );
+
             });
         }
 
@@ -179,7 +188,7 @@
             var totalWeight = $(el).attr("totalweight");
             if( ! totalWeight ){
                 totalWeight = 0;
-                $(el).find(".symbol img").each( (i,img) => {
+                $(el).find(".symbol").each( (i,img) => {
                     totalWeight += Number.parseInt($(img).attr("weight"));
                 });
                 $(el).attr("totalweight", totalWeight);

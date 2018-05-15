@@ -1,4 +1,4 @@
-riot.tag2('decktemplate', '<div class="row"> <div class="col-2"></div> <div class="col-2"> <select id="templateselect" class="form-control" onchange="{loadtemplate}"> <option disabled="true">Select template</option> <option value="normal" selected>3-250x350-match-it</option> <option value="pocker">Pocker Playing Card</option> <option value="domino">Domino Card</option> <option value="square">Square Card</option> </select> </div> <div class="col-2"> <label class="btn-bs-file btn btn-theme">Browse Template file <input type="file" class="filebutton" accept="application/vnd.nimn,*.nmn,*.nimn" onchange="{readTemplateFile}"> </label> </div> <div class="col-2"> <input id="exportTemplateName" type="text" class="form-control" placeholder="Enter the template name " riot-value="{exportTemplateName}"> </div> <div class="col-2"> <button class="btn btn-lg btn-theme" onclick="{exportTemplate}">Export Template</button> </div> <div class="col-2"></div> </div> <div class="row warnmessage"> <div class="col-12">This template might not be suitable for selected card size.</div> </div>', '', '', function(opts) {
+riot.tag2('decktemplate', '<div class="row align-items-center"> <div class="col-md-2"></div> <div class="col-md-2"> <select id="templateselect" class="form-control" onchange="{loadtemplate}"> <option disabled="true">Select template</option> <option value="normal" selected>3-250x350-match-it</option> <option value="pocker">Pocker Playing Card</option> <option value="domino">Domino Card</option> <option value="square">Square Card</option> </select> </div> <div class="col-md-2"> <label class="btn-bs-file btn btn-theme">Browse Template file <input type="file" class="filebutton" accept="application/vnd.nimn,*.nmn,*.nimn" onchange="{readTemplateFile}"> </label> </div> <div class="col-md-2"> <input id="exportTemplateName" type="text" class="form-control" placeholder="Enter the template name " riot-value="{exportTemplateName}"> </div> <div class="col-md-2"> <button class="btn btn-theme" onclick="{exportTemplate}">Export Template</button> </div> <div class="col-md-2"></div> </div> <div class="row warnmessage"> <div class="col-12">This template might not be suitable for selected card size.</div> </div>', '', '', function(opts) {
 
         this.loadtemplate = function(e){
 
@@ -39,23 +39,26 @@ riot.tag2('decktemplate', '<div class="row"> <div class="col-2"></div> <div clas
             };
             $(".cardframe").each(function(fi){
                 var totalWeight =0;
-                var symbols = [];
+                var symbols = {
+                    "1" : [],
+                    "2" : []
+                };
+
                 $(this).find(".symbol").each( function(si){
                     var thumbnail = $(this).find("img")[0];
                     var height = $(thumbnail).height();
                     var width = $(thumbnail).width();
                     var weight = $(thumbnail).attr("weight");
 
-                    symbols.push({
+                    symbols[weight].push({
                         top: $(this).position().top,
                         left: $(this).position().left,
                         height: height,
                         width: width,
                         transform: $(this).css("transform"),
-                        weight: weight
                     });
 
-                    totalWeight += weight;
+                    totalWeight += Number.parseInt(weight);
                 });
                 if(!deck.cards[totalWeight]){
                     deck.cards[totalWeight] = [];
@@ -146,7 +149,7 @@ riot.tag2('gallery', '<label class="btn-bs-file btn btn-outline-info">Browse Ima
             this.update();
         }.bind(this)
 });
-riot.tag2('review', '<decktemplate></decktemplate> <div class="input-bar clearfix" style="width:100%"> <div class="photolist-wrapper" style="width:100%"> <div each="{card in cards}" class="cardframe" riot-style="background-color: {frame.bgColor}"> <div each="{symbol in card}" class="symbol trans" riot-style="transform: rotate({this.transformRotate()}deg);"> <img riot-src="{readSymbol(symbol,true).src}" riot-style="{this.transformSize( readSymbol(symbol).size)}" weight="{calculateWeight( readSymbol(symbol).size )}"> <div class="ui-resizable-handle resizeHandle"></div> </div> </div> </div> </div>', 'review .cardframe,[data-is="review"] .cardframe{ display: block; background-color: white; float: left; margin: 3px; border-radius: 5px; padding: 5px; position: relative; } review .symbol,[data-is="review"] .symbol{ position: absolute; cursor: move; } review .resizeHandle,[data-is="review"] .resizeHandle{ width: 10px; height: 10px; background-color: #ffffff; border: 1px solid #000000; bottom: 1px; right:1px; display: none; } review .ui-rotatable-handle,[data-is="review"] .ui-rotatable-handle{ width: 10px; height: 10px; background-color: green; bottom: 1px; right:1px; border-radius: 5px; cursor: crosshair; display: none; }', '', function(opts) {
+riot.tag2('review', '<decktemplate></decktemplate> <div class="input-bar clearfix" style="width:100%"> <div class="photolist-wrapper" style="width:100%"> <div each="{card in cards}" class="cardframe" riot-style="background-color: {frame.bgColor}"> <div each="{symbol in card}" class="symbol trans" riot-style="{this.transformSize( readSymbol(symbol).size)} transform: rotate({this.transformRotate()}deg);" weight="{calculateWeight( readSymbol(symbol).size )}"> <img riot-src="{readSymbol(symbol,true).src}" height="100%" width="100%"> <div class="ui-resizable-handle resizeHandle"></div> </div> </div> </div> </div>', 'review .cardframe,[data-is="review"] .cardframe{ display: block; background-color: white; float: left; margin: 3px; border-radius: 5px; padding: 5px; position: relative; } review .symbol,[data-is="review"] .symbol{ position: absolute; cursor: move; } review .resizeHandle,[data-is="review"] .resizeHandle{ width: 10px; height: 10px; background-color: #ffffff; border: 1px solid #000000; bottom: 1px; right:1px; display: none; } review .ui-rotatable-handle,[data-is="review"] .ui-rotatable-handle{ width: 10px; height: 10px; background-color: green; bottom: 1px; right:1px; border-radius: 5px; cursor: crosshair; display: none; }', '', function(opts) {
         this.templates = [];
         this.on("mount",() => {
             $(".cardframe").width(this.frame.width);
@@ -207,10 +210,10 @@ riot.tag2('review', '<decktemplate></decktemplate> <div class="input-bar clearfi
                 w = randInRange(65,w * 1.5);
             }
             if(h){
-                return `width: ${w}px; height: ${h}px`
+                return `width: ${w}px; height: ${h}px;`
             }else{
                 h = w * ratio;
-                return `width: ${w}px; height: ${h}px`
+                return `width: ${w}px; height: ${h}px;`
             }
         }.bind(this)
 
@@ -256,16 +259,24 @@ riot.tag2('review', '<decktemplate></decktemplate> <div class="input-bar clearfi
                 var weightSets = templateData.cards[totalWeight];
                 var randomIndex = randInRange(0,weightSets.length -1);
                 var symbols = $(card).find(".symbol");
-                weightSets[randomIndex].forEach( (symbol,i) => {
+                var weightWiseCounter = {
+                    "1" : 0,
+                    "2" : 0
+                }
+                var cardTemplate = weightSets[randomIndex];
 
-                    $(symbols[i]).css({
-                        top: symbol.top,
-                        left: symbol.left,
-                        transform: symbol.transform,
+                $(card).find(".symbol").each( (si, symbol) => {
+                    var w = $(symbol).attr("weight");
+                    $(symbol).css({
+                        top: cardTemplate[w][ weightWiseCounter[w] ].top,
+                        left: cardTemplate[w][ weightWiseCounter[w] ].left,
+                        transform: cardTemplate[w][ weightWiseCounter[w] ].transform,
                     })
-                    $(symbols[i]).height(symbol.height);
-                    $(symbols[i]).width(symbol.width);
-                })
+                    $(symbol).height(cardTemplate[w][ weightWiseCounter[w] ].height);
+                    $(symbol).width(cardTemplate[w][ weightWiseCounter[w] ].width);
+                    weightWiseCounter[w] +=1;
+                } );
+
             });
         }.bind(this)
 
@@ -273,7 +284,7 @@ riot.tag2('review', '<decktemplate></decktemplate> <div class="input-bar clearfi
             var totalWeight = $(el).attr("totalweight");
             if( ! totalWeight ){
                 totalWeight = 0;
-                $(el).find(".symbol img").each( (i,img) => {
+                $(el).find(".symbol").each( (i,img) => {
                     totalWeight += Number.parseInt($(img).attr("weight"));
                 });
                 $(el).attr("totalweight", totalWeight);
