@@ -53,3 +53,30 @@
 #demo-card{
     background-color: white;
 }
+
+@media print {
+
+    @page :left, :right {
+        margin: 0.5cm;
+    }
+
+    body * {
+      visibility: hidden;
+    }
+    #review-panel, #review-panel *, #review-panel cardframe img {
+      visibility: visible;
+    }
+    #review-panel {
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+
+    #review-panel .cardframe{
+        border: 1px solid black;
+    }
+
+    div{
+        page-break-inside: avoid;
+    }
+  }
