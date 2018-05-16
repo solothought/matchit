@@ -28,11 +28,11 @@
     background-color: white;
 }
 
-footer{
+/* footer{
     position: fixed;
     bottom: 0px;
     width: 100vw;
-}
+} */
 
 @media print {
 
