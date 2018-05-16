@@ -24,6 +24,8 @@
 }
 #slider-vertical-val{
     writing-mode: tb-rl;
+    height: 100%;
+    text-align: center;
 }
 .parallax { 
     /* The image used */
@@ -52,6 +54,12 @@
 }
 #demo-card{
     background-color: white;
+}
+
+footer{
+    position: fixed;
+    bottom: 0px;
+    width: 100vw;
 }
 
 @media print {
