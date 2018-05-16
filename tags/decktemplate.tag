@@ -77,11 +77,11 @@
                     "2" : []
                 };
 
-                $(this).find(".symbol").each( function(si){
-                    var thumbnail = $(this).find("img")[0];
-                    var height = $(thumbnail).height();
-                    var width = $(thumbnail).width();
-                    var weight = $(thumbnail).attr("weight");
+                $(this).find(".symbol").each( function(si,symbol){
+                    //var thumbnail = $(this).find("img")[0];
+                    var height = $(symbol).height();
+                    var width = $(symbol).width();
+                    var weight = $(symbol).attr("weight");
 
                     symbols[weight].push({
                         top: $(this).position().top,
