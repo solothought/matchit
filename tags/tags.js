@@ -72,6 +72,116 @@ riot.tag2('decktemplate', '<div class="row align-items-center"> <div class="col"
             download( data, fileName ,"application/vnd.nimn");
         }.bind(this)
 });
+riot.tag2('design', '<div class="row"> <div class="col-md-4"> <select id="cardsize" class="form-control"> <option disabled="true">Select Size</option> <option each="{cardsize,name in cards}" riot-value="{name}" selected="{name == \'Normal Playing Card Or Bridge Size\'}">{name}</option> </select> <div class="empty"></div> <select id="symbolscount" class="form-control"> <option selected="false" disabled="true">Number of symbols on a card</option> <option>2</option> <option>3</option> <option>4</option> <option>5</option> <option>6</option> <option>7</option> <option>8</option> <option>9</option> <option>10</option> </select> <div class="empty"></div> <div>Choose background color</div> <input id="colorpicker" onchange="clickColor(0, -1, -1, 5)" value="#ffffff" style="width:100%;" type="color"> <div class="empty"></div> <div class="form-check"> <input class="form-check-input" type="checkbox" value="" id="rotate"> <label class="form-check-label" for="rotate"> Rotate randomly </label> </div> <div class="form-check"> <input class="form-check-input" type="checkbox" value="" id="resize"> <label class="form-check-label" for="resize"> Resize randmly </label> </div> <div class="form-check"> <input class="form-check-input" type="checkbox" value="" id="maintainratio" checked="true"> <label class="form-check-label" for="maintainratio"> Maintain height width ratio </label> </div> </div> <div class="col-md-8"> <div id="slider-horizontal-val" class="text-center"></div> <div id="slider-horizontal"></div> <div class="row" id="demo-card-container"> <div class="col-md-10"> <div id="demo-card"> </div> </div> <div class="col-md-1"> <div id="slider-vertical"></div> </div> <div class="col-md-1"> <div id="slider-vertical-val"></div> </div> </div> </div> </div>', 'design .ui-slider .ui-slider-handle,[data-is="design"] .ui-slider .ui-slider-handle{ width: 0.8em; height: 0.8em; } design #slider-vertical,[data-is="design"] #slider-vertical{ height: 150mm; width: 5px; } design #slider-horizontal,[data-is="design"] #slider-horizontal{ width: 150mm; height: 5px; } design #demo-card,[data-is="design"] #demo-card{ display: block; outline: 1px solid grey; margin-top: 10px; } design #demo-card-container,[data-is="design"] #demo-card-container{ height: 160mm; } design #slider-vertical-val,[data-is="design"] #slider-vertical-val{ writing-mode: tb-rl; height: 100%; text-align: center; }', '', function(opts) {
+
+        this.cards = {
+            "Normal Playing Card Or Bridge Size" : {
+                w : 56,
+                h : 88,
+            },
+            "Pocker Card" : {
+                w : 63,
+                h : 88,
+            },
+            "Large size Card" : {
+                w : 89,
+                h : 146,
+            },
+            "Tarot size Card" : {
+                w : 70,
+                h : 121,
+            },
+            "Half width Card" : {
+                w : 28,
+                h : 88,
+            },
+            "Domino Card" : {
+                w : 44,
+                h : 89,
+            },
+            "Business size Card" : {
+                w : 50,
+                h : 89,
+            },
+            "Square Card" : {
+                w : 63,
+                h : 63,
+            },
+        };
+
+        this.on('mount', () => {
+
+            this.setupSlider(this.cards["Normal Playing Card Or Bridge Size"]);
+            this.updateSlider(this.cards["Normal Playing Card Or Bridge Size"]);
+            $( "#symbolscount" ).val("3")
+
+            $( "#colorpicker" ).change( function(){
+                $("#demo-card").css("background-color", $(this).val());
+            });
+            $( "#cardsize" ).change( function(){
+                this.updateSlider(this.cards[$( "#cardsize" ).val()]);
+                this.updateDemoCard(this.cards[$( "#cardsize" ).val()]);
+            });
+
+            $( "#symbolscount" ).change( function(){
+                this.checkSymbolCount();
+            });
+        })
+
+        var one_cm = 37.7952755906;
+        var one_inch = 0.0393701;
+        var maxCardSize = 150;
+
+        this.updateSlider = function(size){
+            $( "#slider-vertical-val" ).text(convertIntoText(size.h));
+            $( "#slider-horizontal-val" ).text(convertIntoText(size.w));
+            $( "#slider-vertical" ).slider( "value", maxCardSize - size.h);
+            $( "#slider-horizontal" ).slider( "value", size.w);
+        }.bind(this)
+
+        this.setupSlider = function(size){
+            $( "#slider-vertical" ).slider({
+                orientation: "vertical",
+
+                min: 0,
+                max: maxCardSize,
+                value: maxCardSize - size.h,
+                slide: function( event, ui ) {
+                    $( "#demo-card" ).height((maxCardSize - ui.value) + "mm");
+                    $( "#slider-vertical-val" ).text( convertIntoText(maxCardSize - ui.value) );
+                }
+            });
+
+            $( "#slider-horizontal" ).slider({
+
+                min: 0,
+                max: maxCardSize,
+                value: size.w,
+                slide: function( event, ui ) {
+                    $( "#demo-card" ).width(ui.value + "mm");
+                    $( "#slider-horizontal-val" ).text( convertIntoText(ui.value) );
+                }
+            });
+        }.bind(this)
+
+        function convertIntoText(unit){
+
+            return unit + 'mm or ' + round(unit * one_inch,2) + '"';
+        }
+
+        this.checkSymbolCount = function(){
+            var w = $( "#slider-horizontal" ).slider("value");
+            var h = maxCardSize - $("#slider-vertical" ).slider("value");
+
+            var maxCount = Math.floor( h / minSymbolSize.h ) * Math.floor(w / minSymbolSize.w);
+
+            if( $('#symbolscount').val() > maxCount ){
+                alert("Number of symbols for given size should not be greater than " + maxCount);
+            }
+
+        }.bind(this)
+
+});
 riot.tag2('galleries', '<p if="{this.opts.count == 1}">Upload {totalSymbols} images</p> <gallery each="{n,i in this.repeat}" id="gallery_{i}"></gallery> <div class="row"> <div class="col-lg-12 text-center"> <a class="btn btn-lg btn-theme" id="generate" onclick="{generate}" disabled="{!readyToGenerate}">Generate</a> </div> </div>', '', '', function(opts) {
         this.readyToGenerate = false;
         this.repeat = new Array(this.opts.count);
@@ -149,7 +259,7 @@ riot.tag2('gallery', '<label class="btn-bs-file btn btn-outline-info">Browse Ima
             this.update();
         }.bind(this)
 });
-riot.tag2('review', '<decktemplate></decktemplate> <div id="review-panel" class="input-bar clearfix" style="width:100%"> <div class="photolist-wrapper" style="width:100%"> <div each="{card in cards}" class="cardframe" riot-style="background-color: {frame.bgColor}"> <div class="align-center" style="text-align:center; font-size: small; color: gray;">funcards.github.io.match-it</div> <div each="{symbol in card}" class="symbol trans" riot-style="{this.transformSize( readSymbol(symbol).size)} transform: rotate({this.transformRotate()}deg);" weight="{calculateWeight( readSymbol(symbol).size )}"> <img riot-src="{readSymbol(symbol,true).src}" height="100%" width="100%"> <div class="ui-resizable-handle resizeHandle"></div> </div> </div> </div> </div>', 'review .cardframe,[data-is="review"] .cardframe{ display: block; background-color: white; float: left; margin: 3px; border-radius: 5px; padding: 5px; position: relative; } review .symbol,[data-is="review"] .symbol{ position: absolute; cursor: move; } review .resizeHandle,[data-is="review"] .resizeHandle{ width: 10px; height: 10px; background-color: #ffffff; border: 1px solid #000000; bottom: 1px; right:1px; display: none; } review .ui-rotatable-handle,[data-is="review"] .ui-rotatable-handle{ width: 10px; height: 10px; background-color: green; bottom: 1px; right:1px; border-radius: 5px; cursor: crosshair; display: none; }', '', function(opts) {
+riot.tag2('review', '<decktemplate></decktemplate> <div id="review-panel" class="input-bar clearfix" style="width:100%"> <div class="photolist-wrapper" style="width:100%"> <div each="{card in cards}" class="cardframe" riot-style="background-color: {frame.bgColor}"> <div class="align-center" style=" writing-mode: tb-rl; height: 100%; text-align:center; font-size: small; color: gray;">funcards.github.io/match-it</div> <div each="{symbol in card}" class="symbol trans" riot-style="{this.transformSize( readSymbol(symbol).size)} transform: rotate({this.transformRotate()}deg);" weight="{calculateWeight( readSymbol(symbol).size )}"> <img riot-src="{readSymbol(symbol,true).src}" height="100%" width="100%"> <div class="ui-resizable-handle resizeHandle"></div> </div> </div> </div> </div>', 'review .cardframe,[data-is="review"] .cardframe{ display: block; background-color: white; float: left; margin: 3px; border-radius: 5px; padding: 5px; position: relative; } review .symbol,[data-is="review"] .symbol{ position: absolute; cursor: move; } review .resizeHandle,[data-is="review"] .resizeHandle{ width: 10px; height: 10px; background-color: #ffffff; border: 1px solid #000000; bottom: 1px; right:1px; display: none; } review .ui-rotatable-handle,[data-is="review"] .ui-rotatable-handle{ width: 10px; height: 10px; background-color: green; bottom: 1px; right:1px; border-radius: 5px; cursor: crosshair; display: none; }', '', function(opts) {
         this.templates = [];
         this.on("mount",() => {
             $(".cardframe").width(this.frame.width);

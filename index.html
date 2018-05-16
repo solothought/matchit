@@ -76,81 +76,14 @@
 
     <!-- Examples Grid Section -->
     <section id="one">
-        <div class="container">
+        <div class="container-fluid">
             <div class="row">
                 <div class="col-lg-12 text-center">
                     <h2>Design</h2>
                     <div class="empty"></div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-4">
-                        <select id="cardsize" class="form-control">
-                            <option disabled="true">Select Size</option>
-                            <option value="normal" selected>Normal Playing Card</option>
-                            <option value="pocker" >Pocker Playing Card</option>
-                            <option value="domino" >Domino Card</option>
-                            <option value="square" >Square Card</option>
-                        </select>
-                        <div class="empty"></div>
-                        <select id="symbolscount" class="form-control">
-                            <option selected="false" disabled="true">Number of symbols on a card</option>
-                            <option>2</option>
-                            <option>3</option>
-                            <option>4</option>
-                            <option>5</option>
-                            <option>6</option>
-                            <option>7</option>
-                            <option>8</option>
-                            <option>9</option>
-                            <option>10</option>
-                        </select>
-                        <div class="empty"></div>
-                        <div>Choose background color</div>
-                        <input type="color" id="colorpicker" onchange="clickColor(0, -1, -1, 5)" value="#ffffff" style="width:100%;">
-
-                        <div class="empty"></div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="rotate">
-                            <label class="form-check-label" for="rotate">
-                                Rotate randomly
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="resize">
-                            <label class="form-check-label" for="resize">
-                                Resize randmly
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="maintainratio" checked="true">
-                            <label class="form-check-label" for="maintainratio">
-                                Maintain height width ratio
-                            </label>
-                        </div>
-                </div>
-
-                <div  class="col-md-8">
-                        <div id="slider-horizontal-val" class="text-center"></div>
-                        <div id="slider-horizontal"></div>
-                        <div class="row" id="demo-card-container">
-                            <div class="col-md-10">
-                                <div id="demo-card">
-                                    <!-- <img class="thumbnail" src="img/freepik/bath.svg">
-                                    <img class="thumbnail" src="img/freepik/dog.svg">
-                                    <img class="thumbnail" src="img/freepik/driller.svg"> -->
-                                </div>
-                            </div>
-                            <div class="col-md-1">
-                                <div id="slider-vertical"></div>
-                            </div>
-                            <div class="col-md-1">
-                                <div id="slider-vertical-val"></div>
-                            </div>
-                        </div>
-                </div>
-                
-            </div>
+            <design></design>
         </div>
 
     </section>
@@ -235,51 +168,30 @@
 
     <script type="text/javascript">
         $(document).ready(function(){
-            $('body').scrollspy({target: ".navbar", offset: 50});
+
+            riot.mount("design");
 
             $("a.btn").on('click', function(event) {
-
                 // Make sure this.hash has a value before overriding default behavior
                 if (this.hash !== "") {
+                    // Prevent default anchor click behavior
+                    event.preventDefault();
 
-                // Prevent default anchor click behavior
-                event.preventDefault();
+                    // Store hash
+                    var hash = this.hash;
 
-                // Store hash
-                var hash = this.hash;
+                    $('html, body').animate({
+                        scrollTop: $(hash).offset().top
+                    }, 800, function(){
 
-                // Using jQuery's animate() method to add smooth page scroll
-                // The optional number (800) specifies the number of milliseconds it takes to scroll to the specified area
-                $('html, body').animate({
-                    scrollTop: $(hash).offset().top
-                }, 800, function(){
-
-                // Add hash (#) to URL when done scrolling (default click behavior)
-                    window.location.hash = hash;
-                });
-
+                    // Add hash (#) to URL when done scrolling (default click behavior)
+                        window.location.hash = hash;
+                    });
                 } // End if
-
             });
 
             //set default
-            setupSlider(cards.normal);
-            updateSlider(cards.normal);
-            $( "#symbolscount" ).val("3")
-
-
-            $( "#colorpicker" ).change( function(){
-
-                $("#demo-card").css("background-color", $(this).val());
-            });
-            $( "#cardsize" ).change( function(){
-                updateSlider(cards[$( "#cardsize" ).val()]);
-                updateDemoCard(cards[$( "#cardsize" ).val()]);
-            });
-
-            $( "#symbolscount" ).change( function(){
-                checkSymbolCount();
-            });
+            
 
             $("#simpleLevel").click(function(){
                 var symbolsCount = $( "#symbolscount" ).val();

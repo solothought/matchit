@@ -1,70 +1,4 @@
-var cards = {
-    pocker : {
-        w : 250,
-        h : 350
-    },
-    normal : {
-        w : 225,
-        h : 350
-    },
-    domino : {
-        w : 125,
-        h : 350
-    },
-    square : {
-        w : 250,
-        h : 250
-    }
-};
 
-/*
-
-Poker size (63mm x 88mm, 2.5" x 3.5")
-Bridge size (56mm x 88mm, 2.25" x 3.5")
-Large size cards (89mm x 146mm, 3.5" x 5.75")
-Tarot size cards (70mm x 121mm, 2.75" x 4.75")
-Mini size cards (44.45mm x 63.5mm, 1.75" x 2.5")
-Micro size cards (32mm x 45mm, 1.25" x 1.75")
-Domino size cards (44mm x 89mm, 1.75" x 3.5")
-Business size cards (50mm x 89mm, 2" x 3.5")
-Small square size cards (50mm x 50mm, 2" x 2")
-Square size cards (89mm x 89mm, 3.5" x 3.5")
-Circle size cards (89mm x 89mm, 3.5" x 3.5")
-Hex size cards (89mm x 89mm, 3.5" x 3.5")
-Trump size cards (62mm x 100mm, 2.45" x 3.95")
-*/
-
-function updateSlider(size){
-    $( "#slider-vertical-val" ).text((size.h)/100 + '"' );
-    $( "#slider-horizontal-val" ).text(size.w/100 + '"' );
-    $( "#slider-vertical" ).slider( "value", 450 - size.h);
-    $( "#slider-horizontal" ).slider( "value", size.w);
-}
-
-function setupSlider(size){
-    $( "#slider-vertical" ).slider({
-        orientation: "vertical",
-        /* range: "min", */
-        min: 0,
-        max: 450,
-        value: 450 - size.h,
-        slide: function( event, ui ) {
-            $( "#demo-card" ).height(450 - ui.value);
-            $( "#slider-vertical-val" ).text((450 - ui.value)/100 + '"' );
-        }
-    });
-
-    $( "#slider-horizontal" ).slider({
-        /* range: "min", */
-        min: 0,
-        max: 450,
-        value: size.w,
-        slide: function( event, ui ) {
-            $( "#demo-card" ).width(ui.value);
-            $( "#slider-horizontal-val" ).text(ui.value/100 + '"' );
-        }
-    });
-}
 
 /* function setSymbolsCount(n,m){
     $('#symbolscount').children('option:not(:first)').remove();//empty
@@ -77,16 +11,13 @@ var minSymbolSize = {
     w : 75,
     h : 75
 }
-function checkSymbolCount(){
-    var w = $( "#slider-horizontal" ).slider("value");
-    var h = 450 - $("#slider-vertical" ).slider("value");
 
-    var maxCount = Math.floor( h / minSymbolSize.h ) * Math.floor(w / minSymbolSize.w);
-
-    if( $('#symbolscount').val() > maxCount ){
-        alert("Number of symbols for given size should not be greater than " + maxCount);
-    }
-
+function round(number, precision) {
+    var shift = function (number, precision) {
+      var numArray = ("" + number).split("e");
+      return +(numArray[0] + "e" + (numArray[1] ? (+numArray[1] + precision) : precision));
+    };
+    return shift(Math.round(shift(number, +precision)), -precision);
 }
 
 function updateDemoCard(size){
