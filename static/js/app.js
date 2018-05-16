@@ -20,11 +20,6 @@ function round(number, precision) {
     return shift(Math.round(shift(number, +precision)), -precision);
 }
 
-function updateDemoCard(size){
-    $( "#demo-card" ).height(size.h);
-    $( "#demo-card" ).width(size.w);
-}
-
 function randInRange(min,max) {return Math.floor(Math.random()*(max-min)) + min}
 
 function setRandomPos(elements){

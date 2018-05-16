@@ -1,32 +1,4 @@
-.ui-slider .ui-slider-handle{
-    width: 0.8em;
-    height: 0.8em;
-}
-#slider-vertical{
-    height: 450px;
-    width: 5px;
-}
 
-#slider-horizontal{
-    width: 450px;				
-    height: 5px;
-}
-
-#demo-card{
-    display: block;
-    outline: 1px solid grey;
-    width: 250px;
-    height: 350px;
-    margin-top: 10px;
-}
-#demo-card-container{
-    height: 500px;
-}
-#slider-vertical-val{
-    writing-mode: tb-rl;
-    height: 100%;
-    text-align: center;
-}
 .parallax { 
     /* The image used */
     background-image: url("../img/bg.png");

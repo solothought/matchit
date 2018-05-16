@@ -72,7 +72,7 @@ riot.tag2('decktemplate', '<div class="row align-items-center"> <div class="col"
             download( data, fileName ,"application/vnd.nimn");
         }.bind(this)
 });
-riot.tag2('design', '<div class="row"> <div class="col-md-4"> <select id="cardsize" class="form-control"> <option disabled="true">Select Size</option> <option each="{cardsize,name in cards}" riot-value="{name}" selected="{name == \'Normal Playing Card Or Bridge Size\'}">{name}</option> </select> <div class="empty"></div> <select id="symbolscount" class="form-control"> <option selected="false" disabled="true">Number of symbols on a card</option> <option>2</option> <option>3</option> <option>4</option> <option>5</option> <option>6</option> <option>7</option> <option>8</option> <option>9</option> <option>10</option> </select> <div class="empty"></div> <div>Choose background color</div> <input id="colorpicker" onchange="clickColor(0, -1, -1, 5)" value="#ffffff" style="width:100%;" type="color"> <div class="empty"></div> <div class="form-check"> <input class="form-check-input" type="checkbox" value="" id="rotate"> <label class="form-check-label" for="rotate"> Rotate randomly </label> </div> <div class="form-check"> <input class="form-check-input" type="checkbox" value="" id="resize"> <label class="form-check-label" for="resize"> Resize randmly </label> </div> <div class="form-check"> <input class="form-check-input" type="checkbox" value="" id="maintainratio" checked="true"> <label class="form-check-label" for="maintainratio"> Maintain height width ratio </label> </div> </div> <div class="col-md-8"> <div id="slider-horizontal-val" class="text-center"></div> <div id="slider-horizontal"></div> <div class="row" id="demo-card-container"> <div class="col-md-10"> <div id="demo-card"> </div> </div> <div class="col-md-1"> <div id="slider-vertical"></div> </div> <div class="col-md-1"> <div id="slider-vertical-val"></div> </div> </div> </div> </div>', 'design .ui-slider .ui-slider-handle,[data-is="design"] .ui-slider .ui-slider-handle{ width: 0.8em; height: 0.8em; } design #slider-vertical,[data-is="design"] #slider-vertical{ height: 150mm; width: 5px; } design #slider-horizontal,[data-is="design"] #slider-horizontal{ width: 150mm; height: 5px; } design #demo-card,[data-is="design"] #demo-card{ display: block; outline: 1px solid grey; margin-top: 10px; } design #demo-card-container,[data-is="design"] #demo-card-container{ height: 160mm; } design #slider-vertical-val,[data-is="design"] #slider-vertical-val{ writing-mode: tb-rl; height: 100%; text-align: center; }', '', function(opts) {
+riot.tag2('design', '<div class="row"> <div class="col-md-4"> <select id="cardsize" class="form-control" onchange="{changeDemoCardSize}"> <option disabled="true">Select Size</option> <option each="{cardsize,name in cards}" riot-value="{name}" selected="{name == \'Normal Playing Card Or Bridge Size\'}">{name}</option> </select> <div class="empty"></div> <select id="symbolscount" onchange="{checkSymbolCount}" class="form-control"> <option selected="false" disabled="true">Number of symbols on a card</option> <option>2</option> <option>3</option> <option>4</option> <option>5</option> <option>6</option> <option>7</option> <option>8</option> <option>9</option> <option>10</option> </select> <div class="empty"></div> <div>Choose background color</div> <input id="colorpicker" onchange="{changeBgColor}" value="#ffffff" style="width:100%;" type="color"> <div class="empty"></div> <div class="form-check"> <input class="form-check-input" type="checkbox" value="" id="rotate"> <label class="form-check-label" for="rotate"> Rotate randomly </label> </div> <div class="form-check"> <input class="form-check-input" type="checkbox" value="" id="resize"> <label class="form-check-label" for="resize"> Resize randmly </label> </div> <div class="form-check"> <input class="form-check-input" type="checkbox" value="" id="maintainratio" checked="true"> <label class="form-check-label" for="maintainratio"> Maintain height width ratio </label> </div> </div> <div class="col-md-8"> <div id="slider-horizontal-val" class="text-center"></div> <div id="slider-horizontal"></div> <div class="row" id="demo-card-container"> <div class="col-md-10"> <div id="demo-card"> </div> </div> <div class="col-md-1"> <div id="slider-vertical"></div> </div> <div class="col-md-1"> <div id="slider-vertical-val"></div> </div> </div> </div> </div>', 'design .ui-slider .ui-slider-handle,[data-is="design"] .ui-slider .ui-slider-handle{ width: 0.8em; height: 0.8em; } design #slider-vertical,[data-is="design"] #slider-vertical{ height: 150mm; width: 5px; } design #slider-horizontal,[data-is="design"] #slider-horizontal{ width: 150mm; height: 5px; } design #demo-card,[data-is="design"] #demo-card{ display: block; outline: 1px solid grey; margin-top: 10px; } design #demo-card-container,[data-is="design"] #demo-card-container{ height: 160mm; } design #slider-vertical-val,[data-is="design"] #slider-vertical-val{ writing-mode: tb-rl; height: 100%; text-align: center; }', '', function(opts) {
 
         this.cards = {
             "Normal Playing Card Or Bridge Size" : {
@@ -113,20 +113,23 @@ riot.tag2('design', '<div class="row"> <div class="col-md-4"> <select id="cardsi
 
             this.setupSlider(this.cards["Normal Playing Card Or Bridge Size"]);
             this.updateSlider(this.cards["Normal Playing Card Or Bridge Size"]);
+            this.updateDemoCard(this.cards["Normal Playing Card Or Bridge Size"]);
             $( "#symbolscount" ).val("3")
+        });
 
-            $( "#colorpicker" ).change( function(){
-                $("#demo-card").css("background-color", $(this).val());
-            });
-            $( "#cardsize" ).change( function(){
-                this.updateSlider(this.cards[$( "#cardsize" ).val()]);
-                this.updateDemoCard(this.cards[$( "#cardsize" ).val()]);
-            });
+        this.changeBgColor = function(e){
+            $("#demo-card").css("background-color", e.target.value);
+        }.bind(this)
 
-            $( "#symbolscount" ).change( function(){
-                this.checkSymbolCount();
-            });
-        })
+        this.changeDemoCardSize = function(e){
+            this.updateSlider(this.cards[$( "#cardsize" ).val()]);
+            this.updateDemoCard(this.cards[$( "#cardsize" ).val()]);
+        }.bind(this)
+
+        this.updateDemoCard = function(size){
+            $( "#demo-card" ).height(size.h + "mm");
+            $( "#demo-card" ).width(size.w + "mm");
+        }.bind(this)
 
         var one_cm = 37.7952755906;
         var one_inch = 0.0393701;

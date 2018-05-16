@@ -30,12 +30,12 @@
     </style>
     <div class="row">
         <div class="col-md-4">
-            <select id="cardsize" class="form-control">
+            <select id="cardsize" class="form-control" onchange={changeDemoCardSize}>
                 <option disabled="true">Select Size</option>
                 <option each= { cardsize,name in cards } value={ name } selected={ name == 'Normal Playing Card Or Bridge Size' }>{name}</option>
             </select>
             <div class="empty"></div>
-            <select id="symbolscount" class="form-control">
+            <select id="symbolscount" onchange={checkSymbolCount} class="form-control">
                 <option selected="false" disabled="true">Number of symbols on a card</option>
                 <option>2</option>
                 <option>3</option>
@@ -49,7 +49,7 @@
             </select>
             <div class="empty"></div>
             <div>Choose background color</div>
-            <input type="color" id="colorpicker" onchange="clickColor(0, -1, -1, 5)" value="#ffffff" style="width:100%;">
+            <input type="color" id="colorpicker" onchange={changeBgColor} value="#ffffff" style="width:100%;">
 
             <div class="empty"></div>
             <div class="form-check">
@@ -151,21 +151,23 @@
             //update default
             this.setupSlider(this.cards["Normal Playing Card Or Bridge Size"]);
             this.updateSlider(this.cards["Normal Playing Card Or Bridge Size"]);
+            this.updateDemoCard(this.cards["Normal Playing Card Or Bridge Size"]);
             $( "#symbolscount" ).val("3")
+        });
 
+        changeBgColor(e){
+            $("#demo-card").css("background-color", e.target.value);
+        }
 
-            $( "#colorpicker" ).change( function(){
-                $("#demo-card").css("background-color", $(this).val());
-            });
-            $( "#cardsize" ).change( function(){
-                this.updateSlider(this.cards[$( "#cardsize" ).val()]);
-                this.updateDemoCard(this.cards[$( "#cardsize" ).val()]);
-            });
+        changeDemoCardSize(e){
+            this.updateSlider(this.cards[$( "#cardsize" ).val()]);
+            this.updateDemoCard(this.cards[$( "#cardsize" ).val()]);
+        }
 
-            $( "#symbolscount" ).change( function(){
-                this.checkSymbolCount();
-            });
-        })
+        updateDemoCard(size){
+            $( "#demo-card" ).height(size.h + "mm");
+            $( "#demo-card" ).width(size.w + "mm");
+        }
 
         var one_cm = 37.7952755906; //inpixels
         var one_inch = 0.0393701; //in mm
