@@ -49,6 +49,10 @@
     -moz-animation-delay: 2s;
     /* -vendor-animation-iteration-count: infinite; */
 }
+
+.selected{
+    outline: 4px solid yellow;
+}
 @media print {
 
     @page :left, :right {
