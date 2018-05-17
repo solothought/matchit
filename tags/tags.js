@@ -1,4 +1,4 @@
-riot.tag2('decktemplate', '<div class="row align-items-center"> <div class="col"></div> <div class="col-2"> <select id="templateselect" class="form-control" onchange="{loadtemplate}"> <option disabled="true">Select template</option> <option value="normal" selected>3-250x350-match-it</option> <option value="pocker">Pocker Playing Card</option> <option value="domino">Domino Card</option> <option value="square">Square Card</option> </select> </div> <div class="col-2"> <label class="btn-bs-file btn btn-theme">Browse Template file <input type="file" class="filebutton" accept="application/vnd.nimn,*.nmn,*.nimn" onchange="{readTemplateFile}"> </label> </div> <div class="col-2"> <input id="exportTemplateName" type="text" class="form-control" placeholder="Enter the template name " riot-value="{exportTemplateName}"> </div> <div class="col-2"> <button class="btn btn-theme" onclick="{exportTemplate}">Export Template</button> </div> <div class="col"></div> </div>', '', '', function(opts) {
+riot.tag2('decktemplate', '<div class="row align-items-center"> <div class="col form-inline"> <i class="fa fa-random action-btn btn btn-info" title="Arrange Randomly" onclick="{this.parent.arrangeRandomly}"></i> <i class="fa fa-copy action-btn btn btn-info" title="Copy Pattern" onclick="{this.parent.arrangeRandomly}"></i> <i class="fa fa-paste action-btn btn btn-info" title="Paste Pattern" onclick="{this.parent.arrangeRandomly}"></i> <label class="btn-bs-file"> <i class="fa fa-folder-open-o action-btn btn btn-info" title="Open Pattern file" onclick="{this.parent.arrangeRandomly}"></i> <input type="file" class="filebutton" accept="application/vnd.nimn,*.nmn,*.nimn" onchange="{readTemplateFile}"> </label> <div class="form-inline input-group"> <input id="exportTemplateName" type="text" class="form-control" placeholder="Enter the template name " riot-value="{exportTemplateName}" style="width: 300px;"> <i class="fa fa-save action-btn btn btn-info" title="Save Pattern to external file" onclick="{exportTemplate}"></i> </div> </div> </div> </div>', '', '', function(opts) {
 
         this.loadtemplate = function(e){
 
@@ -15,7 +15,7 @@ riot.tag2('decktemplate', '<div class="row align-items-center"> <div class="col"
                 }
             });
         }.bind(this)
-        this.exportTemplateName = `${this.parent.frame.symbolsPerCard}-${this.parent.frame.width}x${this.parent.frame.height}-match-it.nimn`;
+        this.exportTemplateName = `${this.parent.frame.symbolsPerCard}-${this.parent.frame.width}x${this.parent.frame.height}-match-it`;
         this.readTemplateFile = function(f){
 
             var input = f.srcElement;
@@ -67,7 +67,7 @@ riot.tag2('decktemplate', '<div class="row align-items-center"> <div class="col"
             })
 
             var data = JSON.stringify(deck);
-            var fileName = this.root.querySelector('#exportTemplateName').value;
+            var fileName = this.root.querySelector('#exportTemplateName').value + ".nimn";
 
             download( data, fileName ,"application/vnd.nimn");
         }.bind(this)
@@ -262,7 +262,7 @@ riot.tag2('gallery', '<label class="btn-bs-file btn btn-outline-info">Browse Ima
             this.update();
         }.bind(this)
 });
-riot.tag2('review', '<decktemplate></decktemplate> <div id="review-panel" class="input-bar clearfix" style="width:100%"> <div class="photolist-wrapper" style="width:100%"> <div each="{card in cards}" class="cardframe" onclick="{select}" riot-style="background-color: {frame.bgColor}"> <div class="align-center" style=" writing-mode: tb-rl; height: 100%; text-align:center; font-size: small; color: gray;">funcards.github.io/match-it</div> <div each="{symbol in card}" class="symbol trans" riot-style="{this.transformSize( readSymbol(symbol).size)} transform: rotate({this.transformRotate()}deg);" weight="{calculateWeight( readSymbol(symbol).size )}"> <img riot-src="{readSymbol(symbol,true).src}" height="100%" width="100%"> <div class="ui-resizable-handle resizeHandle"></div> </div> </div> </div> </div>', 'review .cardframe,[data-is="review"] .cardframe{ display: block; background-color: white; float: left; margin: 3px; border-radius: 5px; padding: 5px; position: relative; } review .symbol,[data-is="review"] .symbol{ position: absolute; cursor: move; } review .resizeHandle,[data-is="review"] .resizeHandle{ width: 10px; height: 10px; background-color: #ffffff; border: 1px solid #000000; bottom: 1px; right:1px; display: none; } review .ui-rotatable-handle,[data-is="review"] .ui-rotatable-handle{ width: 10px; height: 10px; background-color: green; bottom: 1px; right:1px; border-radius: 5px; cursor: crosshair; display: none; }', '', function(opts) {
+riot.tag2('review', '<decktemplate></decktemplate> <div id="review-panel" class="input-bar clearfix" style="width:100%"> <div class="photolist-wrapper" style="width:100%"> <div each="{card in cards}" class="cardframe" onclick="{select}" riot-style="background-color: {frame.bgColor}"> <div class="align-center" style=" writing-mode: tb-rl; height: 100%; text-align:center; font-size: small; color: gray;">funcards.github.io/match-it</div> <div each="{symbol in card}" class="symbol trans" riot-style="{this.transformSize( readSymbol(symbol).size)} transform: rotate({this.transformRotate()}deg);" weight="{calculateWeight( readSymbol(symbol).size )}"> <img riot-src="{readSymbol(symbol,true).src}" height="100%" width="100%"> <div class="ui-resizable-handle resizeHandle"></div> </div> </div> </div> </div>', 'review .cardframe,[data-is="review"] .cardframe{ display: block; background-color: white; float: left; margin: 3px; border-radius: 5px; padding: 5px; position: relative; } review .symbol,[data-is="review"] .symbol{ position: absolute; cursor: move; } review .resizeHandle,[data-is="review"] .resizeHandle{ width: 10px; height: 10px; background-color: #ffffff; border: 1px solid #000000; bottom: 1px; right:1px; display: none; } review .ui-rotatable-handle,[data-is="review"] .ui-rotatable-handle{ width: 10px; height: 10px; background-color: green; bottom: 1px; right:1px; border-radius: 5px; cursor: crosshair; display: none; } review .cf-selected,[data-is="review"] .cf-selected{ outline: 4px solid yellow; }', '', function(opts) {
         this.templates = [];
         this.on("mount",() => {
             $(".cardframe").width(this.frame.width);
@@ -284,13 +284,35 @@ riot.tag2('review', '<decktemplate></decktemplate> <div id="review-panel" class=
             $(".cardframe").mouseout( function(e) {
                 $(this).find(".resizeHandle, .ui-rotatable-handle").hide();
             });
+
+            $(document).click((e) =>{
+                if( $(e.target).hasClass("cf-selected") || $(e.target).hasClass("action-btn") ){
+
+                }else{
+                    $(".cf-selected").removeClass("cf-selected");
+                }
+            })
+
         })
 
+        this.arrangeRandomly = function(){
+            var elArr = $(".cf-selected");
+
+            if(elArr.length === 0){
+                elArr = $(".cardframe");
+            }
+
+            elArr.each( function(i) {
+                setRandomPos($(this).children());
+            })
+        }.bind(this)
         this.select = function(e){
-            if($(e.target).hasClass("selected")){
-                $(e.target).removeClass("selected");
+            if( !$(e.target).hasClass("cardframe")) return;
+
+            if($(e.target).hasClass("cf-selected")){
+                $(e.target).removeClass("cf-selected");
             }else{
-                $(e.target).addClass("selected");
+                $(e.target).addClass("cf-selected");
             }
             e.stopPropagation();
         }.bind(this)

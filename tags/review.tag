@@ -32,6 +32,9 @@
             cursor: crosshair;
             display: none;
         }
+        .cf-selected{
+            outline: 4px solid yellow;
+        }
     </style>
 
     <decktemplate></decktemplate>
@@ -71,13 +74,35 @@
             $(".cardframe").mouseout( function(e) {
                 $(this).find(".resizeHandle, .ui-rotatable-handle").hide();
             });
+
+            $(document).click((e) =>{//unselect selected
+                if( $(e.target).hasClass("cf-selected") || $(e.target).hasClass("action-btn") ){
+                    //do nothing
+                }else{
+                    $(".cf-selected").removeClass("cf-selected");
+                }
+            })
+            
         })
 
+        arrangeRandomly(){
+            var elArr = $(".cf-selected");
+
+            if(elArr.length === 0){
+                elArr = $(".cardframe");
+            }
+
+            elArr.each( function(i) {
+                setRandomPos($(this).children());
+            })
+        }
         select(e){
-            if($(e.target).hasClass("selected")){
-                $(e.target).removeClass("selected");
+            if( !$(e.target).hasClass("cardframe")) return;
+
+            if($(e.target).hasClass("cf-selected")){
+                $(e.target).removeClass("cf-selected");
             }else{
-                $(e.target).addClass("selected");
+                $(e.target).addClass("cf-selected");
             }
             e.stopPropagation();
         }
@@ -128,6 +153,9 @@
             }
         }
         
+        /* 
+        2 for long or tall images otherwise 1
+        */
         calculateWeight(size){
             if(size.height > size.width){
                 if( size.height >= size.width * 1.5){

@@ -41,17 +41,20 @@
     width: 100px;
     z-index: 10;
 }
-
-.delay2s {
-    -webkit-animation-duration: 3s;
-    -moz-animation-duration: 3s;
-    -webkit-animation-delay: 2s;
-    -moz-animation-delay: 2s;
-    /* -vendor-animation-iteration-count: infinite; */
+.action-btn{
+    font-size: 1.5em;
+    margin: 2px;
 }
 
-.selected{
-    outline: 4px solid yellow;
+.btn-icon img{
+    width: 100%;
+}
+.btn-icon{
+    width: 40px;
+    height: 35px;
+}
+.input-group{
+    margin: auto 10px;
 }
 @media print {
 
