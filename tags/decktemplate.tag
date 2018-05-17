@@ -73,7 +73,7 @@
             this.selectCards(resizeSymbolsRandomly, maintainRatio, this.parent.frame.desiredSymbolSize);
         }
 
-        loadtemplate(e){
+        /*loadtemplate(e){
             
             var templateName = e.target.value + ".nimn";
             $.ajax({
@@ -92,10 +92,9 @@
                     this.parent.applyTemplate(templateData);
                 }
             });
-        }
+        }*/
         this.exportTemplateName = `${this.parent.frame.symbolsPerCard}-${this.parent.frame.width}x${this.parent.frame.height}-match-it`;
         readTemplateFile(f){
-            //f.file or f.files[0]
             var input = f.srcElement;
             if (input.files && input.files[0]) {
                 var reader = new FileReader();

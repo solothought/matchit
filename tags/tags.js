@@ -24,24 +24,8 @@ riot.tag2('decktemplate', '<div id="action-bar" class="row align-items-center"> 
             this.selectCards(resizeSymbolsRandomly, maintainRatio, this.parent.frame.desiredSymbolSize);
         }.bind(this)
 
-        this.loadtemplate = function(e){
-
-            var templateName = e.target.value + ".nimn";
-            $.ajax({
-                url: "./templates/"+templateName,
-                type: "GET",
-                dataType: "json",
-                contentType: "application/vnd.nimn; charset=utf-8",
-                success: data => {
-                    var templateData = JSON.parse(data);
-
-                    this.parent.applyTemplate(templateData);
-                }
-            });
-        }.bind(this)
         this.exportTemplateName = `${this.parent.frame.symbolsPerCard}-${this.parent.frame.width}x${this.parent.frame.height}-match-it`;
         this.readTemplateFile = function(f){
-
             var input = f.srcElement;
             if (input.files && input.files[0]) {
                 var reader = new FileReader();
@@ -288,6 +272,19 @@ riot.tag2('gallery', '<label class="btn-bs-file btn btn-outline-info">Browse Ima
 });
 riot.tag2('review', '<decktemplate></decktemplate> <div id="review-panel" class="input-bar clearfix" style="width:100%"> <div class="photolist-wrapper" style="width:100%"> <div each="{card in cards}" class="cardframe" onclick="{select}" riot-style="background-color: {frame.bgColor}"> <div class="align-center" style="writing-mode: tb-rl; height: 100%; text-align:center; font-size: small; color: gray;">funcards.github.io/match-it</div> <div each="{symbol in card}" class="symbol trans" h="{readSymbol(symbol).size.height}" w="{readSymbol(symbol).size.width}" weight="{calculateWeight( readSymbol(symbol).size )}"> <img riot-src="{readSymbol(symbol,true).src}"> <div class="ui-resizable-handle resizeHandle"></div> </div> </div> </div> </div>', 'review .cardframe,[data-is="review"] .cardframe{ display: block; background-color: white; float: left; margin: 3px; border-radius: 5px; padding: 5px; position: relative; } review .symbol,[data-is="review"] .symbol{ position: absolute; cursor: move; } review .resizeHandle,[data-is="review"] .resizeHandle{ width: 10px; height: 10px; background-color: #ffffff; border: 1px solid #000000; bottom: 1px; right:1px; display: none; } review .ui-rotatable-handle,[data-is="review"] .ui-rotatable-handle{ width: 10px; height: 10px; background-color: green; bottom: 1px; right:1px; border-radius: 5px; cursor: crosshair; display: none; } review .cf-selected,[data-is="review"] .cf-selected{ outline: 4px solid yellow; }', '', function(opts) {
         this.templates = [];
+        this.frame = {
+            width : $( "#demo-card" ).width(),
+            height : $( "#demo-card" ).height(),
+            symbolsPerCard: $( "#symbolscount" ).val(),
+            bgColor: $( "#demo-card" ).css("background-color"),
+            rotateEnable: $( "#rotate" ).prop("checked"),
+            resizeEnable: $( "#resize" ).prop("checked"),
+            maintainratio: $( "#maintainratio" ).prop("checked"),
+
+        }
+
+        this.frame.desiredSymbolSize = Math.floor ( ( (this.frame.width * this.frame.height) / this.frame.symbolsPerCard ) * 0.9 );
+
         this.on("mount",() => {
             $(".cardframe").width(this.frame.width);
             $(".cardframe").height(this.frame.height);
@@ -296,6 +293,13 @@ riot.tag2('review', '<decktemplate></decktemplate> <div id="review-panel" class=
 
             });
             $('.symbol').draggable().rotatable();
+            $(".cardframe").mouseover( function(e) {
+                $(this).find(".resizeHandle, .ui-rotatable-handle").show();
+            });
+
+            $(".cardframe").mouseout( function(e) {
+                $(this).find(".resizeHandle, .ui-rotatable-handle").hide();
+            });
 
             $(".cardframe").each( (i,el) => {
                 resizeSymbolsRandomly($(el).find(".symbol"),this.frame.resizeEnable , this.frame.maintainratio, this.frame.desiredSymbolSize);
@@ -304,14 +308,6 @@ riot.tag2('review', '<decktemplate></decktemplate> <div id="review-panel" class=
                 }
                 setRandomPos($(el).find(".symbol"));
             })
-
-            $(".cardframe").mouseover( function(e) {
-                $(this).find(".resizeHandle, .ui-rotatable-handle").show();
-            });
-
-            $(".cardframe").mouseout( function(e) {
-                $(this).find(".resizeHandle, .ui-rotatable-handle").hide();
-            });
 
             $("#action-bar").click((e) =>{
                 e.stopPropagation();
@@ -327,7 +323,6 @@ riot.tag2('review', '<decktemplate></decktemplate> <div id="review-panel" class=
         })
 
         this.select = function(e){
-
             if (event.ctrlKey && $(e.target).hasClass("cardframe") ) {
                 this.toggleSelect(e.target);
             }else if( $(e.target).hasClass("cardframe")) {
@@ -344,18 +339,6 @@ riot.tag2('review', '<decktemplate></decktemplate> <div id="review-panel" class=
                 $(element).addClass("cf-selected");
             }
         }.bind(this)
-        this.frame = {
-            width : $( "#demo-card" ).width(),
-            height : $( "#demo-card" ).height(),
-            symbolsPerCard: $( "#symbolscount" ).val(),
-            bgColor: $( "#demo-card" ).css("background-color"),
-            rotateEnable: $( "#rotate" ).prop("checked"),
-            resizeEnable: $( "#resize" ).prop("checked"),
-            maintainratio: $( "#maintainratio" ).prop("checked"),
-
-        }
-
-        this.frame.desiredSymbolSize = Math.floor ( ( (this.frame.width * this.frame.height) / this.frame.symbolsPerCard ) * 0.9 );
 
         this.calculateWeight = function(size){
             if(size.height > size.width){

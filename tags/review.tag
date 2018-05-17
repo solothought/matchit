@@ -53,24 +53,31 @@
     </div>
     <script>
         this.templates = [];
+        this.frame = {
+            width : $( "#demo-card" ).width(),
+            height : $( "#demo-card" ).height(),
+            symbolsPerCard: $( "#symbolscount" ).val(),
+            bgColor: $( "#demo-card" ).css("background-color"),
+            rotateEnable: $( "#rotate" ).prop("checked"),
+            resizeEnable: $( "#resize" ).prop("checked"),
+            maintainratio: $( "#maintainratio" ).prop("checked"),
+            /* symbol: {
+                width:,
+                height:
+            } */
+        }
+
+        this.frame.desiredSymbolSize = Math.floor ( ( (this.frame.width * this.frame.height) / this.frame.symbolsPerCard ) * 0.9 );
+
         this.on("mount",() => {
             $(".cardframe").width(this.frame.width);
             $(".cardframe").height(this.frame.height);
 
-
+            // Start: card symbol event
             $('.trans img').resizable({
                 /* containment:  */
             });
             $('.symbol').draggable().rotatable();
-
-            $(".cardframe").each( (i,el) => {
-                resizeSymbolsRandomly($(el).find(".symbol"),this.frame.resizeEnable , this.frame.maintainratio, this.frame.desiredSymbolSize);
-                if(this.frame.rotateEnable){
-                    rotateSymbolsRandomly($(el).find(".symbol"));
-                }
-                setRandomPos($(el).find(".symbol"));
-            })
-            
             $(".cardframe").mouseover( function(e) {
                 $(this).find(".resizeHandle, .ui-rotatable-handle").show();
             });
@@ -78,7 +85,18 @@
             $(".cardframe").mouseout( function(e) {
                 $(this).find(".resizeHandle, .ui-rotatable-handle").hide();
             });
+            // End: card symbol event
 
+            //position symbols in a card
+            $(".cardframe").each( (i,el) => {
+                resizeSymbolsRandomly($(el).find(".symbol"),this.frame.resizeEnable , this.frame.maintainratio, this.frame.desiredSymbolSize);
+                if(this.frame.rotateEnable){
+                    rotateSymbolsRandomly($(el).find(".symbol"));
+                }
+                setRandomPos($(el).find(".symbol"));
+            })
+
+            //Card selection
             $("#action-bar").click((e) =>{
                 e.stopPropagation();
             });
@@ -89,11 +107,12 @@
                     $(".cf-selected").removeClass("cf-selected");
                 }
             })
+            //End: card selection
 
         })
 
+        //Select cards
         select(e){
-
             if (event.ctrlKey && $(e.target).hasClass("cardframe") ) {
                 this.toggleSelect(e.target);
             }else if( $(e.target).hasClass("cardframe")) {
@@ -110,21 +129,8 @@
                 $(element).addClass("cf-selected");
             }
         }
-        this.frame = {
-            width : $( "#demo-card" ).width(),
-            height : $( "#demo-card" ).height(),
-            symbolsPerCard: $( "#symbolscount" ).val(),
-            bgColor: $( "#demo-card" ).css("background-color"),
-            rotateEnable: $( "#rotate" ).prop("checked"),
-            resizeEnable: $( "#resize" ).prop("checked"),
-            maintainratio: $( "#maintainratio" ).prop("checked"),
-            /* symbol: {
-                width:,
-                height:
-            } */
-        }
-
-        this.frame.desiredSymbolSize = Math.floor ( ( (this.frame.width * this.frame.height) / this.frame.symbolsPerCard ) * 0.9 );
+        //End: select cards
+        
         
         /* 
         2 for long or tall images otherwise 1
