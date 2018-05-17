@@ -408,7 +408,7 @@ riot.tag2('review', '<decktemplate></decktemplate> <div id="review-panel" class=
 
         this.on("mount",() => {
             var gametype = `${this.parent.frame.symbolsPerCard}-${this.parent.frame.width}x${this.parent.frame.height}`;
-            __gaTracker('send', 'event', 'cards', 'generate', gametype);
+            ga('send', 'event', 'cards', 'generate', gametype);
             $(".cardframe").width(this.frame.width);
             $(".cardframe").height(this.frame.height);
 
