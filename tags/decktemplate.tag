@@ -1,7 +1,22 @@
 <decktemplate>
     <div class="row align-items-center">
         <div class="col form-inline">
-            <i class="fa fa-random action-btn btn btn-info"  title="Arrange Randomly" onclick={ this.parent.arrangeRandomly }></i>
+            <i class="fa fa-repeat action-btn btn btn-info"  title="Arrange Randomly" onclick={ rotateRandomly }></i>
+
+            <div class="input-group">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="resize-action" checked>
+                    <label class="form-check-label" for="resize-action">
+                        Maintain height-width ratio
+                    </label>
+                </div>
+                <span class="fa-stack fa-lg action-btn btn btn-info" title="Resize Randomly" style="font-size: 1.2em;" onclick={resizeRandomly}>
+                    <i class="fa fa-square-o fa-stack-2x" style="top: -0.5px;"></i>
+                    <i class="fa fa-arrows-h fa-stack-1x" style="top: -0.5px;"></i>
+                </span>
+            </div>
+            
+            <i class="fa fa-random action-btn btn btn-info"  title="Arrange Randomly" onclick={ arrangeRandomly }></i>
             <i class="fa fa-copy action-btn btn btn-info"  title="Copy Pattern" onclick={ this.parent.arrangeRandomly }></i>
             <i class="fa fa-paste action-btn btn btn-info"  title="Paste Pattern" onclick={ this.parent.arrangeRandomly }></i>
             
@@ -34,6 +49,30 @@
     </div>  -->
     <script>
     
+        selectCards(cb,...arg){
+            var elArr = $(".cf-selected");
+
+            if(elArr.length === 0){
+                elArr = $(".cardframe");
+            }
+            elArr.each( function(i) {
+                cb($(this).find(".symbol"), ...arg);
+            })
+        }
+
+        arrangeRandomly(){
+            this.selectCards(setRandomPos);
+        }
+
+        rotateRandomly(){
+            this.selectCards(rotateSymbolsRandomly);
+        }
+
+        resizeRandomly(){
+            var maintainRatio = $("#resize-action").prop("checked");
+            this.selectCards(resizeSymbolsRandomly, maintainRatio, this.parent.desiredSymbolSize);
+        }
+
         loadtemplate(e){
             
             var templateName = e.target.value + ".nimn";

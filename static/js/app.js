@@ -58,6 +58,59 @@ function setRandomPos(elements){
     });
 }
 
+function rotateSymbolsRandomly(elements){
+    elements.each(function(){
+        $(this).css({'transform' : 'rotate('+ randInRange(0,360) +'deg)'});
+    });
+}
+
+/**
+ * 
+ * @param {*} elements 
+ * @param {boolean} maintainRatio 
+ * @param {*} desiredSize : desired size whould be bigger for big cards, small for small cards
+ */
+function resizeSymbolsRandomly(elements, maintainRatio, desiredSize){
+    elements.each(function(){
+        var originalSize = {
+            width : $(this).attr("w"),
+            height : $(this).attr("h")
+        }
+        var size = transformSize(originalSize,true,maintainRatio, desiredSize);
+        $(this).width(size.width);
+        $(this).height(size.height);
+    });
+}
+/* 
+calculate new width and height for a symbol on the basis of original size. 
+Maintains ratio if selected
+*/
+function transformSize(originalSize, randomEnable , maintainratio, desiredSymbolSize ){
+    var ratio = 1;
+    var w,h;
+    var minW,maxW;
+    if(maintainratio){//set only width
+        ratio = originalSize.height / originalSize.width;
+        w = Math.floor ( Math.sqrt( desiredSymbolSize / ratio ) ) * 0.6;
+        w = w < 75 ? 75 : w;
+    }else{
+        w = Math.floor ( Math.sqrt( desiredSymbolSize)) * 0.6;
+        w = w < 75 ? 75 : w;
+        h = w;
+    }
+
+    if(randomEnable){
+        w = randInRange(65,w * 1.5);
+    }
+    if(h){
+        //return `width: ${w}px; height: ${h}px;`
+        return {width: w, height: h};
+    }else{
+        h = w * ratio;
+        return {width: w, height: h};
+    }
+}
+
 /* function outOfParent(element){
     if ( ( element.position().left + element.width() ) > element.parent().width()
         || ( element.position().top + element.height() ) > element.parent().height() )

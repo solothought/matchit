@@ -1,4 +1,28 @@
-riot.tag2('decktemplate', '<div class="row align-items-center"> <div class="col form-inline"> <i class="fa fa-random action-btn btn btn-info" title="Arrange Randomly" onclick="{this.parent.arrangeRandomly}"></i> <i class="fa fa-copy action-btn btn btn-info" title="Copy Pattern" onclick="{this.parent.arrangeRandomly}"></i> <i class="fa fa-paste action-btn btn btn-info" title="Paste Pattern" onclick="{this.parent.arrangeRandomly}"></i> <label class="btn-bs-file"> <i class="fa fa-folder-open-o action-btn btn btn-info" title="Open Pattern file" onclick="{this.parent.arrangeRandomly}"></i> <input type="file" class="filebutton" accept="application/vnd.nimn,*.nmn,*.nimn" onchange="{readTemplateFile}"> </label> <div class="form-inline input-group"> <input id="exportTemplateName" type="text" class="form-control" placeholder="Enter the template name " riot-value="{exportTemplateName}" style="width: 300px;"> <i class="fa fa-save action-btn btn btn-info" title="Save Pattern to external file" onclick="{exportTemplate}"></i> </div> </div> </div> </div>', '', '', function(opts) {
+riot.tag2('decktemplate', '<div class="row align-items-center"> <div class="col form-inline"> <i class="fa fa-repeat action-btn btn btn-info" title="Arrange Randomly" onclick="{rotateRandomly}"></i> <div class="input-group"> <div class="form-check"> <input class="form-check-input" type="checkbox" value="" id="resize-action" checked> <label class="form-check-label" for="resize-action"> Maintain height-width ratio </label> </div> <span class="fa-stack fa-lg action-btn btn btn-info" title="Resize Randomly" style="font-size: 1.2em;" onclick="{resizeRandomly}"> <i class="fa fa-square-o fa-stack-2x" style="top: -0.5px;"></i> <i class="fa fa-arrows-h fa-stack-1x" style="top: -0.5px;"></i> </span> </div> <i class="fa fa-random action-btn btn btn-info" title="Arrange Randomly" onclick="{arrangeRandomly}"></i> <i class="fa fa-copy action-btn btn btn-info" title="Copy Pattern" onclick="{this.parent.arrangeRandomly}"></i> <i class="fa fa-paste action-btn btn btn-info" title="Paste Pattern" onclick="{this.parent.arrangeRandomly}"></i> <label class="btn-bs-file"> <i class="fa fa-folder-open-o action-btn btn btn-info" title="Open Pattern file" onclick="{this.parent.arrangeRandomly}"></i> <input type="file" class="filebutton" accept="application/vnd.nimn,*.nmn,*.nimn" onchange="{readTemplateFile}"> </label> <div class="form-inline input-group"> <input id="exportTemplateName" type="text" class="form-control" placeholder="Enter the template name " riot-value="{exportTemplateName}" style="width: 300px;"> <i class="fa fa-save action-btn btn btn-info" title="Save Pattern to external file" onclick="{exportTemplate}"></i> </div> </div> </div> </div>', '', '', function(opts) {
+
+        this.selectCards = function(cb,...arg){
+            var elArr = $(".cf-selected");
+
+            if(elArr.length === 0){
+                elArr = $(".cardframe");
+            }
+            elArr.each( function(i) {
+                cb($(this).find(".symbol"), ...arg);
+            })
+        }.bind(this)
+
+        this.arrangeRandomly = function(){
+            this.selectCards(setRandomPos);
+        }.bind(this)
+
+        this.rotateRandomly = function(){
+            this.selectCards(rotateSymbolsRandomly);
+        }.bind(this)
+
+        this.resizeRandomly = function(){
+            var maintainRatio = $("#resize-action").prop("checked");
+            this.selectCards(resizeSymbolsRandomly, maintainRatio, this.parent.desiredSymbolSize);
+        }.bind(this)
 
         this.loadtemplate = function(e){
 
@@ -262,7 +286,7 @@ riot.tag2('gallery', '<label class="btn-bs-file btn btn-outline-info">Browse Ima
             this.update();
         }.bind(this)
 });
-riot.tag2('review', '<decktemplate></decktemplate> <div id="review-panel" class="input-bar clearfix" style="width:100%"> <div class="photolist-wrapper" style="width:100%"> <div each="{card in cards}" class="cardframe" onclick="{select}" riot-style="background-color: {frame.bgColor}"> <div class="align-center" style=" writing-mode: tb-rl; height: 100%; text-align:center; font-size: small; color: gray;">funcards.github.io/match-it</div> <div each="{symbol in card}" class="symbol trans" riot-style="{this.transformSize( readSymbol(symbol).size)} transform: rotate({this.transformRotate()}deg);" weight="{calculateWeight( readSymbol(symbol).size )}"> <img riot-src="{readSymbol(symbol,true).src}" height="100%" width="100%"> <div class="ui-resizable-handle resizeHandle"></div> </div> </div> </div> </div>', 'review .cardframe,[data-is="review"] .cardframe{ display: block; background-color: white; float: left; margin: 3px; border-radius: 5px; padding: 5px; position: relative; } review .symbol,[data-is="review"] .symbol{ position: absolute; cursor: move; } review .resizeHandle,[data-is="review"] .resizeHandle{ width: 10px; height: 10px; background-color: #ffffff; border: 1px solid #000000; bottom: 1px; right:1px; display: none; } review .ui-rotatable-handle,[data-is="review"] .ui-rotatable-handle{ width: 10px; height: 10px; background-color: green; bottom: 1px; right:1px; border-radius: 5px; cursor: crosshair; display: none; } review .cf-selected,[data-is="review"] .cf-selected{ outline: 4px solid yellow; }', '', function(opts) {
+riot.tag2('review', '<decktemplate></decktemplate> <div id="review-panel" class="input-bar clearfix" style="width:100%"> <div class="photolist-wrapper" style="width:100%"> <div each="{card in cards}" class="cardframe" onclick="{select}" riot-style="background-color: {frame.bgColor}"> <div class="align-center" style=" writing-mode: tb-rl; height: 100%; text-align:center; font-size: small; color: gray;">funcards.github.io/match-it</div> <div each="{symbol in card}" class="symbol trans" h="{readSymbol(symbol).size.height}" w="{readSymbol(symbol).size.width}" riot-style="{this.transformSize( readSymbol(symbol).size)} transform: rotate({this.transformRotate()}deg);" weight="{calculateWeight( readSymbol(symbol).size )}"> <img riot-src="{readSymbol(symbol,true).src}" height="100%" width="100%"> <div class="ui-resizable-handle resizeHandle"></div> </div> </div> </div> </div>', 'review .cardframe,[data-is="review"] .cardframe{ display: block; background-color: white; float: left; margin: 3px; border-radius: 5px; padding: 5px; position: relative; } review .symbol,[data-is="review"] .symbol{ position: absolute; cursor: move; } review .resizeHandle,[data-is="review"] .resizeHandle{ width: 10px; height: 10px; background-color: #ffffff; border: 1px solid #000000; bottom: 1px; right:1px; display: none; } review .ui-rotatable-handle,[data-is="review"] .ui-rotatable-handle{ width: 10px; height: 10px; background-color: green; bottom: 1px; right:1px; border-radius: 5px; cursor: crosshair; display: none; } review .cf-selected,[data-is="review"] .cf-selected{ outline: 4px solid yellow; }', '', function(opts) {
         this.templates = [];
         this.on("mount",() => {
             $(".cardframe").width(this.frame.width);
@@ -295,26 +319,23 @@ riot.tag2('review', '<decktemplate></decktemplate> <div id="review-panel" class=
 
         })
 
-        this.arrangeRandomly = function(){
-            var elArr = $(".cf-selected");
-
-            if(elArr.length === 0){
-                elArr = $(".cardframe");
-            }
-
-            elArr.each( function(i) {
-                setRandomPos($(this).children());
-            })
-        }.bind(this)
         this.select = function(e){
-            if( !$(e.target).hasClass("cardframe")) return;
 
-            if($(e.target).hasClass("cf-selected")){
-                $(e.target).removeClass("cf-selected");
-            }else{
+            if (event.ctrlKey && $(e.target).hasClass("cardframe") ) {
+                this.toggleSelect(e.target);
+            }else if( $(e.target).hasClass("cardframe")) {
+                $(".cf-selected").removeClass("cf-selected");
                 $(e.target).addClass("cf-selected");
             }
-            e.stopPropagation();
+                e.stopPropagation();
+        }.bind(this)
+
+        this.toggleSelect = function(element){
+            if($(element).hasClass("cf-selected")){
+                $(element).removeClass("cf-selected");
+            }else{
+                $(element).addClass("cf-selected");
+            }
         }.bind(this)
         this.frame = {
             width : $( "#demo-card" ).width(),
@@ -336,28 +357,8 @@ riot.tag2('review', '<decktemplate></decktemplate> <div id="review-panel" class=
         }.bind(this)
 
         this.transformSize = function(originalSize){
-            var ratio = 1;
-            var w,h;
-            var minW,maxW;
-            if(this.frame.maintainratio  ){
-                ratio = originalSize.height / originalSize.width;
-                w = Math.floor ( Math.sqrt( this.frame.desiredSymbolSize / ratio ) ) * 0.6;
-                w = w < 75 ? 75 : w;
-            }else{
-                w = Math.floor ( Math.sqrt( this.frame.desiredSymbolSize)) * 0.6;
-                w = w < 75 ? 75 : w;
-                h = w;
-            }
-
-            if(this.frame.resizeEnable){
-                w = randInRange(65,w * 1.5);
-            }
-            if(h){
-                return `width: ${w}px; height: ${h}px;`
-            }else{
-                h = w * ratio;
-                return `width: ${w}px; height: ${h}px;`
-            }
+            var size = transformSize(originalSize, this.frame.resizeEnable , this.frame.maintainratio, this.frame.desiredSymbolSize);
+            return `width: ${size.width}px; height: ${size.height}px;`
         }.bind(this)
 
         this.calculateWeight = function(size){

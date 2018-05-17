@@ -42,7 +42,7 @@
         <div class="photolist-wrapper" style="width:100%">
             <div each={card in cards} class="cardframe" onclick={select} style="background-color: { frame.bgColor }">
                 <div class="align-center" style="    writing-mode: tb-rl; height: 100%; text-align:center; font-size: small; color: gray;">funcards.github.io/match-it</div>
-                <div each={ symbol in card} class="symbol trans" style="{this.transformSize( readSymbol(symbol).size)} transform: rotate({ this.transformRotate() }deg);" 
+                <div each={ symbol in card} class="symbol trans"  h={readSymbol(symbol).size.height} w={readSymbol(symbol).size.width} style="{this.transformSize( readSymbol(symbol).size)} transform: rotate({ this.transformRotate() }deg);" 
                     weight={ calculateWeight( readSymbol(symbol).size ) }>
                     <img  src={ readSymbol(symbol,true).src } height="100%" width="100%"  >
                     <div class="ui-resizable-handle resizeHandle"></div>
@@ -82,29 +82,26 @@
                     $(".cf-selected").removeClass("cf-selected");
                 }
             })
-            
+
         })
 
-        arrangeRandomly(){
-            var elArr = $(".cf-selected");
-
-            if(elArr.length === 0){
-                elArr = $(".cardframe");
-            }
-
-            elArr.each( function(i) {
-                setRandomPos($(this).children());
-            })
-        }
         select(e){
-            if( !$(e.target).hasClass("cardframe")) return;
 
-            if($(e.target).hasClass("cf-selected")){
-                $(e.target).removeClass("cf-selected");
-            }else{
+            if (event.ctrlKey && $(e.target).hasClass("cardframe") ) {
+                this.toggleSelect(e.target);
+            }else if( $(e.target).hasClass("cardframe")) {
+                $(".cf-selected").removeClass("cf-selected");
                 $(e.target).addClass("cf-selected");
             }
-            e.stopPropagation();
+                e.stopPropagation();
+        }
+
+        toggleSelect(element){
+            if($(element).hasClass("cf-selected")){
+                $(element).removeClass("cf-selected");
+            }else{
+                $(element).addClass("cf-selected");
+            }
         }
         this.frame = {
             width : $( "#demo-card" ).width(),
@@ -129,29 +126,10 @@
         }
 
         transformSize(originalSize){
-            var ratio = 1;
-            var w,h;
-            var minW,maxW;
-            if(this.frame.maintainratio /* && originalSize.width < originalSize.height */){//set only width
-                ratio = originalSize.height / originalSize.width;
-                w = Math.floor ( Math.sqrt( this.frame.desiredSymbolSize / ratio ) ) * 0.6;
-                w = w < 75 ? 75 : w;
-            }else{
-                w = Math.floor ( Math.sqrt( this.frame.desiredSymbolSize)) * 0.6;
-                w = w < 75 ? 75 : w;
-                h = w;
-            }
-
-            if(this.frame.resizeEnable){
-                w = randInRange(65,w * 1.5);
-            }
-            if(h){
-                return `width: ${w}px; height: ${h}px;`
-            }else{
-                h = w * ratio;
-                return `width: ${w}px; height: ${h}px;`
-            }
+            var size = transformSize(originalSize, this.frame.resizeEnable , this.frame.maintainratio, this.frame.desiredSymbolSize);
+            return `width: ${size.width}px; height: ${size.height}px;`
         }
+        
         
         /* 
         2 for long or tall images otherwise 1
