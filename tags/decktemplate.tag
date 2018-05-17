@@ -17,8 +17,8 @@
             </div>
             
             <i class="fa fa-random action-btn btn btn-info"  title="Arrange Randomly" onclick={ arrangeRandomly }></i>
-            <i class="fa fa-copy action-btn btn btn-info"  title="Copy Pattern" onclick={ this.parent.arrangeRandomly }></i>
-            <i class="fa fa-paste action-btn btn btn-info"  title="Paste Pattern" onclick={ this.parent.arrangeRandomly }></i>
+            <i class="fa fa-copy action-btn btn btn-info"  title="Copy Pattern" onclick={ copy }></i>
+            <i class="fa fa-paste action-btn btn btn-info"  title="Paste Pattern" onclick={ paste }></i>
             
 
             <label class="btn-bs-file">
@@ -70,7 +70,46 @@
 
         resizeRandomly(){
             var maintainRatio = $("#resize-action").prop("checked");
-            this.selectCards(resizeSymbolsRandomly, maintainRatio, this.parent.frame.desiredSymbolSize);
+            this.selectCards(resizeSymbolsRandomly, true, maintainRatio, this.parent.frame.desiredSymbolSize);
+        }
+
+        var clipboard = null;
+
+        copy(e){
+            var selected = $(".cf-selected");
+            if(e.shiftKey){
+                //copy pattern weightwise
+                clipboard = {};
+                selected.each((i,cardEl) =>{
+                    var result = this.extractPatternDataWithWeight(cardEl);
+                    if( !clipboard[result.weight] ){
+                        clipboard[result.weight] = [];
+                    }
+                    clipboard[result.weight].push( result.pattern );
+                });
+            }else{
+                if(selected.length > 1 || selected.length === 0 ){
+                    alert("Please select only 1 card.");        
+                }else{
+                    clipboard = this.extractPatternData(selected);
+                }
+            }
+        }
+
+        paste(){
+            var selected = $(".cf-selected");
+            if(clipboard === null || selected.length === 0) return;
+
+            if( Array.isArray(clipboard) ){//non weight
+                selected.each((i,cardEl) =>{
+                    this.applyPatternData( clipboard , cardEl);
+                });
+            }else{
+                selected.each((i,cardEl) =>{
+                    this.applyPatternDataWithWeight(clipboard,cardEl);
+                });
+            }
+            //clipboard = null;
         }
 
         /*loadtemplate(e){
@@ -93,13 +132,111 @@
                 }
             });
         }*/
+        
+
+        extractPatternData(cardEl){
+            var symbols = [];
+            $(cardEl).find(".symbol").each( (si,symbol) => {
+                symbols.push( this.copyStyle(symbol) );
+            });
+            return symbols;
+        }
+
+        applyPatternData(data,cardEl){
+            $(cardEl).find(".symbol").each( (si,symbol) => {
+                this.applyStyle(data[si],symbol);
+            });
+        }
+
+        extractPatternDataFromMultipleCards(cardsEl){
+            var cards = [];
+            $(cardsEl).each( (card_i, card) => {
+                cards.push( this.extractPatternData(card) );
+            });
+        }
+
+        applyPatternDataOnMultipleCards(data,cardsEl){
+            $(cardsEl).each( (card_i, card) => {
+                this.applyPatternData(data[card_i], card);
+            });
+        }
+
+        extractPatternDataWithWeight(cardEl){
+            var totalWeight =0;
+            var symbols = {
+                "1" : [],
+                "2" : []
+            };
+
+            $(cardEl).find(".symbol").each( (si,symbol) => {
+                var weight = $(symbol).attr("weight");
+                symbols[weight].push( this.copyStyle(symbol) );
+                totalWeight += Number.parseInt(weight);
+            });
+
+            return { weight: totalWeight, pattern: symbols};
+        }
+
+/*
+        1. Calculate totalWeight of a card (based on image size)
+        2. Select a set *randomly* from the pattern sets for calculated weight
+        3. For each symbol in selected set, apply pattern on each symbol in given card.
+        */
+        applyPatternDataWithWeight(data,cardEl){
+            var weightSets = data[ $(cardEl).attr("totalweight") ];//there can be multiple pattern set for each weight
+            if(!weightSets){//selected card has different weight
+                showSnackBar();
+                return;
+            }
+            var patternSet = weightSets[ randInRange(0,weightSets.length -1) ];//select one set randomly
+
+            var weightWiseCounter = {//Each set contains symbol position info weight wise
+                "1" : 0,
+                "2" : 0
+            }
+            $(cardEl).find(".symbol").each( (si, symbol) => {
+                var w = $(symbol).attr("weight");
+                var index = weightWiseCounter[w];
+                this.applyStyle( patternSet[ w ][ index ], symbol)
+                weightWiseCounter[w] +=1;
+            } );
+        }
+
+        applyPatternsToCards(data){
+            $(".cardframe").each( (card_i, cardEl) => {
+                this.applyPatternDataWithWeight(data,cardEl);//Each set contains symbol position info weight wise
+            });
+        }
+
+        copyStyle(el){
+            return {
+                top: $(el).position().top,
+                left: $(el).position().left,
+                height: $(el).height(),
+                width: $(el).width(),
+                transform: $(el).css("transform"),
+            }
+        }
+
+        applyStyle(source,target){
+            $(target).css({
+                top: source.top,
+                left: source.left,
+                transform: source.transform,
+            });
+            resizeSymbol($(target), source);
+        }
+
+        
+        
+
         this.exportTemplateName = `${this.parent.frame.symbolsPerCard}-${this.parent.frame.width}x${this.parent.frame.height}-match-it`;
         readTemplateFile(f){
             var input = f.srcElement;
             if (input.files && input.files[0]) {
                 var reader = new FileReader();
                 reader.onload = e => {
-                    this.parent.applyTemplate(JSON.parse(e.target.result));
+                    this.applyPatternsToCards(JSON.parse(e.target.result).cards);
                 }
                 reader.onloadend = e => {
                     this.update();
@@ -114,33 +251,9 @@
                 frame : this.parent.frame,
                 cards: {}
             };
-            $(".cardframe").each(function(fi){
-                var totalWeight =0;
-                var symbols = {
-                    "1" : [],
-                    "2" : []
-                };
-
-                $(this).find(".symbol").each( function(si,symbol){
-                    //var thumbnail = $(this).find("img")[0];
-                    var height = $(symbol).height();
-                    var width = $(symbol).width();
-                    var weight = $(symbol).attr("weight");
-
-                    symbols[weight].push({
-                        top: $(this).position().top,
-                        left: $(this).position().left,
-                        height: height,
-                        width: width,
-                        transform: $(this).css("transform"),
-                    });
-
-                    totalWeight += Number.parseInt(weight);
-                });
-                if(!deck.cards[totalWeight]){
-                    deck.cards[totalWeight] = [];
-                }
-                deck.cards[totalWeight].push(symbols);
+            $(".cardframe").each((fi,frame) => {
+                var result = this.extractPatternDataWithWeight(frame);
+                deck.cards[result.weight].push(result.pattern);
             })
             //TODO: convert to nimn first
             //download(JSON.stringify(deck), `${deck.frame.symbolsPerCard}-${this.frame.width}x${this.frame.height}-match-it.json` ,"application/json");
@@ -148,6 +261,14 @@
             var fileName = this.root.querySelector('#exportTemplateName').value + ".nimn";
 
             download( data, fileName ,"application/vnd.nimn");
+        }
+
+        function showSnackBar() {
+            // Get the snackbar DIV
+            var x = $("#snackbar").addClass("show");
+
+            // After 3 seconds, remove the show class from DIV
+            setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
         }
     </script>
 </decktemplate>

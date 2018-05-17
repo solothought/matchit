@@ -70,18 +70,22 @@ function rotateSymbolsRandomly(elements){
  * @param {boolean} maintainRatio 
  * @param {*} desiredSize : desired size whould be bigger for big cards, small for small cards
  */
-function resizeSymbolsRandomly(elements, maintainRatio, desiredSize){
+function resizeSymbolsRandomly(elements, randomEnable, maintainRatio, desiredSize){
     elements.each(function(){
         var originalSize = {
             width : $(this).attr("w"),
             height : $(this).attr("h")
         }
-        var size = transformSize(originalSize,true,maintainRatio, desiredSize);
+        var size = transformSize(originalSize,randomEnable,maintainRatio, desiredSize);
         //$(this).width(size.width).height(size.height);
-        $(this).css({width: size.width, height : size.height });
-        $(this).find(".ui-wrapper").css({width: size.width, height : size.height });
-        $(this).find(".ui-wrapper img").css({width: size.width, height : size.height });
+        resizeSymbol($(this), size);
     });
+}
+
+function resizeSymbol(symbol,size){
+    $(symbol).css({width: size.width, height : size.height });
+    $(symbol).find(".ui-wrapper").css({width: size.width, height : size.height });
+    $(symbol).find(".ui-wrapper img").css({width: size.width, height : size.height });
 }
 /* 
 calculate new width and height for a symbol on the basis of original size. 

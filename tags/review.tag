@@ -49,6 +49,7 @@
                 </div>
                 
             </div>
+            <div id="snackbar">Selected card has different size of images</div>
         </div>
     </div>
     <script>
@@ -89,11 +90,12 @@
 
             //position symbols in a card
             $(".cardframe").each( (i,el) => {
-                resizeSymbolsRandomly($(el).find(".symbol"),this.frame.resizeEnable , this.frame.maintainratio, this.frame.desiredSymbolSize);
+                resizeSymbolsRandomly($(el).find(".symbol"), this.frame.resizeEnable, this.frame.maintainratio, this.frame.desiredSymbolSize);
                 if(this.frame.rotateEnable){
                     rotateSymbolsRandomly($(el).find(".symbol"));
                 }
                 setRandomPos($(el).find(".symbol"));
+                this.updateTotalWeight(el);
             })
 
             //Card selection
@@ -150,6 +152,15 @@
                 }
             }
         }
+
+        updateTotalWeight(el){
+            totalWeight = 0;
+            $(el).find(".symbol").each( (i,img) => {
+                totalWeight += Number.parseInt($(img).attr("weight"));
+            });
+            $(el).attr("totalweight", totalWeight);
+        }
+
         this.totalSymbols = totalCombinations($( "#symbolscount" ).val());
         this.cards = createBlocks($( "#symbolscount" ).val());
 
@@ -170,47 +181,6 @@
                     index = groupIndex[n]
                 }
                 return this.opts.symbols["gallery_"+n][ index ];
-            }
-        }
-
-        applyTemplate(templateData){
-            $(".cardframe").each( (card_i, card) => {
-                var totalWeight = this.calculateTotalWeight(card);
-                var weightSets = templateData.cards[totalWeight];
-                var randomIndex = randInRange(0,weightSets.length -1);
-                var symbols = $(card).find(".symbol");
-                var weightWiseCounter = {
-                    "1" : 0,
-                    "2" : 0
-                }
-                var cardTemplate = weightSets[randomIndex];
-
-                $(card).find(".symbol").each( (si, symbol) => {
-                    var w = $(symbol).attr("weight");
-                    $(symbol).css({
-                        top: cardTemplate[w][ weightWiseCounter[w] ].top,
-                        left: cardTemplate[w][ weightWiseCounter[w] ].left,
-                        transform: cardTemplate[w][ weightWiseCounter[w] ].transform,
-                    })
-                    $(symbol).height(cardTemplate[w][ weightWiseCounter[w] ].height);
-                    $(symbol).width(cardTemplate[w][ weightWiseCounter[w] ].width);
-                    weightWiseCounter[w] +=1;
-                } );
-
-            });
-        }
-
-        calculateTotalWeight(el){
-            var totalWeight = $(el).attr("totalweight");
-            if( ! totalWeight ){
-                totalWeight = 0;
-                $(el).find(".symbol").each( (i,img) => {
-                    totalWeight += Number.parseInt($(img).attr("weight"));
-                });
-                $(el).attr("totalweight", totalWeight);
-                return totalWeight;
-            }else{
-                return totalWeight;
             }
         }
 
