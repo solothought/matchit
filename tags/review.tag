@@ -41,10 +41,10 @@
     <div id="review-panel" class="input-bar clearfix" style="width:100%">
         <div class="photolist-wrapper" style="width:100%">
             <div each={card in cards} class="cardframe" onclick={select} style="background-color: { frame.bgColor }">
-                <div class="align-center" style="    writing-mode: tb-rl; height: 100%; text-align:center; font-size: small; color: gray;">funcards.github.io/match-it</div>
-                <div each={ symbol in card} class="symbol trans"  h={readSymbol(symbol).size.height} w={readSymbol(symbol).size.width} style="{this.transformSize( readSymbol(symbol).size)} transform: rotate({ this.transformRotate() }deg);" 
+                <div class="align-center" style="writing-mode: tb-rl; height: 100%; text-align:center; font-size: small; color: gray;">funcards.github.io/match-it</div>
+                <div each={ symbol in card} class="symbol trans"  h={readSymbol(symbol).size.height} w={readSymbol(symbol).size.width}  
                     weight={ calculateWeight( readSymbol(symbol).size ) }>
-                    <img  src={ readSymbol(symbol,true).src } height="100%" width="100%"  >
+                    <img  src={ readSymbol(symbol,true).src }>
                     <div class="ui-resizable-handle resizeHandle"></div>
                 </div>
                 
@@ -63,8 +63,12 @@
             });
             $('.symbol').draggable().rotatable();
 
-            $(".cardframe").each( function(i) {
-                setRandomPos($(this).children());
+            $(".cardframe").each( (i,el) => {
+                resizeSymbolsRandomly($(el).find(".symbol"),this.frame.resizeEnable , this.frame.maintainratio, this.frame.desiredSymbolSize);
+                if(this.frame.rotateEnable){
+                    rotateSymbolsRandomly($(el).find(".symbol"));
+                }
+                setRandomPos($(el).find(".symbol"));
             })
             
             $(".cardframe").mouseover( function(e) {
@@ -75,8 +79,11 @@
                 $(this).find(".resizeHandle, .ui-rotatable-handle").hide();
             });
 
+            $("#action-bar").click((e) =>{
+                e.stopPropagation();
+            });
             $(document).click((e) =>{//unselect selected
-                if( $(e.target).hasClass("cf-selected") || $(e.target).hasClass("action-btn") ){
+                if( $(e.target).hasClass("cf-selected") || $(e.target).hasClass("action-btn")){
                     //do nothing
                 }else{
                     $(".cf-selected").removeClass("cf-selected");
@@ -118,18 +125,6 @@
         }
 
         this.frame.desiredSymbolSize = Math.floor ( ( (this.frame.width * this.frame.height) / this.frame.symbolsPerCard ) * 0.9 );
-
-        transformRotate(){
-            if(this.frame.rotateEnable){
-                return randInRange(0,360);
-            }
-        }
-
-        transformSize(originalSize){
-            var size = transformSize(originalSize, this.frame.resizeEnable , this.frame.maintainratio, this.frame.desiredSymbolSize);
-            return `width: ${size.width}px; height: ${size.height}px;`
-        }
-        
         
         /* 
         2 for long or tall images otherwise 1

@@ -1,5 +1,5 @@
 <decktemplate>
-    <div class="row align-items-center">
+    <div id="action-bar" class="row align-items-center">
         <div class="col form-inline">
             <i class="fa fa-repeat action-btn btn btn-info"  title="Arrange Randomly" onclick={ rotateRandomly }></i>
 
@@ -70,7 +70,7 @@
 
         resizeRandomly(){
             var maintainRatio = $("#resize-action").prop("checked");
-            this.selectCards(resizeSymbolsRandomly, maintainRatio, this.parent.desiredSymbolSize);
+            this.selectCards(resizeSymbolsRandomly, maintainRatio, this.parent.frame.desiredSymbolSize);
         }
 
         loadtemplate(e){

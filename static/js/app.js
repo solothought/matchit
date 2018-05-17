@@ -77,8 +77,10 @@ function resizeSymbolsRandomly(elements, maintainRatio, desiredSize){
             height : $(this).attr("h")
         }
         var size = transformSize(originalSize,true,maintainRatio, desiredSize);
-        $(this).width(size.width);
-        $(this).height(size.height);
+        //$(this).width(size.width).height(size.height);
+        $(this).css({width: size.width, height : size.height });
+        $(this).find(".ui-wrapper").css({width: size.width, height : size.height });
+        $(this).find(".ui-wrapper img").css({width: size.width, height : size.height });
     });
 }
 /* 
