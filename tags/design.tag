@@ -73,22 +73,18 @@
         </div>
 
         <div  class="col-md-8">
-                <div id="slider-horizontal-val" class="text-center"></div>
+                <div id="slider-horizontal-val" class="text-center" style="width:160mm;"></div>
                 <div id="slider-horizontal"></div>
-                <div class="row" id="demo-card-container">
-                    <div class="col-md-10">
+                <div id="demo-card-container">
+                    <div style="float:left; width:160mm; height:160mm;">
                         <div id="demo-card">
                             <!-- <img class="thumbnail" src="img/freepik/bath.svg">
                             <img class="thumbnail" src="img/freepik/dog.svg">
                             <img class="thumbnail" src="img/freepik/driller.svg"> -->
                         </div>
                     </div>
-                    <div class="col-md-1">
-                        <div id="slider-vertical"></div>
-                    </div>
-                    <div class="col-md-1">
-                        <div id="slider-vertical-val"></div>
-                    </div>
+                    <div id="slider-vertical" style="float:left"></div>
+                    <div id="slider-vertical-val" style="float:left"></div>
                 </div>
         </div>
             
