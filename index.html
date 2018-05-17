@@ -160,8 +160,12 @@
         $(document).ready(function(){
 
             riot.mount("design");
+            
+            $("#githublogo").hide();
+            setTimeout(() => {
+                rotatein($("#githublogo"));
+            },5000);
 
-            rotatein($("#githublogo"));
             $("a.btn").on('click', function(event) {
                 // Make sure this.hash has a value before overriding default behavior
                 if (this.hash !== "") {
