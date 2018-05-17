@@ -121,7 +121,7 @@ riot.tag2('decktemplate', '<div id="action-bar" class="row align-items-center"> 
             $(cardEl).find(".symbol").each( (si, symbol) => {
                 var w = $(symbol).attr("weight");
                 var index = weightWiseCounter[w];
-                this.applyStyle( patternSet[ w ][ index ], symbol)
+                this.applyStyle( patternSet[ w ][ index ], symbol, true);
                 weightWiseCounter[w] +=1;
             } );
         }.bind(this)
@@ -142,12 +142,23 @@ riot.tag2('decktemplate', '<div id="action-bar" class="row align-items-center"> 
             }
         }.bind(this)
 
-        this.applyStyle = function(source,target){
+        this.applyStyle = function(source,target,checkWeight){
             $(target).css({
                 top: source.top,
                 left: source.left,
                 transform: source.transform,
             });
+            if(checkWeight){
+                var sourceWeight = calculateWeight(source);
+
+                var targetWeight = calculateWeight({
+                    height : $(target).attr("h"),
+                    width : $(target).attr("w")
+                })
+                if( sourceWeight !== targetWeight ){
+                    rotate(target, 90);
+                }
+            }
             resizeSymbol($(target), source);
         }.bind(this)
 
@@ -185,9 +196,9 @@ riot.tag2('decktemplate', '<div id="action-bar" class="row align-items-center"> 
 
         function showSnackBar() {
 
-            var x = $("#snackbar").addClass("show");
+            $("#snackbar").addClass("show");
 
-            setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+            setTimeout(function(){ $("#snackbar").removeClass("show"); }, 3000);
         }
 });
 riot.tag2('design', '<div class="row"> <div class="col-md-4"> <select id="cardsize" class="form-control" onchange="{changeDemoCardSize}"> <option disabled="true">Select Size</option> <option each="{cardsize,name in cards}" riot-value="{name}" selected="{name == \'Normal Playing Card Or Bridge Size\'}">{name}</option> </select> <div class="empty"></div> <select id="symbolscount" onchange="{checkSymbolCount}" class="form-control"> <option selected="false" disabled="true">Number of symbols on a card</option> <option>2</option> <option>3</option> <option>4</option> <option>5</option> <option>6</option> <option>7</option> <option>8</option> <option>9</option> <option>10</option> </select> <div class="empty"></div> <div>Choose background color</div> <input id="colorpicker" onchange="{changeBgColor}" value="#ffffff" style="width:100%;" type="color"> <div class="empty"></div> <div class="form-check"> <input class="form-check-input" type="checkbox" value="" id="rotate"> <label class="form-check-label" for="rotate"> Rotate randomly </label> </div> <div class="form-check"> <input class="form-check-input" type="checkbox" value="" id="resize"> <label class="form-check-label" for="resize"> Resize randmly </label> </div> <div class="form-check"> <input class="form-check-input" type="checkbox" value="" id="maintainratio" checked="true"> <label class="form-check-label" for="maintainratio"> Maintain height width ratio </label> </div> </div> <div class="col-md-8"> <div id="slider-horizontal-val" class="text-center" style="width:160mm;"></div> <div id="slider-horizontal"></div> <div id="demo-card-container"> <div style="float:left; width:160mm; height:160mm;"> <div id="demo-card"> </div> </div> <div id="slider-vertical" style="float:left"></div> <div id="slider-vertical-val" style="float:left"></div> </div> </div> </div>', 'design .ui-slider .ui-slider-handle,[data-is="design"] .ui-slider .ui-slider-handle{ width: 0.8em; height: 0.8em; } design #slider-vertical,[data-is="design"] #slider-vertical{ height: 150mm; width: 5px; } design #slider-horizontal,[data-is="design"] #slider-horizontal{ width: 150mm; height: 5px; } design #demo-card,[data-is="design"] #demo-card{ display: block; outline: 1px solid grey; margin-top: 10px; } design #demo-card-container,[data-is="design"] #demo-card-container{ height: 160mm; } design #slider-vertical-val,[data-is="design"] #slider-vertical-val{ writing-mode: tb-rl; height: 100%; text-align: center; }', '', function(opts) {
@@ -380,7 +391,7 @@ riot.tag2('gallery', '<label class="btn-bs-file btn btn-outline-info">Browse Ima
             this.update();
         }.bind(this)
 });
-riot.tag2('review', '<decktemplate></decktemplate> <div id="review-panel" class="input-bar clearfix" style="width:100%"> <div class="photolist-wrapper" style="width:100%"> <div each="{card in cards}" class="cardframe" onclick="{select}" riot-style="background-color: {frame.bgColor}"> <div class="align-center" style="writing-mode: tb-rl; height: 100%; text-align:center; font-size: small; color: gray;">funcards.github.io/match-it</div> <div each="{symbol in card}" class="symbol trans" h="{readSymbol(symbol).size.height}" w="{readSymbol(symbol).size.width}" weight="{calculateWeight( readSymbol(symbol).size )}"> <img riot-src="{readSymbol(symbol,true).src}"> <div class="ui-resizable-handle resizeHandle"></div> </div> </div> <div id="snackbar">Selected card has different size of images</div> </div> </div>', 'review .cardframe,[data-is="review"] .cardframe{ display: block; background-color: white; float: left; margin: 3px; border-radius: 5px; padding: 5px; position: relative; } review .symbol,[data-is="review"] .symbol{ position: absolute; cursor: move; } review .resizeHandle,[data-is="review"] .resizeHandle{ width: 10px; height: 10px; background-color: #ffffff; border: 1px solid #000000; bottom: 1px; right:1px; display: none; } review .ui-rotatable-handle,[data-is="review"] .ui-rotatable-handle{ width: 10px; height: 10px; background-color: green; bottom: 1px; right:1px; border-radius: 5px; cursor: crosshair; display: none; } review .cf-selected,[data-is="review"] .cf-selected{ outline: 4px solid yellow; }', '', function(opts) {
+riot.tag2('review', '<decktemplate></decktemplate> <div id="review-panel" class="input-bar clearfix" style="width:100%"> <div class="photolist-wrapper" style="width:100%"> <div each="{card in cards}" class="cardframe" onclick="{select}" riot-style="background-color: {frame.bgColor}"> <div class="align-center" style="writing-mode: tb-rl; height: 100%; text-align:center; font-size: small; color: gray;">funcards.github.io/match-it</div> <div each="{symbol in card}" class="symbol trans" h="{readSymbol(symbol).size.height}" w="{readSymbol(symbol).size.width}" weight="{Math.abs(calculateWeight( readSymbol(symbol).size ))}"> <img riot-src="{readSymbol(symbol,true).src}"> <div class="ui-resizable-handle resizeHandle"></div> </div> </div> <div id="snackbar">Selected card has different size of images</div> </div> </div>', 'review .cardframe,[data-is="review"] .cardframe{ display: block; background-color: white; float: left; margin: 3px; border-radius: 5px; padding: 5px; position: relative; } review .symbol,[data-is="review"] .symbol{ position: absolute; cursor: move; } review .resizeHandle,[data-is="review"] .resizeHandle{ width: 10px; height: 10px; background-color: #ffffff; border: 1px solid #000000; bottom: 1px; right:1px; display: none; } review .ui-rotatable-handle,[data-is="review"] .ui-rotatable-handle{ width: 10px; height: 10px; background-color: green; bottom: 1px; right:1px; border-radius: 5px; cursor: crosshair; display: none; } review .cf-selected,[data-is="review"] .cf-selected{ outline: 4px solid yellow; }', '', function(opts) {
         this.templates = [];
         this.frame = {
             width : $( "#demo-card" ).width(),
@@ -448,22 +459,6 @@ riot.tag2('review', '<decktemplate></decktemplate> <div id="review-panel" class=
                 $(element).removeClass("cf-selected");
             }else{
                 $(element).addClass("cf-selected");
-            }
-        }.bind(this)
-
-        this.calculateWeight = function(size){
-            if(size.height > size.width){
-                if( size.height >= size.width * 1.5){
-                    return 2;
-                }else{
-                    return 1;
-                }
-            }else{
-                if( size.width >= size.height * 1.5){
-                    return 2;
-                }else{
-                    return 1;
-                }
             }
         }.bind(this)
 

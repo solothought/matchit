@@ -43,7 +43,7 @@
             <div each={card in cards} class="cardframe" onclick={select} style="background-color: { frame.bgColor }">
                 <div class="align-center" style="writing-mode: tb-rl; height: 100%; text-align:center; font-size: small; color: gray;">funcards.github.io/match-it</div>
                 <div each={ symbol in card} class="symbol trans"  h={readSymbol(symbol).size.height} w={readSymbol(symbol).size.width}  
-                    weight={ calculateWeight( readSymbol(symbol).size ) }>
+                    weight={ Math.abs(calculateWeight( readSymbol(symbol).size )) }>
                     <img  src={ readSymbol(symbol,true).src }>
                     <div class="ui-resizable-handle resizeHandle"></div>
                 </div>
@@ -137,21 +137,7 @@
         /* 
         2 for long or tall images otherwise 1
         */
-        calculateWeight(size){
-            if(size.height > size.width){
-                if( size.height >= size.width * 1.5){
-                    return 2;
-                }else{
-                    return 1;
-                }
-            }else{
-                if( size.width >= size.height * 1.5){
-                    return 2;
-                }else{
-                    return 1;
-                }
-            }
-        }
+        
 
         updateTotalWeight(el){
             totalWeight = 0;

@@ -197,7 +197,7 @@
             $(cardEl).find(".symbol").each( (si, symbol) => {
                 var w = $(symbol).attr("weight");
                 var index = weightWiseCounter[w];
-                this.applyStyle( patternSet[ w ][ index ], symbol)
+                this.applyStyle( patternSet[ w ][ index ], symbol, true);
                 weightWiseCounter[w] +=1;
             } );
         }
@@ -218,12 +218,23 @@
             }
         }
 
-        applyStyle(source,target){
+        applyStyle(source,target,checkWeight){
             $(target).css({
                 top: source.top,
                 left: source.left,
                 transform: source.transform,
             });
+            if(checkWeight){
+                var sourceWeight = calculateWeight(source);
+
+                var targetWeight = calculateWeight({
+                    height : $(target).attr("h"),
+                    width : $(target).attr("w")
+                })
+                if( sourceWeight !== targetWeight ){
+                    rotate(target, 90);
+                }
+            }
             resizeSymbol($(target), source);
         }
 
@@ -265,10 +276,10 @@
 
         function showSnackBar() {
             // Get the snackbar DIV
-            var x = $("#snackbar").addClass("show");
+            $("#snackbar").addClass("show");
 
             // After 3 seconds, remove the show class from DIV
-            setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+            setTimeout(function(){ $("#snackbar").removeClass("show"); }, 3000);
         }
     </script>
 </decktemplate>

@@ -60,8 +60,12 @@ function setRandomPos(elements){
 
 function rotateSymbolsRandomly(elements){
     elements.each(function(){
-        $(this).css({'transform' : 'rotate('+ randInRange(0,360) +'deg)'});
+        rotate(this, randInRange(0,360) );
     });
+}
+
+function rotate(el,deg){
+    $(el).css({'transform' : 'rotate('+ deg +'deg)'});
 }
 
 /**
@@ -78,14 +82,20 @@ function resizeSymbolsRandomly(elements, randomEnable, maintainRatio, desiredSiz
         }
         var size = transformSize(originalSize,randomEnable,maintainRatio, desiredSize);
         //$(this).width(size.width).height(size.height);
-        resizeSymbol($(this), size);
+        fitSymbol($(this), size);
     });
 }
 
-function resizeSymbol(symbol,size){
+function fitSymbol(symbol,size){
     $(symbol).css({width: size.width, height : size.height });
     $(symbol).find(".ui-wrapper").css({width: size.width, height : size.height });
     $(symbol).find(".ui-wrapper img").css({width: size.width, height : size.height });
+}
+
+function resizeSymbol(symbol,size){
+    $(symbol).css({width: size.width });
+    $(symbol).find(".ui-wrapper").css({width: size.width });
+    $(symbol).find(".ui-wrapper img").css({width: size.width });
 }
 /* 
 calculate new width and height for a symbol on the basis of original size. 
@@ -124,6 +134,28 @@ function transformSize(originalSize, randomEnable , maintainratio, desiredSymbol
     else    
         return false;
 } */
+
+/**
+ * returns 1 when height and width are approximately equal
+ * returns 2 when height > width
+ * returns -2 when width > height
+ * @param {*} size 
+ */
+function calculateWeight(size){
+    if(size.height > size.width){
+        if( size.height >= size.width * 1.5){
+            return -2;
+        }else{
+            return 1;
+        }
+    }else{
+        if( size.width >= size.height * 1.5){
+            return 2;
+        }else{
+            return 1;
+        }
+    }
+}
 
 function valueInRange(value, min, max){
         return (value >= min) && (value <= max); 
