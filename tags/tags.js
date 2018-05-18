@@ -407,7 +407,7 @@ riot.tag2('review', '<decktemplate></decktemplate> <div id="review-panel" class=
         this.frame.desiredSymbolSize = Math.floor ( ( (this.frame.width * this.frame.height) / this.frame.symbolsPerCard ) * 0.9 );
 
         this.on("mount",() => {
-            var gametype = `${this.parent.frame.symbolsPerCard}-${this.parent.frame.width}x${this.parent.frame.height}`;
+            var gametype = `${this.frame.symbolsPerCard}-${this.frame.width}x${this.frame.height}`;
             ga('send', 'event', 'cards', 'generate', gametype);
             $(".cardframe").width(this.frame.width);
             $(".cardframe").height(this.frame.height);
