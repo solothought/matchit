@@ -13,13 +13,7 @@
             position: absolute;
             cursor: move;
         }
-        .resizeHandle {
-            width: 10px;
-            height: 10px;
-            background-color: #ffffff;
-            border: 1px solid #000000;
-            bottom: 1px;
-            right:1px;
+        .ui-resizable-handle{
             display: none;
         }
         .ui-rotatable-handle{
@@ -45,11 +39,11 @@
                 <div each={ symbol in card} class="symbol trans"  h={readSymbol(symbol).size.height} w={readSymbol(symbol).size.width}  
                     weight={ Math.abs(calculateWeight( readSymbol(symbol).size )) }>
                     <img  src={ readSymbol(symbol,true).src }>
-                    <div class="ui-resizable-handle resizeHandle"></div>
+                    
                 </div>
                 
             </div>
-            <div id="snackbar">Selected card has different size of images</div>
+            <div id="snackbar"></div>
         </div>
     </div>
     <script>
@@ -71,6 +65,7 @@
         this.frame.desiredSymbolSize = Math.floor ( ( (this.frame.width * this.frame.height) / this.frame.symbolsPerCard ) * 0.9 );
 
         this.on("mount",() => {
+            
             var gametype = `${this.frame.symbolsPerCard}-${this.frame.width}x${this.frame.height}`;
             ga('send', 'event', 'cards', 'generate', gametype);
             $(".cardframe").width(this.frame.width);
@@ -81,12 +76,13 @@
                 /* containment:  */
             });
             $('.symbol').draggable().rotatable();
+            $(".ui-resizable-handle").hide();
             $(".cardframe").mouseover( function(e) {
-                $(this).find(".resizeHandle, .ui-rotatable-handle").show();
+                $(this).find(".resizeHandle, .ui-rotatable-handle, .ui-resizable-handle").show();
             });
 
             $(".cardframe").mouseout( function(e) {
-                $(this).find(".resizeHandle, .ui-rotatable-handle").hide();
+                $(this).find(".resizeHandle, .ui-rotatable-handle, .ui-resizable-handle").hide();
             });
             // End: card symbol event
 

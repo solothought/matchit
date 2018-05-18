@@ -409,7 +409,7 @@ riot.tag2('gallery', '<label class="btn-bs-file btn btn-outline-info">Browse Ima
             this.update();
         }.bind(this)
 });
-riot.tag2('review', '<decktemplate></decktemplate> <div id="review-panel" class="input-bar clearfix" style="width:100%"> <div class="photolist-wrapper" style="width:100%"> <div each="{card in cards}" class="cardframe" onclick="{select}" riot-style="background-color: {frame.bgColor}"> <div class="align-center" style="writing-mode: tb-rl; height: 100%; text-align:center; font-size: small; color: gray;">funcards.github.io/match-it</div> <div each="{symbol in card}" class="symbol trans" h="{readSymbol(symbol).size.height}" w="{readSymbol(symbol).size.width}" weight="{Math.abs(calculateWeight( readSymbol(symbol).size ))}"> <img riot-src="{readSymbol(symbol,true).src}"> <div class="ui-resizable-handle resizeHandle"></div> </div> </div> <div id="snackbar">Selected card has different size of images</div> </div> </div>', 'review .cardframe,[data-is="review"] .cardframe{ display: block; background-color: white; float: left; margin: 3px; border-radius: 5px; padding: 5px; position: relative; } review .symbol,[data-is="review"] .symbol{ position: absolute; cursor: move; } review .resizeHandle,[data-is="review"] .resizeHandle{ width: 10px; height: 10px; background-color: #ffffff; border: 1px solid #000000; bottom: 1px; right:1px; display: none; } review .ui-rotatable-handle,[data-is="review"] .ui-rotatable-handle{ width: 10px; height: 10px; background-color: green; bottom: 1px; right:1px; border-radius: 5px; cursor: crosshair; display: none; } review .cf-selected,[data-is="review"] .cf-selected{ outline: 4px solid yellow; }', '', function(opts) {
+riot.tag2('review', '<decktemplate></decktemplate> <div id="review-panel" class="input-bar clearfix" style="width:100%"> <div class="photolist-wrapper" style="width:100%"> <div each="{card in cards}" class="cardframe" onclick="{select}" riot-style="background-color: {frame.bgColor}"> <div class="align-center" style="writing-mode: tb-rl; height: 100%; text-align:center; font-size: small; color: gray;">funcards.github.io/match-it</div> <div each="{symbol in card}" class="symbol trans" h="{readSymbol(symbol).size.height}" w="{readSymbol(symbol).size.width}" weight="{Math.abs(calculateWeight( readSymbol(symbol).size ))}"> <img riot-src="{readSymbol(symbol,true).src}"> </div> </div> <div id="snackbar"></div> </div> </div>', 'review .cardframe,[data-is="review"] .cardframe{ display: block; background-color: white; float: left; margin: 3px; border-radius: 5px; padding: 5px; position: relative; } review .symbol,[data-is="review"] .symbol{ position: absolute; cursor: move; } review .ui-resizable-handle,[data-is="review"] .ui-resizable-handle{ display: none; } review .ui-rotatable-handle,[data-is="review"] .ui-rotatable-handle{ width: 10px; height: 10px; background-color: green; bottom: 1px; right:1px; border-radius: 5px; cursor: crosshair; display: none; } review .cf-selected,[data-is="review"] .cf-selected{ outline: 4px solid yellow; }', '', function(opts) {
         this.templates = [];
         this.frame = {
             width : $( "#demo-card" ).width(),
@@ -425,6 +425,7 @@ riot.tag2('review', '<decktemplate></decktemplate> <div id="review-panel" class=
         this.frame.desiredSymbolSize = Math.floor ( ( (this.frame.width * this.frame.height) / this.frame.symbolsPerCard ) * 0.9 );
 
         this.on("mount",() => {
+
             var gametype = `${this.frame.symbolsPerCard}-${this.frame.width}x${this.frame.height}`;
             ga('send', 'event', 'cards', 'generate', gametype);
             $(".cardframe").width(this.frame.width);
@@ -434,12 +435,13 @@ riot.tag2('review', '<decktemplate></decktemplate> <div id="review-panel" class=
 
             });
             $('.symbol').draggable().rotatable();
+            $(".ui-resizable-handle").hide();
             $(".cardframe").mouseover( function(e) {
-                $(this).find(".resizeHandle, .ui-rotatable-handle").show();
+                $(this).find(".resizeHandle, .ui-rotatable-handle, .ui-resizable-handle").show();
             });
 
             $(".cardframe").mouseout( function(e) {
-                $(this).find(".resizeHandle, .ui-rotatable-handle").hide();
+                $(this).find(".resizeHandle, .ui-rotatable-handle, .ui-resizable-handle").hide();
             });
 
             $(".cardframe").each( (i,el) => {
