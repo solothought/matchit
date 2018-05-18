@@ -185,7 +185,7 @@
         applyPatternDataWithWeight(data,cardEl){
             var weightSets = data[ $(cardEl).attr("totalweight") ];//there can be multiple pattern set for each weight
             if(!weightSets){//selected card has different weight
-                showSnackBar();
+                showSnackBar("Selected card has different size of images");
                 return;
             }
             var patternSet = weightSets[ randInRange(0,weightSets.length -1) ];//select one set randomly
@@ -247,7 +247,9 @@
             if (input.files && input.files[0]) {
                 var reader = new FileReader();
                 reader.onload = e => {
-                    this.applyPatternsToCards(JSON.parse(e.target.result).cards);
+                    //var data = JSON.parse(e.target.result);
+                    var data = nimnInstance.decode(e.target.result)
+                    this.applyPatternsToCards(data.cards);
                 }
                 reader.onloadend = e => {
                     this.update();
@@ -258,28 +260,45 @@
         }
         
         exportTemplate(e){
+
+            if(!$('#exportTemplateName').val()){
+                showSnackBar("Oh! You've deleted template name");
+                return;
+            }
+
+            var elArr = $(".cf-selected");
+
+            if(elArr.length === 0){
+                elArr = $(".cardframe");
+            }
+
             var deck = {
                 frame : this.parent.frame,
                 cards: {}
             };
-            $(".cardframe").each((fi,frame) => {
-                var result = this.extractPatternDataWithWeight(frame);
+            $(elArr).each((fi,cardEl) => {
+                var result = this.extractPatternDataWithWeight(cardEl);
+                if( !deck.cards[result.weight] ){
+                    deck.cards[result.weight] = [];
+                }
                 deck.cards[result.weight].push(result.pattern);
             })
             //TODO: convert to nimn first
             //download(JSON.stringify(deck), `${deck.frame.symbolsPerCard}-${this.frame.width}x${this.frame.height}-match-it.json` ,"application/json");
-            var data = JSON.stringify(deck);
-            var fileName = this.root.querySelector('#exportTemplateName').value + ".nimn";
+            //var data = JSON.stringify(deck);
+            var data = nimnInstance.encode(deck);
+            var fileName = $('#exportTemplateName').val() + ".nimn";
 
             download( data, fileName ,"application/vnd.nimn");
         }
 
-        function showSnackBar() {
+        function showSnackBar(msg) {
             // Get the snackbar DIV
+            $("#snackbar").text(msg);
             $("#snackbar").addClass("show");
 
             // After 3 seconds, remove the show class from DIV
-            setTimeout(function(){ $("#snackbar").removeClass("show"); }, 3000);
+            setTimeout(function(){ $("#snackbar").removeClass("show"); $("#snackbar").text("");}, 3000);
         }
     </script>
 </decktemplate>

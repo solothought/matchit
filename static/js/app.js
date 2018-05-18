@@ -1,12 +1,3 @@
-
-
-/* function setSymbolsCount(n,m){
-    $('#symbolscount').children('option:not(:first)').remove();//empty
-    for(;n<m;n++){
-        $("#symbolscount").append("<option value='"+ n +"'>" + n + "</option>")
-    }
-} */
-
 var minSymbolSize = {
     w : 75,
     h : 75
