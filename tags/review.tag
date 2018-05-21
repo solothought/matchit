@@ -31,21 +31,30 @@
         }
     </style>
 
-    <decktemplate></decktemplate>
-    <div id="review-panel" class="input-bar clearfix" style="width:100%">
-        <div class="photolist-wrapper" style="width:100%">
-            <div each={card in cards} class="cardframe" onclick={select} style="background-color: { frame.bgColor }">
-                <div class="align-center" style="writing-mode: tb-rl; height: 100%; text-align:center; font-size: small; color: gray;">funcards.github.io/match-it</div>
-                <div each={ symbol in card} class="symbol trans"  h={readSymbol(symbol).size.height} w={readSymbol(symbol).size.width}  
-                    weight={ Math.abs(calculateWeight( readSymbol(symbol).size )) }>
-                    <img  src={ readSymbol(symbol,true).src }>
+    <section id="showcase" style="background-color: #2C3E50;color: white">
+        <div class="container" >
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2>Review</h2>
+                </div>
+            </div>
+        </div>
+        <decktemplate></decktemplate>
+        <div id="review-panel" class="input-bar clearfix" style="width:100%">
+            <div class="photolist-wrapper" style="width:100%">
+                <div each={card in cards} class="cardframe" onclick={select} style="background-color: { frame.bgColor }">
+                    <div class="align-center" style="writing-mode: tb-rl; height: 100%; text-align:center; font-size: small; color: gray;">funcards.github.io/match-it</div>
+                    <div each={ symbol in card} class="symbol trans"  h={readSymbol(symbol).size.height} w={readSymbol(symbol).size.width}  
+                        weight={ Math.abs(calculateWeight( readSymbol(symbol).size )) }>
+                        <img  src={ readSymbol(symbol,true).src }>
+                        
+                    </div>
                     
                 </div>
-                
+                <div id="snackbar"></div>
             </div>
-            <div id="snackbar"></div>
         </div>
-    </div>
+    </section>
     <script>
         this.templates = [];
         this.frame = {

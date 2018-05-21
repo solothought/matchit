@@ -53,13 +53,13 @@
 
             <div class="empty"></div>
             <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="rotate">
+                <input class="form-check-input" type="checkbox" value="" id="rotate" checked="true">
                 <label class="form-check-label" for="rotate">
                     Rotate randomly
                 </label>
             </div>
             <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="resize">
+                <input class="form-check-input" type="checkbox" value="" id="resize" checked="true">
                 <label class="form-check-label" for="resize">
                     Resize randmly
                 </label>
