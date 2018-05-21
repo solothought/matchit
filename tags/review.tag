@@ -131,19 +131,8 @@
                 buttons: {
                     confirm: {
                         text: 'Accept',
-                        keys: ['enter'],
-                        action: () => {
-                            /* this.accepted = true;
-                            this.update(); */
-                        }
-                    },
-                    /* cancel: {
-                        text: 'Decline',
-                        keys: ['esc'],
-                        action: () => {
-                            //do nothing
-                        }
-                    } */
+                        keys: ['enter']
+                    }
                 }
             });
             //End : T&C confirmation box

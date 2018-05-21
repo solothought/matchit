@@ -474,12 +474,8 @@ riot.tag2('review', '<section id="showcase" style="background-color: #2C3E50;col
                 buttons: {
                     confirm: {
                         text: 'Accept',
-                        keys: ['enter'],
-                        action: () => {
-
-                        }
-                    },
-
+                        keys: ['enter']
+                    }
                 }
             });
 
