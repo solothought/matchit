@@ -43,7 +43,7 @@
         <div id="review-panel" class="input-bar clearfix" style="width:100%">
             <div class="photolist-wrapper" style="width:100%">
                 <div each={card in cards} class="cardframe" onclick={select} style="background-color: { frame.bgColor }">
-                    <div class="align-center" style="writing-mode: tb-rl; height: 100%; text-align:center; font-size: small; color: gray;">funcards.github.io/match-it</div>
+                    <div class="align-center" style="writing-mode: tb-rl; height: 100%; text-align:center; font-size: small; color: #ced0d2;">funcards.github.io/match-it</div>
                     <div each={ symbol in card} class="symbol trans"  h={readSymbol(symbol).size.height} w={readSymbol(symbol).size.width}  
                         weight={ Math.abs(calculateWeight( readSymbol(symbol).size )) }>
                         <img  src={ readSymbol(symbol,true).src }>
