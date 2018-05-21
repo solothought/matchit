@@ -1,6 +1,8 @@
 # Match it
 Your own card game generator
 
+<div align="center"><img src="static/img/matchit_logo.png"  width="300px"></div>
+
 Match it is free to use (not for commercial purpose) car game generator. It can be played between two or more players in multiple ways. Players have to find one common symbol in two cards.
 
 ![card1](static/img/card_1.png) ![card2](static/img/card_2.png)
