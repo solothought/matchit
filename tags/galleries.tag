@@ -10,7 +10,7 @@
             <gallery each={n,i in this.repeat } id="gallery_{i}"></gallery>
             <div class="row">
                 <div class="col-lg-12 text-center">
-                    <a class="btn btn-lg btn-theme" id="generate" onclick={ generate } disabled={ !readyToGenerate }>Generate</a>
+                    <button class="btn btn-lg btn-theme" id="generate" onclick={ generate } disabled={ !readyToGenerate }>Generate</button>
                 </div>
             </div>
         </div>
