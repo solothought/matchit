@@ -5,11 +5,11 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-119406750-1"></script>
     <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
 
-    gtag('config', 'UA-119406750-1');
+        gtag('config', 'UA-119406750-1');
     </script>
 
     <meta charset="utf-8">
@@ -166,8 +166,8 @@
                                 <img src="static/img/tez_logo2.png" alt="Tez" width="96" height="96"> Tez
                         </div>
                         <!-- <a id="tezpayment" onclick="ga('send', 'event', 'buttons', 'click', 'tez');" href="#" ><img src="static/img/tez_logo.png" width="200px"></a> -->
-                        <a onclick="ga('send', 'event', 'buttons', 'click', 'paypal');" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=KQJAX48SPUKNC" target="_blank"><img src="static/img/support_paypal.svg" width="200px"></a>
-                        <a onclick="ga('send', 'event', 'buttons', 'click', 'patreon');" href="https://www.patreon.com/bePatron?u=9531404"  target="_blank"><img src="static/img/support_patreon.svg" width="200px"></a>
+                        <a id="paypalbutton" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=KQJAX48SPUKNC" target="_blank"><img src="static/img/support_paypal.svg" width="200px"></a>
+                        <a id="patreonbutton" href="https://www.patreon.com/bePatron?u=9531404"  target="_blank"><img src="static/img/support_patreon.svg" width="200px"></a>
                     </div>
                 </div>
             </div>
@@ -197,9 +197,8 @@
 
     <script type="text/javascript">
         $(document).ready(function(){
-
             riot.mount("design");
-            
+
             $("#githublogo").hide();
             setTimeout(() => {
                 rotatein($("#githublogo"));
@@ -238,8 +237,27 @@
                 }
             })
 
-            $("#tezpayment").click(function(){
-                ga('send', 'event', 'buttons', 'click', 'tez');
+            $("#patreonbutton").click(function(e){
+                gtag('event', 'click', {
+                    'event_category': 'outbound',
+                    'event_label': "patreon",
+                    'transport_type': 'beacon',
+                });
+            });
+            $("#paypalbutton").click(function(e){
+                gtag('event', 'click', {
+                    'event_category': 'outbound',
+                    'event_label': "paypal",
+                    'transport_type': 'beacon',
+                });
+            });
+            $("#tezpayment").click(function(e){
+                gtag('event', 'click', {
+                    'event_category': 'outbound',
+                    'event_label': "tez",
+                    'transport_type': 'beacon',
+                });
+                //ga('send', 'event', 'Outbound Link', 'click', 'tez');
                 $.dialog({
                     title: "Tez Payment",
                     content: "<p>Please scan the below QR code</p>" + '<img src="static/img/tez_qrcode.png">'
