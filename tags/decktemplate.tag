@@ -15,17 +15,17 @@
                     <i class="fa fa-arrows-h fa-stack-1x" style="top: -0.5px;"></i>
                 </span>
             </div>
-            
+
             <i class="fa fa-random action-btn btn btn-info"  title="Arrange Randomly" onclick={ arrangeRandomly }></i>
             <i class="fa fa-copy action-btn btn btn-info"  title="Copy Pattern" onclick={ copy }></i>
             <i class="fa fa-paste action-btn btn btn-info"  title="Paste Pattern" onclick={ paste }></i>
-            
+
 
             <label class="btn-bs-file">
                 <i class="fa fa-folder-open-o action-btn btn btn-info"  title="Open Pattern file" onclick={ this.parent.arrangeRandomly }></i>
-                <input type="file" class="filebutton" accept="application/vnd.nimn,*.nmn,*.nimn"  onchange= { readTemplateFile }/>
+                <input id="file-input" type="file" class="filebutton" accept="application/vnd.nimn,*.nmn,*.nimn"  onchange= { readTemplateFile }/>
             </label>
-            
+
             <div class="form-inline input-group">
                 <input id="exportTemplateName" type="text" class="form-control" placeholder="Enter the template name " value={  exportTemplateName} style="width: 300px;">
                 <i class="fa fa-save action-btn btn btn-info"  title="Save Pattern to external file" onclick={ exportTemplate }></i>
@@ -40,7 +40,7 @@
                 <option value="square" >Square Card</option>
             </select>
         </div>  -->
-        
+
             <!--  <button class="btn-icon"><i src="static/img/pattern.svg" title="Arrang with appropriate template" onclick={ arrangeWithTemplate }></button>  -->
         </div>
     </div>
@@ -48,7 +48,7 @@
         <div class="col-12">This template might not be suitable for selected card size.</div>
     </div>  -->
     <script>
-    
+
         selectCards(cb,...arg){
             var elArr = $(".cf-selected");
 
@@ -89,7 +89,7 @@
                 });
             }else{
                 if(selected.length > 1 || selected.length === 0 ){
-                    alert("Please select only 1 card.");        
+                    alert("Please select only 1 card.");
                 }else{
                     clipboard = this.extractPatternData(selected);
                 }
@@ -113,7 +113,7 @@
         }
 
         /*loadtemplate(e){
-            
+
             var templateName = e.target.value + ".nimn";
             $.ajax({
                 url: "./templates/"+templateName,
@@ -125,14 +125,14 @@
                     //this.parent.templates[templateName] = templateData;
                     //var widthDifference = ( templateData.width * 100) / Math.abs(this.parent.frame.width - templateData.width)
                     //var heightDifference = ( templateData.height * 100) / Math.abs(this.parent.frame.height - templateData.width)
-                    
+
                     //set margin as per height width difference
 
                     this.parent.applyTemplate(templateData);
                 }
             });
         }*/
-        
+
 
         extractPatternData(cardEl){
             var symbols = [];
@@ -238,8 +238,8 @@
             resizeSymbol($(target), source);
         }
 
-        
-        
+
+
 
         this.exportTemplateName = `${this.parent.frame.symbolsPerCard}-${this.parent.frame.width}x${this.parent.frame.height}-match-it`;
         readTemplateFile(f){
@@ -258,7 +258,7 @@
                 reader.readAsText(input.files[0]);
             }
         }
-        
+
         exportTemplate(e){
 
             if(!$('#exportTemplateName').val()){
@@ -300,5 +300,39 @@
             // After 3 seconds, remove the show class from DIV
             setTimeout(function(){ $("#snackbar").removeClass("show"); $("#snackbar").text("");}, 3000);
         }
+
+        this.on("mount",() => {
+          window.addEventListener("keypress", (press) => {
+            switch(press.key) {
+              case "r":
+                this.selectCards(rotateSymbolsRandomly);
+                break;
+              case "R":
+                this.resizeRandomly();
+                break;
+              case "a":
+                this.selectCards(setRandomPos);
+                break;
+              case "c":
+                this.copy(e);
+                break;
+              case "C":
+                this.copy(e)
+                break;
+              case "v":
+                this.paste();
+                break;
+              case "o":
+                $('#file-input').trigger('click');
+                break;
+              case "s":
+                this.exportTemplate(e);
+                break;
+              default:
+                console.log("unknown");
+            }
+          });
+        });
+
     </script>
 </decktemplate>
