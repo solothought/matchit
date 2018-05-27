@@ -327,9 +327,7 @@
                 break;
               case "s":
                 this.exportTemplate(e);
-                break;
-              default:
-                console.log("unknown");
+                break;              
             }
           });
         });
