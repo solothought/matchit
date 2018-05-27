@@ -3,7 +3,7 @@ Your own card game generator
 
 <div align="center"><img src="static/img/matchit_logo.png"  width="300px"></div>
 
-Match is a free to use (not for commercial purpose) card game generator. It can be played between two or more players in multiple ways. Players have to find one common image in two cards.
+Match It is a free to use (not for commercial purpose) card game generator. It can be played between two or more players in multiple ways. Players have to find one common image in two cards.
 
 ![card1](static/img/card_1.png) ![card2](static/img/card_2.png)
 

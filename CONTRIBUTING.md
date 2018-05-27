@@ -2,7 +2,7 @@ This repo is friendly for first timers and other contributors. I would like to a
 
 This application is made with the help of HTML, CSS, vanilla JS, Jquery, and Riot js.
 
-This guide may help first timers about what to do other than change the code.
+This guide may help first timers about what to do other than code change.
 
 The design of the application is fairly simple so that even the non-tech users can understand it. However if you feel that it is complex to understand, let me know. We can simplify it.
 
