@@ -154,25 +154,7 @@
     <!-- <button id="saveImage">Save image</button> -->
     <div id="img-out"></div>
     <!-- Footer -->
-    <footer>
-        <div class="footer-below">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-lg-6">
-                        <p>Please consider donating <kbd>$1</kbd>.<small>Your support can keep our passion alive.</small></p>
-                    </div>
-                    <div class="col-lg-6 text-center">
-                        <div id="tezpayment" class="chip" style="cursor: pointer;">
-                                <img src="static/img/tez_logo2.png" alt="Tez" width="96" height="96"> Tez
-                        </div>
-                        <!-- <a id="tezpayment" onclick="ga('send', 'event', 'buttons', 'click', 'tez');" href="#" ><img src="static/img/tez_logo.png" width="200px"></a> -->
-                        <a id="paypalbutton" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=KQJAX48SPUKNC" target="_blank"><img src="static/img/support_paypal.svg" width="200px"></a>
-                        <a id="patreonbutton" href="https://www.patreon.com/bePatron?u=9531404"  target="_blank"><img src="static/img/support_patreon.svg" width="200px"></a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
+    <r-footer></r-footer>
 
     <script src="static/js/3rdparty/jquery-3.2.1.min.js"></script>
     <script src="static/js/3rdparty/jquery-ui.min.js"></script>
@@ -199,9 +181,10 @@
     <script src="tags/gallery.tag" type="riot/tag"></script>
     <script src="tags/review.tag" type="riot/tag"></script>
     <script src="tags/toolbar.tag" type="riot/tag"></script>
+    <script src="tags/footer.tag" type="riot/tag"></script>
 
     <script type="text/javascript">
-            riot.mount("design");
+            riot.mount("design, r-footer");
         $(document).ready(function(){
 
             $("#githublogo").hide();
@@ -242,32 +225,7 @@
                 }
             })
 
-            $("#patreonbutton").click(function(e){
-                gtag('event', 'click', {
-                    'event_category': 'outbound',
-                    'event_label': "patreon",
-                    'transport_type': 'beacon',
-                });
-            });
-            $("#paypalbutton").click(function(e){
-                gtag('event', 'click', {
-                    'event_category': 'outbound',
-                    'event_label': "paypal",
-                    'transport_type': 'beacon',
-                });
-            });
-            $("#tezpayment").click(function(e){
-                gtag('event', 'click', {
-                    'event_category': 'outbound',
-                    'event_label': "tez",
-                    'transport_type': 'beacon',
-                });
-                //ga('send', 'event', 'Outbound Link', 'click', 'tez');
-                $.dialog({
-                    title: "Tez Payment",
-                    content: "<p>Please scan the below QR code</p>" + '<img src="static/img/tez_qrcode.png">'
-                })
-            })
+            
 
         });
 

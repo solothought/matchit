@@ -111,6 +111,34 @@ riot.tag2('design', '<div class="row"> <div class="col-md-4"> <select id="cardsi
         }.bind(this)
 
 });
+riot.tag2('r-footer', '<footer> <div class="footer-below"> <div class="container-fluid"> <div class="row"> <div class="col-lg-6"> <p>Please consider donating <kbd>$1</kbd>.<small>Your support can keep our passion alive.</small></p> </div> <div class="col-lg-6 text-center"> <div onclick="{tezpayment}" class="chip" style="cursor: pointer;"> <img src="static/img/tez_logo2.png" alt="Tez" width="96" height="96"> Tez </div> <a onclick="{logPaypal}" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=KQJAX48SPUKNC" target="_blank"><img src="static/img/support_paypal.svg" width="200px"></a> <a onclick="{logPateron}" href="https://www.patreon.com/bePatron?u=9531404" target="_blank"><img src="static/img/support_patreon.svg" width="200px"></a> </div> </div> </div> </div> </footer>', '', '', function(opts) {
+        this.logPateron = function(e){
+            gtag('event', 'click', {
+                'event_category': 'outbound',
+                'event_label': "patreon",
+                'transport_type': 'beacon',
+            });
+        }.bind(this)
+        this.logPaypal = function(e){
+            gtag('event', 'click', {
+                'event_category': 'outbound',
+                'event_label': "paypal",
+                'transport_type': 'beacon',
+            });
+        }.bind(this)
+        this.tezpayment = function(e){
+            gtag('event', 'click', {
+                'event_category': 'outbound',
+                'event_label': "tez",
+                'transport_type': 'beacon',
+            });
+
+            $.dialog({
+                title: "Tez Payment",
+                content: "<p>Please scan the below QR code</p>" + '<img src="static/img/tez_qrcode.png">'
+            })
+        }.bind(this)
+});
 riot.tag2('galleries', '<section id="showcase"> <div class="container-fluid"> <div class="row"> <div class="col-lg-12 text-center"> <h2>Symbols</h2> </div> </div> <p if="{this.opts.count == 1}">Upload {totalSymbols} images</p> <gallery each="{n,i in this.repeat}" id="gallery_{i}"></gallery> <div class="row"> <div class="col-lg-12 text-center"> <button class="btn btn-lg btn-theme" id="generate" onclick="{generate}" disabled="{!readyToGenerate}">Generate</button> </div> </div> </div> </section>', '', '', function(opts) {
         this.readyToGenerate = false;
         this.repeat = new Array(this.opts.count);
