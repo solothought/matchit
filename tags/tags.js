@@ -1,257 +1,3 @@
-riot.tag2('decktemplate', '<div id="action-bar" class="row align-items-center"> <div class="col form-inline"> <i class="fa fa-repeat action-btn btn btn-info" title="Arrange Randomly" onclick="{rotateRandomly}"></i> <div class="input-group"> <div class="form-check"> <input class="form-check-input" type="checkbox" value="" id="resize-action" checked> <label class="form-check-label" for="resize-action"> Maintain height-width ratio </label> </div> <span class="fa-stack fa-lg action-btn btn btn-info" title="Resize Randomly" style="font-size: 1.2em;" onclick="{resizeRandomly}"> <i class="fa fa-square-o fa-stack-2x" style="top: -0.5px;"></i> <i class="fa fa-arrows-h fa-stack-1x" style="top: -0.5px;"></i> </span> </div> <i class="fa fa-random action-btn btn btn-info" title="Arrange Randomly" onclick="{arrangeRandomly}"></i> <i class="fa fa-copy action-btn btn btn-info" title="Copy Pattern" onclick="{copy}"></i> <i class="fa fa-paste action-btn btn btn-info" title="Paste Pattern" onclick="{paste}"></i> <label class="btn-bs-file"> <i class="fa fa-folder-open-o action-btn btn btn-info" title="Open Pattern file" onclick="{this.parent.arrangeRandomly}"></i> <input id="file-input" type="file" class="filebutton" accept="application/vnd.nimn,*.nmn,*.nimn" onchange="{readTemplateFile}"> </label> <div class="form-inline input-group"> <input id="exportTemplateName" type="text" class="form-control" placeholder="Enter the template name " riot-value="{exportTemplateName}" style="width: 300px;"> <i class="fa fa-save action-btn btn btn-info" title="Save Pattern to external file" onclick="{exportTemplate}"></i> </div> </div> </div> </div>', '', '', function(opts) {
-
-        this.selectCards = function(cb,...arg){
-            var elArr = $(".cf-selected");
-
-            if(elArr.length === 0){
-                elArr = $(".cardframe");
-            }
-            elArr.each( function(i) {
-                cb($(this).find(".symbol"), ...arg);
-            })
-        }.bind(this)
-
-        this.arrangeRandomly = function(){
-            this.selectCards(setRandomPos);
-        }.bind(this)
-
-        this.rotateRandomly = function(){
-            this.selectCards(rotateSymbolsRandomly);
-        }.bind(this)
-
-        this.resizeRandomly = function(){
-            var maintainRatio = $("#resize-action").prop("checked");
-            this.selectCards(resizeSymbolsRandomly, true, maintainRatio, this.parent.frame.desiredSymbolSize);
-        }.bind(this)
-
-        var clipboard = null;
-
-        this.copy = function(e){
-            var selected = $(".cf-selected");
-            if(e.shiftKey){
-
-                clipboard = {};
-                selected.each((i,cardEl) =>{
-                    var result = this.extractPatternDataWithWeight(cardEl);
-                    if( !clipboard[result.weight] ){
-                        clipboard[result.weight] = [];
-                    }
-                    clipboard[result.weight].push( result.pattern );
-                });
-            }else{
-                if(selected.length > 1 || selected.length === 0 ){
-                    alert("Please select only 1 card.");
-                }else{
-                    clipboard = this.extractPatternData(selected);
-                }
-            }
-        }.bind(this)
-
-        this.paste = function(){
-            var selected = $(".cf-selected");
-            if(clipboard === null || selected.length === 0) return;
-
-            if( Array.isArray(clipboard) ){
-                selected.each((i,cardEl) =>{
-                    this.applyPatternData( clipboard , cardEl);
-                });
-            }else{
-                selected.each((i,cardEl) =>{
-                    this.applyPatternDataWithWeight(clipboard,cardEl);
-                });
-            }
-
-        }.bind(this)
-
-        this.extractPatternData = function(cardEl){
-            var symbols = [];
-            $(cardEl).find(".symbol").each( (si,symbol) => {
-                symbols.push( this.copyStyle(symbol) );
-            });
-            return symbols;
-        }.bind(this)
-
-        this.applyPatternData = function(data,cardEl){
-            $(cardEl).find(".symbol").each( (si,symbol) => {
-                this.applyStyle(data[si],symbol);
-            });
-        }.bind(this)
-
-        this.extractPatternDataFromMultipleCards = function(cardsEl){
-            var cards = [];
-            $(cardsEl).each( (card_i, card) => {
-                cards.push( this.extractPatternData(card) );
-            });
-        }.bind(this)
-
-        this.applyPatternDataOnMultipleCards = function(data,cardsEl){
-            $(cardsEl).each( (card_i, card) => {
-                this.applyPatternData(data[card_i], card);
-            });
-        }.bind(this)
-
-        this.extractPatternDataWithWeight = function(cardEl){
-            var totalWeight =0;
-            var symbols = {
-                "1" : [],
-                "2" : []
-            };
-
-            $(cardEl).find(".symbol").each( (si,symbol) => {
-                var weight = $(symbol).attr("weight");
-                symbols[weight].push( this.copyStyle(symbol) );
-                totalWeight += Number.parseInt(weight);
-            });
-
-            return { weight: totalWeight, pattern: symbols};
-        }.bind(this)
-
-        this.applyPatternDataWithWeight = function(data,cardEl){
-            var weightSets = data[ $(cardEl).attr("totalweight") ];
-            if(!weightSets){
-                showSnackBar("Selected card has different size of images");
-                return;
-            }
-            var patternSet = weightSets[ randInRange(0,weightSets.length -1) ];
-
-            var weightWiseCounter = {
-                "1" : 0,
-                "2" : 0
-            }
-            $(cardEl).find(".symbol").each( (si, symbol) => {
-                var w = $(symbol).attr("weight");
-                var index = weightWiseCounter[w];
-                this.applyStyle( patternSet[ w ][ index ], symbol, true);
-                weightWiseCounter[w] +=1;
-            } );
-        }.bind(this)
-
-        this.applyPatternsToCards = function(data){
-            $(".cardframe").each( (card_i, cardEl) => {
-                this.applyPatternDataWithWeight(data,cardEl);
-            });
-        }.bind(this)
-
-        this.copyStyle = function(el){
-            return {
-                top: $(el).position().top,
-                left: $(el).position().left,
-                height: $(el).height(),
-                width: $(el).width(),
-                transform: $(el).css("transform"),
-            }
-        }.bind(this)
-
-        this.applyStyle = function(source,target,checkWeight){
-            $(target).css({
-                top: source.top,
-                left: source.left,
-                transform: source.transform,
-            });
-            if(checkWeight){
-                var sourceWeight = calculateWeight(source);
-
-                var targetWeight = calculateWeight({
-                    height : $(target).attr("h"),
-                    width : $(target).attr("w")
-                })
-                if( sourceWeight !== targetWeight ){
-                    rotate(target, 90);
-                }
-            }
-            resizeSymbol($(target), source);
-        }.bind(this)
-
-        this.exportTemplateName = `${this.parent.frame.symbolsPerCard}-${this.parent.frame.width}x${this.parent.frame.height}-match-it`;
-        this.readTemplateFile = function(f){
-            var input = f.srcElement;
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-                reader.onload = e => {
-
-                    var data = nimnInstance.decode(e.target.result)
-                    this.applyPatternsToCards(data.cards);
-                }
-                reader.onloadend = e => {
-                    this.update();
-                    reader = null;
-                }
-                reader.readAsText(input.files[0]);
-            }
-        }.bind(this)
-
-        this.exportTemplate = function(e){
-
-            if(!$('#exportTemplateName').val()){
-                showSnackBar("Oh! You've deleted template name");
-                return;
-            }
-
-            var elArr = $(".cf-selected");
-
-            if(elArr.length === 0){
-                elArr = $(".cardframe");
-            }
-
-            var deck = {
-                frame : this.parent.frame,
-                cards: {}
-            };
-            $(elArr).each((fi,cardEl) => {
-                var result = this.extractPatternDataWithWeight(cardEl);
-                if( !deck.cards[result.weight] ){
-                    deck.cards[result.weight] = [];
-                }
-                deck.cards[result.weight].push(result.pattern);
-            })
-
-            var data = nimnInstance.encode(deck);
-            var fileName = $('#exportTemplateName').val() + ".nimn";
-
-            download( data, fileName ,"application/vnd.nimn");
-        }.bind(this)
-
-        function showSnackBar(msg) {
-
-            $("#snackbar").text(msg);
-            $("#snackbar").addClass("show");
-
-            setTimeout(function(){ $("#snackbar").removeClass("show"); $("#snackbar").text("");}, 3000);
-        }
-
-        this.on("mount",() => {
-          window.addEventListener("keypress", (press) => {
-            switch(press.key) {
-              case "r":
-                this.selectCards(rotateSymbolsRandomly);
-                break;
-              case "R":
-                this.resizeRandomly();
-                break;
-              case "a":
-                this.selectCards(setRandomPos);
-                break;
-              case "c":
-                this.copy(e);
-                break;
-              case "C":
-                this.copy(e)
-                break;
-              case "v":
-                this.paste();
-                break;
-              case "o":
-                $('#file-input').trigger('click');
-                break;
-              case "s":
-                this.exportTemplate(e);
-                break;
-            }
-          });
-        });
-
-});
-
 riot.tag2('design', '<div class="row"> <div class="col-md-4"> <select id="cardsize" class="form-control" onchange="{changeDemoCardSize}"> <option disabled="true">Select Size</option> <option each="{cardsize,name in cards}" riot-value="{name}" selected="{name == \'Normal Playing Card Or Bridge Size\'}">{name}</option> </select> <div class="empty"></div> <select id="symbolscount" onchange="{checkSymbolCount}" class="form-control"> <option selected="false" disabled="true">Number of symbols on a card</option> <option>2</option> <option>3</option> <option>4</option> <option>5</option> <option>6</option> <option>7</option> <option>8</option> <option>9</option> <option>10</option> </select> <div class="empty"></div> <div>Choose background color</div> <input id="colorpicker" onchange="{changeBgColor}" value="#ffffff" style="width:100%;" type="color"> <div class="empty"></div> <div class="form-check"> <input class="form-check-input" type="checkbox" value="" id="rotate" checked="true"> <label class="form-check-label" for="rotate"> Rotate randomly </label> </div> <div class="form-check"> <input class="form-check-input" type="checkbox" value="" id="resize" checked="true"> <label class="form-check-label" for="resize"> Resize randmly </label> </div> <div class="form-check"> <input class="form-check-input" type="checkbox" value="" id="maintainratio" checked="true"> <label class="form-check-label" for="maintainratio"> Maintain height width ratio </label> </div> </div> <div class="col-md-8"> <div id="slider-horizontal-val" class="text-center" style="width:160mm;"></div> <div id="slider-horizontal"></div> <div id="demo-card-container"> <div style="float:left; width:160mm; height:160mm;"> <div id="demo-card"> </div> </div> <div id="slider-vertical" style="float:left"></div> <div id="slider-vertical-val" style="float:left"></div> </div> </div> </div>', 'design .ui-slider .ui-slider-handle,[data-is="design"] .ui-slider .ui-slider-handle{ width: 0.8em; height: 0.8em; } design #slider-vertical,[data-is="design"] #slider-vertical{ height: 150mm; width: 5px; } design #slider-horizontal,[data-is="design"] #slider-horizontal{ width: 150mm; height: 5px; } design #demo-card,[data-is="design"] #demo-card{ display: block; outline: 1px solid grey; margin-top: 10px; } design #demo-card-container,[data-is="design"] #demo-card-container{ height: 160mm; } design #slider-vertical-val,[data-is="design"] #slider-vertical-val{ writing-mode: tb-rl; height: 100%; text-align: center; }', '', function(opts) {
 
         this.cards = {
@@ -559,5 +305,259 @@ riot.tag2('review', '<section id="showcase" style="background-color: #2C3E50;col
                 return this.opts.symbols["gallery_"+n][ index ];
             }
         }.bind(this)
+
+});
+
+riot.tag2('decktemplate', '<div id="action-bar" class="row align-items-center"> <div class="col form-inline"> <i class="fa fa-repeat action-btn btn btn-info" title="Arrange Randomly" onclick="{rotateRandomly}"></i> <div class="input-group"> <div class="form-check"> <input class="form-check-input" type="checkbox" value="" id="resize-action" checked> <label class="form-check-label" for="resize-action"> Maintain height-width ratio </label> </div> <span class="fa-stack fa-lg action-btn btn btn-info" title="Resize Randomly" style="font-size: 1.2em;" onclick="{resizeRandomly}"> <i class="fa fa-square-o fa-stack-2x" style="top: -0.5px;"></i> <i class="fa fa-arrows-h fa-stack-1x" style="top: -0.5px;"></i> </span> </div> <i class="fa fa-random action-btn btn btn-info" title="Arrange Randomly" onclick="{arrangeRandomly}"></i> <i class="fa fa-copy action-btn btn btn-info" title="Copy Pattern" onclick="{copy}"></i> <i class="fa fa-paste action-btn btn btn-info" title="Paste Pattern" onclick="{paste}"></i> <label class="btn-bs-file"> <i class="fa fa-folder-open-o action-btn btn btn-info" title="Open Pattern file" onclick="{this.parent.arrangeRandomly}"></i> <input id="file-input" type="file" class="filebutton" accept="application/vnd.nimn,*.nmn,*.nimn" onchange="{readTemplateFile}"> </label> <div class="form-inline input-group"> <input id="exportTemplateName" type="text" class="form-control" placeholder="Enter the template name " riot-value="{exportTemplateName}" style="width: 300px;"> <i class="fa fa-save action-btn btn btn-info" title="Save Pattern to external file" onclick="{exportTemplate}"></i> </div> </div> </div> </div>', '', '', function(opts) {
+
+        this.selectCards = function(cb,...arg){
+            var elArr = $(".cf-selected");
+
+            if(elArr.length === 0){
+                elArr = $(".cardframe");
+            }
+            elArr.each( function(i) {
+                cb($(this).find(".symbol"), ...arg);
+            })
+        }.bind(this)
+
+        this.arrangeRandomly = function(){
+            this.selectCards(setRandomPos);
+        }.bind(this)
+
+        this.rotateRandomly = function(){
+            this.selectCards(rotateSymbolsRandomly);
+        }.bind(this)
+
+        this.resizeRandomly = function(){
+            var maintainRatio = $("#resize-action").prop("checked");
+            this.selectCards(resizeSymbolsRandomly, true, maintainRatio, this.parent.frame.desiredSymbolSize);
+        }.bind(this)
+
+        var clipboard = null;
+
+        this.copy = function(e){
+            var selected = $(".cf-selected");
+            if(e.shiftKey){
+
+                clipboard = {};
+                selected.each((i,cardEl) =>{
+                    var result = this.extractPatternDataWithWeight(cardEl);
+                    if( !clipboard[result.weight] ){
+                        clipboard[result.weight] = [];
+                    }
+                    clipboard[result.weight].push( result.pattern );
+                });
+            }else{
+                if(selected.length > 1 || selected.length === 0 ){
+                    alert("Please select only 1 card.");
+                }else{
+                    clipboard = this.extractPatternData(selected);
+                }
+            }
+        }.bind(this)
+
+        this.paste = function(){
+            var selected = $(".cf-selected");
+            if(clipboard === null || selected.length === 0) return;
+
+            if( Array.isArray(clipboard) ){
+                selected.each((i,cardEl) =>{
+                    this.applyPatternData( clipboard , cardEl);
+                });
+            }else{
+                selected.each((i,cardEl) =>{
+                    this.applyPatternDataWithWeight(clipboard,cardEl);
+                });
+            }
+
+        }.bind(this)
+
+        this.extractPatternData = function(cardEl){
+            var symbols = [];
+            $(cardEl).find(".symbol").each( (si,symbol) => {
+                symbols.push( this.copyStyle(symbol) );
+            });
+            return symbols;
+        }.bind(this)
+
+        this.applyPatternData = function(data,cardEl){
+            $(cardEl).find(".symbol").each( (si,symbol) => {
+                this.applyStyle(data[si],symbol);
+            });
+        }.bind(this)
+
+        this.extractPatternDataFromMultipleCards = function(cardsEl){
+            var cards = [];
+            $(cardsEl).each( (card_i, card) => {
+                cards.push( this.extractPatternData(card) );
+            });
+        }.bind(this)
+
+        this.applyPatternDataOnMultipleCards = function(data,cardsEl){
+            $(cardsEl).each( (card_i, card) => {
+                this.applyPatternData(data[card_i], card);
+            });
+        }.bind(this)
+
+        this.extractPatternDataWithWeight = function(cardEl){
+            var totalWeight =0;
+            var symbols = {
+                "1" : [],
+                "2" : []
+            };
+
+            $(cardEl).find(".symbol").each( (si,symbol) => {
+                var weight = $(symbol).attr("weight");
+                symbols[weight].push( this.copyStyle(symbol) );
+                totalWeight += Number.parseInt(weight);
+            });
+
+            return { weight: totalWeight, pattern: symbols};
+        }.bind(this)
+
+        this.applyPatternDataWithWeight = function(data,cardEl){
+            var weightSets = data[ $(cardEl).attr("totalweight") ];
+            if(!weightSets){
+                showSnackBar("Selected card has different size of images");
+                return;
+            }
+            var patternSet = weightSets[ randInRange(0,weightSets.length -1) ];
+
+            var weightWiseCounter = {
+                "1" : 0,
+                "2" : 0
+            }
+            $(cardEl).find(".symbol").each( (si, symbol) => {
+                var w = $(symbol).attr("weight");
+                var index = weightWiseCounter[w];
+                this.applyStyle( patternSet[ w ][ index ], symbol, true);
+                weightWiseCounter[w] +=1;
+            } );
+        }.bind(this)
+
+        this.applyPatternsToCards = function(data){
+            $(".cardframe").each( (card_i, cardEl) => {
+                this.applyPatternDataWithWeight(data,cardEl);
+            });
+        }.bind(this)
+
+        this.copyStyle = function(el){
+            return {
+                top: $(el).position().top,
+                left: $(el).position().left,
+                height: $(el).height(),
+                width: $(el).width(),
+                transform: $(el).css("transform"),
+            }
+        }.bind(this)
+
+        this.applyStyle = function(source,target,checkWeight){
+            $(target).css({
+                top: source.top,
+                left: source.left,
+                transform: source.transform,
+            });
+            if(checkWeight){
+                var sourceWeight = calculateWeight(source);
+
+                var targetWeight = calculateWeight({
+                    height : $(target).attr("h"),
+                    width : $(target).attr("w")
+                })
+                if( sourceWeight !== targetWeight ){
+                    rotate(target, 90);
+                }
+            }
+            resizeSymbol($(target), source);
+        }.bind(this)
+
+        this.exportTemplateName = `${this.parent.frame.symbolsPerCard}-${this.parent.frame.width}x${this.parent.frame.height}-match-it`;
+        this.readTemplateFile = function(f){
+            var input = f.srcElement;
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = e => {
+
+                    var data = nimnInstance.decode(e.target.result)
+                    this.applyPatternsToCards(data.cards);
+                }
+                reader.onloadend = e => {
+                    this.update();
+                    reader = null;
+                }
+                reader.readAsText(input.files[0]);
+            }
+        }.bind(this)
+
+        this.exportTemplate = function(e){
+
+            if(!$('#exportTemplateName').val()){
+                showSnackBar("Oh! You've deleted template name");
+                return;
+            }
+
+            var elArr = $(".cf-selected");
+
+            if(elArr.length === 0){
+                elArr = $(".cardframe");
+            }
+
+            var deck = {
+                frame : this.parent.frame,
+                cards: {}
+            };
+            $(elArr).each((fi,cardEl) => {
+                var result = this.extractPatternDataWithWeight(cardEl);
+                if( !deck.cards[result.weight] ){
+                    deck.cards[result.weight] = [];
+                }
+                deck.cards[result.weight].push(result.pattern);
+            })
+
+            var data = nimnInstance.encode(deck);
+            var fileName = $('#exportTemplateName').val() + ".nimn";
+
+            download( data, fileName ,"application/vnd.nimn");
+        }.bind(this)
+
+        function showSnackBar(msg) {
+
+            $("#snackbar").text(msg);
+            $("#snackbar").addClass("show");
+
+            setTimeout(function(){ $("#snackbar").removeClass("show"); $("#snackbar").text("");}, 3000);
+        }
+
+        this.on("mount",() => {
+          window.addEventListener("keypress", (press) => {
+            switch(press.key) {
+              case "r":
+                this.selectCards(rotateSymbolsRandomly);
+                break;
+              case "R":
+                this.resizeRandomly();
+                break;
+              case "a":
+                this.selectCards(setRandomPos);
+                break;
+              case "c":
+                this.copy(e);
+                break;
+              case "C":
+                this.copy(e)
+                break;
+              case "v":
+                this.paste();
+                break;
+              case "o":
+                $('#file-input').trigger('click');
+                break;
+              case "s":
+                this.exportTemplate(e);
+                break;
+            }
+          });
+        });
 
 });
