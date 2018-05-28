@@ -1,23 +1,11 @@
 This repo is friendly for first timers and other contributors. I would like to appreciate your effort and contribution. 
 
-This application is made with the help of HTML, CSS, vanilla JS, Jquery, and Riot js.
+This application is made with the help of HTML, CSS, vanilla JS, Jquery, and Riot js targetting non-technical users. So you're free to contribute in many possible ways. Like
 
-This guide may help first timers about what to do other than code change.
+* Create a card game and share the printables with us.
+* Create a template and share with us so that other can use it to design cards games.
+* Suggest new features and implement them too.
 
-The design of the application is fairly simple so that even the non-tech users can understand it. However if you feel that it is complex to understand, let me know. We can simplify it.
-
-For the development purpose, 
-
-There are 2 kinds of files
-- Files ending with `.tag` extensions 
-- and other
-
-Don't do the change in `tags\tags.js`. If you change anything in files ending with `.tag` extensions. You'll have to follow following steps;
-
-1. clone the repo in your local
-2. Run `npm install`. It'll install **riot** npm package on your machine.
-3. Run `npm run compile` command. It'll generate `tags\tags.js`.
-
-Don't hesitate to clear your doubts.
+Don't hesitate to clear your doubts. If you're changes are small and generating `tags.js` is a bit complicated, it's ok to leave it. I'll do that. But ensure that you're changes are either in `*.tag` files only or in other files only
 
 If you like this application, don't forget to share with your friends and [star](https://github.com/funcards/match-it/stargazers) it.
