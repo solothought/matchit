@@ -1,14 +1,14 @@
 This repo is friendly for first timers and other contributors. I would like to appreciate your effort and contribution. 
 
-This applications is made with the help of HTML, CSS, vanilla JS, Jquery, and Riot js.
+This application is made with the help of HTML, CSS, vanilla JS, Jquery, and Riot js.
 
-This guide will may help first timers about what to do other than code change.
+This guide may help first timers about what to do other than code change.
 
 The design of the application is fairly simple so that even the non-tech users can understand it. However if you feel that it is complex to understand, let me know. We can simplify it.
 
 For the development purpose, 
 
-There are 2 kind of files
+There are 2 kinds of files
 - Files ending with `.tag` extensions 
 - and other
 
