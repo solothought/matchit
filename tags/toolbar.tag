@@ -1,7 +1,7 @@
 <decktemplate>
     <div id="action-bar" class="row align-items-center">
         <div class="col form-inline">
-            <i class="fa fa-repeat action-btn btn btn-info"  title="Arrange Randomly" onclick={ rotateRandomly }></i>
+            <i class="icon-cw action-btn btn btn-info"  title="Arrange Randomly" onclick={ rotateRandomly }></i>
 
             <div class="input-group">
                 <div class="form-check">
@@ -10,25 +10,22 @@
                         Maintain height-width ratio
                     </label>
                 </div>
-                <span class="fa-stack fa-lg action-btn btn btn-info" title="Resize Randomly" style="font-size: 1.2em;" onclick={resizeRandomly}>
-                    <i class="fa fa-square-o fa-stack-2x" style="top: -0.5px;"></i>
-                    <i class="fa fa-arrows-h fa-stack-1x" style="top: -0.5px;"></i>
-                </span>
+                <i class=" icon-resize-normal action-btn btn btn-info" title="Resize Randomly" onclick={resizeRandomly}></i>
             </div>
 
-            <i class="fa fa-random action-btn btn btn-info"  title="Arrange Randomly" onclick={ arrangeRandomly }></i>
-            <i class="fa fa-copy action-btn btn btn-info"  title="Copy Pattern" onclick={ copy }></i>
-            <i class="fa fa-paste action-btn btn btn-info"  title="Paste Pattern" onclick={ paste }></i>
+            <i class="icon-shuffle action-btn btn btn-info"  title="Arrange Randomly" onclick={ arrangeRandomly }></i>
+            <i class="icon-docs action-btn btn btn-info"  title="Copy Pattern" onclick={ copy }></i>
+            <i class="icon-paste action-btn btn btn-info"  title="Paste Pattern" onclick={ paste }></i>
 
 
             <label class="btn-bs-file">
-                <i class="fa fa-folder-open-o action-btn btn btn-info"  title="Open Pattern file" onclick={ this.parent.arrangeRandomly }></i>
+                <i class="icon-folder-open-empty action-btn btn btn-info"  title="Open Pattern file" onclick={ this.parent.arrangeRandomly }></i>
                 <input id="file-input" type="file" class="filebutton" accept="application/vnd.nimn,*.nmn,*.nimn"  onchange= { readTemplateFile }/>
             </label>
 
             <div class="form-inline input-group">
                 <input id="exportTemplateName" type="text" class="form-control" placeholder="Enter the template name " value={  exportTemplateName} style="width: 300px;">
-                <i class="fa fa-save action-btn btn btn-info"  title="Save Pattern to external file" onclick={ exportTemplate }></i>
+                <i class="icon-floppy action-btn btn btn-info"  title="Save Pattern to external file" onclick={ exportTemplate }></i>
             </div>
         </div>
         <!--  <div class="col">
