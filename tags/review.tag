@@ -62,7 +62,7 @@
         <div class="row">
             <div class="col-lg-12 text-center">
                 <a href="#print" class="btn btn-lg btn-theme" onclick={ print }><i class="icon-print" > Print</i></a>
-                <a href="#export" class="btn btn-lg btn-theme"  onclick={ download }><i class="icon-download" > Download</i></a>
+                <!-- <a href="#export" class="btn btn-lg btn-theme"  onclick={ download }><i class="icon-download" > Download</i></a> -->
             </div>
         </div>
     </section>
@@ -88,6 +88,11 @@
             
             var gametype = `${this.frame.symbolsPerCard}-${this.frame.width}x${this.frame.height}`;
             ga('send', 'event', 'cards', 'generate', gametype);
+            /* gtag('event', 'click', {
+                //'event_category': 'outbound',
+                'event_label': "generate" + gametype,
+                'transport_type': 'beacon',
+            }); */
             $(".cardframe").width(this.frame.width);
             $(".cardframe").height(this.frame.height);
 
@@ -217,9 +222,11 @@
                         allowTaint: false,
                         useCORS: false,
                         /* onrendered: function(canvas) {
+                            console.log(canvas.toDataURL() )
                             Canvas2Image.saveAsPNG(canvas);
                         } */
-                    }).then(function(canvas) {
+                    })
+                    .then(function(canvas) {
                     /* document.body.appendChild(canvas);
                     $("#img-out").append(canvas); */
 
@@ -230,7 +237,7 @@
                     //Canvas2Image.saveAsPNG(canvas);
                     console.log(dataUrl)
                     //img.file( counter + ".jpeg", dataUrl.substr( dataUrl.indexOf(", ")+1 ), {base64: true});
-                    console.log("in loop");
+                    //console.log("in loop");
                 });
             });
             console.log("after loop");
