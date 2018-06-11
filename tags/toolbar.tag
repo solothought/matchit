@@ -1,4 +1,4 @@
-<decktemplate>
+<toolbar>
     <div id="action-bar" class="row align-items-center">
         <div class="col form-inline">
             <i class="icon-cw action-btn btn btn-info"  title="Arrange Randomly" onclick={ rotateRandomly }></i>
@@ -330,4 +330,4 @@
         });
 
     </script>
-</decktemplate>
+</toolbar>

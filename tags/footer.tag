@@ -1,4 +1,11 @@
 <r-footer>
+    <style>
+        footer{
+            position: fixed;
+            bottom: 0px;
+            width: 100%;
+        }
+    </style>
     <footer>
         <div class="footer-below">
             <div class="container-fluid">
