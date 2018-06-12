@@ -170,11 +170,8 @@
     <script src="static/js/3rdparty/bootstrap.bundle.min.js"></script>
     <script src="static/js/3rdparty/filesaver.min.js"></script>
     <script src="static/js/3rdparty/nimn.js"></script>
-    <script src="static/js/3rdparty/html2canvasv1.0.0-alpha.12.js"></script>
-    <!-- <script src="static/js/3rdparty/html2canvas_old.js"></script> -->
+    <script src="static/js/3rdparty/dom-to-image.min.js"></script>
     <script src="static/js/3rdparty/jszipv3.1.5.min.js"></script>
-    <script src="static/js/3rdparty/canvas2image.js"></script>
-    <!-- <script src="https://github.com/niklasvh/html2canvas/releases/download/v1.0.0-alpha.12/html2canvas.js"></script> -->
 
     <!-- <script src="js/freelancer.js"></script> -->
     <script src="static/js/app.js"></script>
@@ -230,44 +227,8 @@
                     alert("Select number of symboles on a card");
                 }
             })
-
-            
-
         });
 
-        //$("#saveImage").click(function() { 
-        function h2c(){
-            html2canvas($(".cardframe")[0]).then(function(canvas) {
-                document.body.appendChild(canvas);
-                $("#img-out").append(canvas);
-            });
-                /* html2canvas( $(".cardframe")[0] , {
-                    onrendered: function(canvas) {
-                        //var myImage = canvas.toDataURL();
-                        //console.log(myImage);
-                        //downloadURI(myImage, "MaSimulation.png");
-
-                        //theCanvas = canvas;
-                        document.body.appendChild(canvas);
-
-                        // Convert and download as image 
-                        //Canvas2Image.saveAsPNG(canvas); 
-                        $("#img-out").append(canvas);
-                    }
-                }); */
-            }
-            //});
-
-            function downloadURI(uri, name) {
-                var link = document.createElement("a");
-
-                link.download = name;
-                link.href = uri;
-                document.body.appendChild(link);
-                link.click();   
-                //after creating link you should delete dynamic link
-                //clearDynamicLink(link); 
-            }
     </script>
 
        

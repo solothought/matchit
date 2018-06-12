@@ -62,7 +62,7 @@
         <div class="row">
             <div class="col-lg-12 text-center">
                 <a href="#print" class="btn btn-lg btn-theme" onclick={ print }><i class="icon-print" > Print</i></a>
-                <!-- <a href="#export" class="btn btn-lg btn-theme"  onclick={ download }><i class="icon-download" > Download</i></a> -->
+                <a href="#export" class="btn btn-lg btn-theme"  onclick={ downloadImg }><i class="icon-download" > Download</i></a>
             </div>
         </div>
     </section>
@@ -87,7 +87,9 @@
         this.on("mount",() => {
             
             var gametype = `${this.frame.symbolsPerCard}-${this.frame.width}x${this.frame.height}`;
-            ga('send', 'event', 'cards', 'generate', gametype);
+            try{
+                ga('send', 'event', 'cards', 'generate', gametype);
+            }catch(e){};
             /* gtag('event', 'click', {
                 //'event_category': 'outbound',
                 'event_label': "generate" + gametype,
@@ -213,39 +215,36 @@
             window.print();
         }
 
-        this.download = function(){
+        this.downloadImg = function(){
             var counter = 1 ;
             var zip = new JSZip();
-            var img = zip.folder("funcards_matchit");
-            $(".cardframe").each( (i,el) => {
-                html2canvas(el,  {
-                        allowTaint: false,
-                        useCORS: false,
-                        /* onrendered: function(canvas) {
-                            console.log(canvas.toDataURL() )
-                            Canvas2Image.saveAsPNG(canvas);
-                        } */
+            var imgfolder = zip.folder("funcards_matchit");
+            //var node = $(".cardframe")[0];
+
+            $(".cardframe").each( (i,node) => {
+                domtoimage.toPng(node)
+                    .then(function (dataUrl) {
+                        console.log(counter);
+                        imgfolder.file("card_" + counter++ + ".png", dataUrl.substr( dataUrl.indexOf(",")+1 ), {base64: true});
+                        /* var img = new Image();
+                        img.src = dataUrl;
+                        document.body.appendChild(img); */
+                        if(counter > $(".cardframe").length){
+                            downloadZip(zip)
+                        }
                     })
-                    .then(function(canvas) {
-                    /* document.body.appendChild(canvas);
-                    $("#img-out").append(canvas); */
+                    .catch(function (error) {
+                        console.error('oops, something went wrong!', error);
+                    });
+            }); 
+        }
 
-                    //zip.file("Hello.txt", "Hello World\n");
-                    //var dataUrl = canvas.toDataURL("image/jpeg").replace("image/jpeg", "image/octet-stream");
-                    var dataUrl = canvas.toDataURL();
-
-                    //Canvas2Image.saveAsPNG(canvas);
-                    console.log(dataUrl)
-                    //img.file( counter + ".jpeg", dataUrl.substr( dataUrl.indexOf(", ")+1 ), {base64: true});
-                    //console.log("in loop");
-                });
-            });
-            console.log("after loop");
-            /* zip.generateAsync({type:"blob"})
+        function downloadZip(zip){
+            zip.generateAsync({type:"blob"})
                 .then(function(content) {
                     // see FileSaver.js
                     saveAs(content, "matchit.zip");
-                }); */
+                });
         }
     </script>
 </review>
