@@ -27,6 +27,8 @@
                 <input id="exportTemplateName" type="text" class="form-control" placeholder="Enter the template name " value={  exportTemplateName} style="width: 300px;">
                 <i class="icon-floppy action-btn btn btn-info"  title="Save Pattern to external file" onclick={ exportTemplate }></i>
             </div>
+
+            <shortcuts></shortcuts>
         </div>
         <!--  <div class="col">
             <select id="templateselect" class="form-control" onchange={loadtemplate}>
