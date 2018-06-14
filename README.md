@@ -26,3 +26,5 @@ This section may help to design good cards.
 - Images with transparent background are good.                    
 
 Check [resources]() which may help to collect beautiful images for your game.
+
+[Credits](https://github.com/funcards/match-it/blob/master/credits.md)
