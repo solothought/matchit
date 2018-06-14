@@ -1,10 +1,10 @@
 <r-footer>
     <style>
-        footer{
+        /*footer{
             position: fixed;
             bottom: 0px;
             width: 100%;
-        }
+        }*/
     </style>
     <footer>
         <div class="footer-below">
