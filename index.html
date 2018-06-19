@@ -224,12 +224,30 @@
             $("#simpleLevel").click(function(){
                 var symbolsCount = $( "#symbolscount" ).val();
                 riot.mount("galleries", { count : 1, symbols : symbolsCount})
+
+                try{
+                    gtag('event', 'click', {
+                        'event_category': 'design_card',
+                        'event_label': "simple ",
+                        'value' : symbolsCount
+                    });
+                }catch(e){
+                }
             })
 
             $("#difficultLevel").click(function(){
                 var symbolsCount = totalCombinations($( "#symbolscount" ).val());
                 if(symbolsCount){
                     riot.mount("galleries", { count : symbolsCount, symbols : symbolsCount})
+
+                    try{
+                        gtag('event', 'click', {
+                            'event_category': 'design_card',
+                            'event_label': "difficult ",
+                            'value' : symbolsCount
+                        });
+                    }catch(e){
+                    }
                 }else{
                     alert("Select number of symboles on a card");
                 }

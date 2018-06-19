@@ -21,6 +21,15 @@
         this.totalSymbols = totalCombinations($( "#symbolscount" ).val());
         this.symbols = {};
         generate(){
+
+            try{
+                gtag('event', 'click', {
+                    'event_category': 'design_card',
+                    'event_label': "generate"
+                });
+            }catch(e){
+            }
+
             riot.mount("review", {symbols: this.symbols});
         }
         this.on("uploadimages",() => {

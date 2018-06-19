@@ -212,10 +212,25 @@
         }
 
         this.print = function(){
+            try{
+                gtag('event', 'click', {
+                    'event_category': 'Downloads',
+                    'event_label': "print"
+                });
+            }catch(e){
+            }
             window.print();
         }
 
         this.downloadImg = function(){
+            try{
+                gtag('event', 'click', {
+                    'event_category': 'Downloads',
+                    'event_label': "pdf"
+                });
+            }catch(e){
+            }
+
             var counter = 1 ;
             var zip = new JSZip();
             var imgfolder = zip.folder("funcards_matchit");
