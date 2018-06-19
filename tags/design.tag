@@ -97,7 +97,7 @@
                 w : 56,
                 h : 88,
             },
-            "Pocker Card" : {
+            "Poker Card" : {
                 w : 63,
                 h : 88,
             },
