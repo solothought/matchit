@@ -13,12 +13,13 @@
     background-size: cover; */
 }
 .intro{
-    height: 100vh;
+    height: 100%;
 }
 .btn-theme{
     background-color: #18BC9C;
     color: white;
-    width: 200px;
+    min-width: 160px;
+    width: 40%;
     margin: 10px;
 }
 .thumbnail{
@@ -41,9 +42,23 @@
     width: 100px;
     z-index: 10;
 }
-.action-btn{
-    font-size: 1.5em;
-    margin: 2px;
+@media (max-width: 576px) { /*sm*/
+    .screenwarning{
+        display: block;
+    }
+    .action-btn{
+        font-size: 1.1em;
+        margin: 2px;
+    }
+}
+@media (min-width: 576px) { /*sm*/
+    .screenwarning{
+        display: none;
+    }
+    .action-btn{
+        font-size: 1.5em;
+        margin: 2px;
+    }
 }
 
 .btn-icon img{
@@ -110,9 +125,5 @@
 
 [id='generate']:disabled {
   background: grey;
-
   font-style: italic;
 }
-/* section{
-    margin-bottom: 60px;
-} */
