@@ -1,6 +1,16 @@
-var minSymbolSize = {
+var minSymbolSize = { //pixels
     w : 75,
     h : 75
+}
+
+var onemm;
+
+function pixelsTomm(p){
+    return round( ( 1 / onemm) * p , 2);
+}
+
+function mmToPixels(m){
+    return round( onemm * m , 2);
 }
 
 function round(number, precision) {
