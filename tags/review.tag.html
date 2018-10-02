@@ -103,7 +103,7 @@
                 /* containment:  */
             });
             $('.symbol').draggable().rotatable();
-            $(".ui-resizable-handle").hide();
+            //$(".ui-resizable-handle").hide(); hiding this causes the card to not have a drag handle after clicking on generate
             $(".cardframe").mouseover( function(e) {
                 $(this).find(".resizeHandle, .ui-rotatable-handle, .ui-resizable-handle").show();
             });
