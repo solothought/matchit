@@ -34,3 +34,14 @@ Check [resources]() which may help to collect beautiful images for your game.
 * [paperbox](https://github.com/andylei/paperbox)
 * [cpforbes](https://www.cpforbes.net/tuckbox/)
 * [templatemaker](https://www.templatemaker.nl/cardbox)
+
+## Contributors
+
+* @amitguptagwl
+* @omkar1212
+* @cnuis2cool
+* @robotscissors
+* @AlligatorSnappingTurtle19
+* @alokpant
+* @asenchekov
+* @ashishpatelcs
