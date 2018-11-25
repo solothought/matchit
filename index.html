@@ -167,6 +167,8 @@
     <r-footer></r-footer>
     <div id="snackbar"></div>
 
+    <cookie-alert></cookie-alert>
+
     <script src="static/js/3rdparty/jquery-3.2.1.min.js"></script>
     <script src="static/js/3rdparty/jquery-ui.min.js"></script>
     <script src="static/js/3rdparty/jquery.scrolly.min.js"></script>
@@ -195,9 +197,10 @@
     <script src="tags/toolbar.tag.html" type="riot/tag"></script>
     <script src="tags/footer.tag.html" type="riot/tag"></script>
     <script src="tags/shortcuts.tag.html" type="riot/tag"></script>
+    <script src="tags/cookie-alert.tag.html" type="riot/tag"></script>
 
     <script type="text/javascript">
-            riot.mount("design, r-footer");
+            riot.mount("design, r-footer, cookie-alert");
         $(document).ready(function(){
 
             $("#githublogo").hide();
