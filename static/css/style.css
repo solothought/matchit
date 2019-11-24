@@ -1,0 +1,139 @@
+
+.parallax {
+    /* The image used */
+    background-image: url("../img/bg-small.png");
+
+    /* Set a specific height */
+    height: 500px;
+
+    /* Create the parallax scrolling effect */
+    background-attachment: fixed;
+    background-position: center;
+    /* background-repeat: no-repeat;
+    background-size: cover; */
+}
+.intro{
+    height: 100%;
+}
+
+.thumbnail{
+    width: 80px;
+}
+#demo-card{
+    background-color: white;
+}
+
+/* footer{
+    position: fixed;
+    bottom: 0px;
+    width: 100vw;
+} */
+
+#githublogo{
+    position: fixed;
+    top: 10px;
+    right: 30px;
+    width: 100px;
+    z-index: 10;
+}
+@media (max-width: 576px) { /*sm*/
+    .screenwarning{
+        display: block;
+    }
+    .action-btn{
+        font-size: 1.1em;
+        margin: 2px;
+    }
+    .btn-theme{
+        background-color: #18BC9C;
+        color: white;
+        min-width: 120px;
+        font: 0.8em;
+        width: 50%;
+        margin: 6px;
+    }
+}
+@media (min-width: 576px) { /*sm*/
+    .screenwarning{
+        display: none;
+    }
+    .action-btn{
+        font-size: 1.5em;
+        margin: 2px;
+    }
+    .btn-theme{
+        background-color: #18BC9C;
+        color: white;
+        min-width: 120px;
+        width: 40%;
+        font: 1.5em;
+        margin: 10px;
+    }
+}
+
+.btn-icon img{
+    width: 100%;
+}
+.btn-icon{
+    width: 40px;
+    height: 35px;
+}
+.input-group{
+    margin: auto 10px;
+}
+@media print {
+
+    @page :left, :right {
+        margin: 0.5cm;
+    }
+
+    body * {
+      visibility: hidden;
+    }
+    #review-panel, #review-panel *, #review-panel cardframe img {
+      visibility: visible;
+    }
+    #review-panel {
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+
+    #review-panel .cardframe{
+        border: 1px solid black;
+    }
+
+    div{
+        page-break-inside: avoid;
+    }
+  }
+
+
+/** Contact chip **/
+.chip {
+    display: inline-block;
+    padding: 0 25px;
+    height: 39px;
+    font-size: 20px;
+    line-height: 35px;
+    border-radius: 25px;
+    border: 1px solid;
+    font-weight: bolder;
+}
+
+.chip img {
+    float: left;
+    margin: 0 10px 0 -26px;
+    height: 39px;
+    width: 39px;
+    border-radius: 50%;
+}
+
+/** End: contact chip **/
+
+/** Generate Button **/
+
+[id='generate']:disabled {
+  background: grey;
+  font-style: italic;
+}

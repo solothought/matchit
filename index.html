@@ -1,0 +1,268 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-119406750-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-119406750-1');
+    </script>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Card Game generator for all the ages">
+    <meta name="author" content="Amit Gupta">
+
+    <title>Match it - card game generator</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="static/css/3rdparty/bootstrap.min.css" rel="stylesheet">
+    <link href="static/css/3rdparty/jquery-ui.min.css" rel="stylesheet">
+    <link href="static/css/3rdparty/jquery-confirm.min.css" rel="stylesheet">
+    <!-- <link href="static/css/3rdparty/font-awesome.min.css" rel="stylesheet"> -->
+    <link href="static/css/fontello.css" rel="stylesheet">
+
+    <!-- Theme CSS -->
+    <link href="css/freelancer.css" rel="stylesheet">
+    <link href="static/css/style.css" rel="stylesheet">
+    <link href="static/css/masorny.css" rel="stylesheet">
+    <link href="static/css/slider.css" rel="stylesheet">
+    <link href="static/css/snackbar.css" rel="stylesheet">
+    <style>
+    
+    </style>
+</head>
+
+<body id="page-top" class="index">
+
+    <!-- Navigation -->
+    <nav id="mainNav" class="navbar navbar-default navbar-fixed-top navbar-custom">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <a style="font-size: 2em; color: white;" href="#page-top">Match it</a>
+                <br><small style="font-size: 1em; color: white;">Make your own card game</small>
+            </div>
+            <a href="https://github.com/funcards/match-it/stargazers" target="_blank"><img id="githublogo" src="static/img/Professortocat_v2.png"></a>
+        </div>
+    </nav>
+    <div class="screenwarning text-danger">
+        This application is designed for wider screens
+    </div>
+    <!-- Header -->
+    <header class="parallax intro" style="background-color: #2c3e50" style="background: url('img/bg.png') no-repeat">
+        <div class="container">
+            <div class="row">
+                    <div class="col">
+                        <img src="static/img/card_1.png" class="float-right" style="margin: 0px 20px; width: 80%;">
+                    </div>
+                    <div class="col">
+                        <img src="static/img/card_2.png" class="float-left" style="margin: 0px 20px; width: 80%;">
+                    </div>
+            </div>
+            <div class="empty"></div>
+            <div class="row">
+                    <div class="col">
+                        <a href="#design" class="btn btn-lg btn-theme float-right">Design</a>
+                    </div>
+                    <div class="col ">
+                        <a href="https://github.com/funcards/match-it" class="btn btn-lg btn-theme float-left"  target="_blank">Read more</a>
+                    <!-- <div class="intro-text">
+                        <span class="name rubberBand animated">Stubmatic</span>
+                        <span class="skills">Mock the behaviour of HTTP(s) / REST / SOAP services</span>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Features Section -->
+    <section class="success" id="features">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2>Guide</h2>
+                </div>
+            </div>
+            <div class="empty"></div>
+            <div class="row">
+                    <div class="col text-center">
+                            <iframe width="100%" style="min-height: 40vh;" src="https://www.youtube.com/embed/Eq6eqFx9fmM" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                    </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <h3 class="text-center">About Game</h3>
+                    <ul>
+                        <li>This game can be played in multiple ways among two to multiple players depending on the deck size. Players have to find matching images in 2 cards. </li>
+                        <li>In the easy version, two identical images have to be matched. In the difficult version, two images, which belong to the same group, have to be matched. For example, suppose there are 5 groups of animals: dogs, cats, lizards, insects, and birds. Two cards may match the same image, or different images may belong to the same group.</li>
+                        <li>Upload all images in a single group for the simple version. Upload multiple images in each group for the difficult version.</li>
+                    </ul>
+                </div>
+                <div class="col-lg-6">
+                    <h3 class="text-center">About Design</h3>
+                    <ul>
+                            <li>Kids like colors so, avoid black & white text or images. </li>
+                            <li>Avoid gradient or shaded colors.</li>
+                            <li>You can increase complexity with color, and similar looking images.</li>
+                            <li>Avoid rectangle images or images with a border. </li>
+                            <li>Images with a transparent background are good.</li>                            
+                    </ul>
+
+                    To use this application
+                    <ul>
+                        <li>First, design the size of the card and select the number of images.</li>
+                        <li>You can also select if the images on each card should be randomly resized and rotated. (It is best to check them all)</li>
+                        <li>Upload images.</li>
+                        <li>Once all the cards are generated, position the images in the way you want.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row">
+                    <div class="col-lg-12">
+
+                    </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Examples Grid Section -->
+    <section id="design"  style="background-color: #1963ad; color: white;">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2>Design</h2>
+                    <div class="empty"></div>
+                </div>
+            </div>
+            <design></design>
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <a class="btn btn-lg btn-theme" id="simpleLevel">Simple Version</a>
+                    <a class="btn btn-lg btn-theme" id="difficultLevel">Difficult Version</a>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    
+
+    <!-- Symbols Section -->
+    <galleries></galleries>
+    
+    <!-- Review Section -->
+    <review></review>
+    
+
+    <!-- <section>
+    </section> -->
+    <!-- <button id="saveImage">Save image</button> -->
+    <div id="img-out"></div>
+    <!-- Footer -->
+    <r-footer></r-footer>
+    <div id="snackbar"></div>
+
+    <cookie-alert></cookie-alert>
+
+    <script src="static/js/3rdparty/jquery-3.2.1.min.js"></script>
+    <script src="static/js/3rdparty/jquery-ui.min.js"></script>
+    <script src="static/js/3rdparty/jquery.scrolly.min.js"></script>
+    <script src="static/js/3rdparty/jquery-confirm.min.js"></script>
+    <!-- <script src="static/js/3rdparty/jquery.easing.1.4.1.min.js"></script> -->
+
+    <script src="static/js/3rdparty/jquery.ui.rotatable.1.0.1.min.js"></script>
+    <script src="static/js/3rdparty/riot.min.js"></script>
+    <script src="static/js/3rdparty/riot+compiler.min.js"></script>
+    <script src="static/js/3rdparty/bootstrap.bundle.min.js"></script>
+    <script src="static/js/3rdparty/filesaver.min.js"></script>
+    <script src="static/js/3rdparty/nimn.js"></script>
+    <script src="static/js/3rdparty/dom-to-image.min.js"></script>
+    <script src="static/js/3rdparty/jszipv3.1.5.min.js"></script>
+
+    <!-- <script src="js/freelancer.js"></script> -->
+    <script src="static/js/app.js"></script>
+    <script src="static/js/findit.js"></script>
+    <script src="static/js/animate.js"></script>
+    <script src="static/js/cardTemplatesSchema.js"></script>
+    <!-- <script src="tags/tags.js"></script> -->
+    <script src="tags/design.tag.html" type="riot/tag"></script>
+    <script src="tags/galleries.tag.html" type="riot/tag"></script>
+    <script src="tags/gallery.tag.html" type="riot/tag"></script>
+    <script src="tags/review.tag.html" type="riot/tag"></script>
+    <script src="tags/toolbar.tag.html" type="riot/tag"></script>
+    <script src="tags/footer.tag.html" type="riot/tag"></script>
+    <script src="tags/shortcuts.tag.html" type="riot/tag"></script>
+    <script src="tags/cookie-alert.tag.html" type="riot/tag"></script>
+
+    <script type="text/javascript">
+            riot.mount("design, r-footer, cookie-alert");
+        $(document).ready(function(){
+
+            $("#githublogo").hide();
+            setTimeout(() => {
+                rotatein($("#githublogo"));
+            },5000);
+
+            $("a.btn").on('click', function(event) {
+                // Make sure this.hash has a value before overriding default behavior
+                if (this.hash !== "") {
+                    // Prevent default anchor click behavior
+                    event.preventDefault();
+
+                    // Store hash
+                    var hash = this.hash;
+
+                    $('html, body').animate({
+                        scrollTop: $(hash).offset().top
+                    }, 800, function(){
+
+                    // Add hash (#) to URL when done scrolling (default click behavior)
+                        window.location.hash = hash;
+                    });
+                } // End if
+            });
+
+            $("#simpleLevel").click(function(){
+                var symbolsCount = $( "#symbolscount" ).val();
+                riot.mount("galleries", { count : 1, symbols : symbolsCount})
+
+                try{
+                    gtag('event', 'click', {
+                        'event_category': 'design_card',
+                        'event_label': "simple ",
+                        'value' : symbolsCount
+                    });
+                }catch(e){
+                }
+            })
+
+            $("#difficultLevel").click(function(){
+                var symbolsCount = totalCombinations($( "#symbolscount" ).val());
+                if(symbolsCount){
+                    riot.mount("galleries", { count : symbolsCount, symbols : symbolsCount})
+
+                    try{
+                        gtag('event', 'click', {
+                            'event_category': 'design_card',
+                            'event_label': "difficult ",
+                            'value' : symbolsCount
+                        });
+                    }catch(e){
+                    }
+                }else{
+                    alert("Select number of symbols on a card");
+                }
+            })
+        });
+
+    </script>
+
+       
+</body>
+
+</html>

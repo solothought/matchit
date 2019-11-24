@@ -1,0 +1,49 @@
+<galleries>
+    <section id="showcase">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2>Symbols</h2>
+                </div>
+            </div>
+            <p if={this.opts.count == 1} >Upload { totalSymbols } images</p>
+            <gallery each={n,i in this.repeat } id="gallery_{i}"></gallery>
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <button class="btn btn-lg btn-theme" id="generate" onclick={ generate } disabled={ !readyToGenerate }>Generate</button>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script>
+        this.readyToGenerate = false;
+        this.repeat = new Array(this.opts.count);
+        this.totalSymbols = totalCombinations($( "#symbolscount" ).val());
+        this.symbols = {};
+        generate(){
+
+            try{
+                gtag('event', 'click', {
+                    'event_category': 'design_card',
+                    'event_label': "generate"
+                });
+            }catch(e){
+            }
+
+            riot.mount("review", {symbols: this.symbols});
+        }
+        this.on("uploadimages",() => {
+            if(Object.keys(this.symbols).length === this.opts.count){
+                if(this.opts.count === 1){
+                    if(this.symbols["gallery_0"].length >= this.totalSymbols){
+                        this.readyToGenerate = true;
+                        this.update();
+                    }
+                }else{
+                    this.readyToGenerate = true;
+                    this.update();
+                }
+            }
+        });
+    </script>
+</galleries>

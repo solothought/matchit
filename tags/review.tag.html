@@ -1,0 +1,268 @@
+<review>
+    <style>
+        .cardframe{
+            background-color: white;
+            float: left;
+            border-radius: 5px;
+            position: relative;
+            overflow: hidden;
+        }
+        .symbol{
+            position: absolute;
+            cursor: move;
+        }
+        .ui-resizable-handle{
+            display: none;
+        }
+        .ui-rotatable-handle{
+            width: 10px;
+            height: 10px;
+            background-color: green;
+            bottom: 1px;
+            right:1px;
+            border-radius: 5px;
+            cursor: crosshair;
+            display: none;
+        }
+        .cf-selected{
+            outline: 4px solid yellow;
+        }
+        
+    </style>
+
+    <section id="showcase" style="background-color: #2C3E50;color: white">
+        <div class="container" >
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2>Review</h2>
+                </div>
+            </div>
+        </div>
+        <div class="empty"></div>
+        <toolbar></toolbar>
+        <div id="review-panel" class="input-bar clearfix" style="width:100%">
+            <div class="photolist-wrapper" style="width:100%">
+                <div each={card in cards} class="cardframe" onclick={select} style="background-color: { frame.bgColor }">
+                    <div class="align-middle" style="">
+                        <span style="height: 100%;">
+                            <img src="static/img/watermark.svg" width="20px">
+                        </span>
+                    </div>
+                    <div each={ symbol in card} class="symbol trans"  h={readSymbol(symbol).size.height} w={readSymbol(symbol).size.width}  
+                        weight={ Math.abs(calculateWeight( readSymbol(symbol).size )) }>
+                        <img  src={ readSymbol(symbol,true).src }>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <a href="#print" class="btn btn-lg btn-theme" onclick={ print }><i class="icon-print" > Print</i></a>
+                <a href="#export" class="btn btn-lg btn-theme"  onclick={ downloadImg }><i class="icon-download" > Download</i></a>
+            </div>
+        </div>
+    </section>
+    <script>
+        this.templates = [];
+        this.frame = {
+            width : $( "#demo-card" ).width(),
+            height : $( "#demo-card" ).height(),
+            symbolsPerCard: $( "#symbolscount" ).val(),
+            bgColor: $( "#demo-card" ).css("background-color"),
+            rotateEnable: $( "#rotate" ).prop("checked"),
+            resizeEnable: $( "#resize" ).prop("checked"),
+            maintainratio: $( "#maintainratio" ).prop("checked"),
+            /* symbol: {
+                width:,
+                height:
+            } */
+        }
+
+        this.frame.desiredSymbolSize = Math.floor ( ( (this.frame.width * this.frame.height) / this.frame.symbolsPerCard ) * 0.9 );
+        //this.accepted = false;
+        this.on("mount",() => {
+            
+            var gametype = `${this.frame.symbolsPerCard}-${this.frame.width}x${this.frame.height}`;
+            try{
+                ga('send', 'event', 'cards', 'generate', gametype);
+            }catch(e){};
+            /* gtag('event', 'click', {
+                //'event_category': 'outbound',
+                'event_label': "generate" + gametype,
+                'transport_type': 'beacon',
+            }); */
+            $(".cardframe").width(this.frame.width);
+            $(".cardframe").height(this.frame.height);
+
+            // Start: card symbol event
+            $('.trans img').resizable({
+                /* containment:  */
+            });
+            $('.symbol').draggable().rotatable();
+            //$(".ui-resizable-handle").hide(); hiding this causes the card to not have a drag handle after clicking on generate
+            $(".cardframe").mouseover( function(e) {
+                $(this).find(".resizeHandle, .ui-rotatable-handle, .ui-resizable-handle").show();
+            });
+
+            // Fixing the cards grid
+            $(".photolist-wrapper").css({
+                "display" : "grid",
+                "grid-template-columns" : `repeat(auto-fill, minmax(${this.frame.width}px, auto))`,
+                "grid-gap": "15px"
+            });
+
+            $(".cardframe").mouseout( function(e) {
+                $(this).find(".resizeHandle, .ui-rotatable-handle, .ui-resizable-handle").hide();
+            });
+            // End: card symbol event
+
+            //position symbols in a card
+            $(".cardframe").each( (i,el) => {
+                resizeSymbolsRandomly($(el).find(".symbol"), this.frame.resizeEnable, this.frame.maintainratio, this.frame.desiredSymbolSize);
+                if(this.frame.rotateEnable){
+                    rotateSymbolsRandomly($(el).find(".symbol"));
+                }
+                setRandomPos($(el).find(".symbol"));
+                this.updateTotalWeight(el);
+            })
+
+            //Card selection
+            $("#action-bar").click((e) =>{
+                e.stopPropagation();
+            });
+            $(document).click((e) =>{//unselect selected
+                if( $(e.target).hasClass("cf-selected") || $(e.target).hasClass("action-btn")){
+                    //do nothing
+                }else{
+                    $(".cf-selected").removeClass("cf-selected");
+                }
+            })
+            //End: card selection
+
+            //T&C confirmation box
+            
+            $.confirm({
+                draggable: false,
+                title: 'Term & Consition',
+                content: '<p>The purpose of this application is to give you the freedom to design your own game for personal use.'
+                + ' Cards generated by this application shall not be used for commercial purpose.</p>'
+                + '<p> <a href="https://github.com/funcards/match-it/issues">Contact us</a> for any clarification.',
+                buttons: {
+                    confirm: {
+                        text: 'Accept',
+                        keys: ['enter']
+                    }
+                }
+            });
+            //End : T&C confirmation box
+        })
+
+        //Select cards
+        this.select = function(e){
+            if (event.ctrlKey && $(e.target).hasClass("cardframe") ) {
+                this.toggleSelect(e.target);
+            }else if( $(e.target).hasClass("cardframe")) {
+                $(".cf-selected").removeClass("cf-selected");
+                $(e.target).addClass("cf-selected");
+            }
+                e.stopPropagation();
+        }
+
+        this.toggleSelect = function (element){
+            if($(element).hasClass("cf-selected")){
+                $(element).removeClass("cf-selected");
+            }else{
+                $(element).addClass("cf-selected");
+            }
+        }
+        //End: select cards
+        
+        
+        /* 
+        2 for long or tall images otherwise 1
+        */
+        
+
+        this.updateTotalWeight = function(el){
+            totalWeight = 0;
+            $(el).find(".symbol").each( (i,img) => {
+                totalWeight += Number.parseInt($(img).attr("weight"));
+            });
+            $(el).attr("totalweight", totalWeight);
+        }
+
+        this.totalSymbols = totalCombinations($( "#symbolscount" ).val());
+        this.cards = createBlocks($( "#symbolscount" ).val());
+
+        var groupIndex = [];
+        /*
+        Read an image from given group number(next everytime). If there is only one group then n is image number from that group.
+        */
+        this.readSymbol = function(n,readNext){
+            if( Object.keys(this.opts.symbols).length === 1){
+                return this.opts.symbols["gallery_0"][ n % this.opts.symbols["gallery_0"].length];
+            }else{
+                if(!groupIndex[n]) groupIndex[n] = 0;
+                var index = 0;
+                if(readNext){
+                    index = groupIndex[n] % this.opts.symbols["gallery_"+n].length;
+                    groupIndex[n] = index +1;
+                }else{
+                    index = groupIndex[n]
+                }
+                return this.opts.symbols["gallery_"+n][ index ];
+            }
+        }
+
+        this.print = function(){
+            try{
+                gtag('event', 'click', {
+                    'event_category': 'Downloads',
+                    'event_label': "print"
+                });
+            }catch(e){
+            }
+            window.print();
+        }
+
+        this.downloadImg = function(){
+            try{
+                gtag('event', 'click', {
+                    'event_category': 'Downloads',
+                    'event_label': "pdf"
+                });
+            }catch(e){
+            }
+
+            var counter = 1 ;
+            var zip = new JSZip();
+            var imgfolder = zip.folder("funcards_matchit");
+            //var node = $(".cardframe")[0];
+
+            $(".cardframe").each( (i,node) => {
+                domtoimage.toPng(node)
+                    .then(function (dataUrl) {
+                        console.log(counter);
+                        imgfolder.file("card_" + counter++ + ".png", dataUrl.substr( dataUrl.indexOf(",")+1 ), {base64: true});
+                        /* var img = new Image();
+                        img.src = dataUrl;
+                        document.body.appendChild(img); */
+                        if(counter > $(".cardframe").length){
+                            downloadZip(zip)
+                        }
+                    })
+                    .catch(function (error) {
+                        console.error('oops, something went wrong!', error);
+                    });
+            }); 
+        }
+
+        function downloadZip(zip){
+            zip.generateAsync({type:"blob"})
+                .then(function(content) {
+                    // see FileSaver.js
+                    saveAs(content, "matchit.zip");
+                });
+        }
+    </script>
+</review>
