@@ -8,4 +8,4 @@ This application is made with the help of HTML, CSS, vanilla JS, Jquery, and Rio
 
 Don't hesitate to clear your doubts. If you're changes are small and generating `tags.js` is a bit complicated, it's ok to leave it. I'll do that. But ensure that you're changes are either in `*.tag` files only or in other files only
 
-If you like this application, don't forget to share with your friends and [star](https://github.com/funcards/match-it/stargazers) it.
+If you like this application, don't forget to share with your friends and [star](https://github.com/solothought/matchit/stargazers) it.

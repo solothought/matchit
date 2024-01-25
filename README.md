@@ -13,7 +13,7 @@ You can also design the game for a similar match instead of an exact match. For 
 
 ![card3](static/img/card_3.png) ![card4](static/img/card_4.png)
 
-Check [instructions](https://github.com/funcards/match-it/blob/master/instructions.md) to know multiple ways of playing the game. Feel free to submit new ways of playing by raising a PR or an issue.
+Check [instructions](https://github.com/solothought/matchit/blob/master/instructions.md) to know multiple ways of playing the game. Feel free to submit new ways of playing by raising a PR or an issue.
 
 ## Design guide
 
@@ -27,7 +27,7 @@ This section may help to design good cards.
 
 Check [resources]() which may help to collect beautiful images for your game.
 
-[Credits](https://github.com/funcards/match-it/blob/master/credits.md)
+[Credits](https://github.com/solothought/matchit/blob/master/credits.md)
 
 ## Tuck Box
 
